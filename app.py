@@ -13386,7 +13386,7 @@ if nav == "scanner":
             "Min Score":  "Minimum strategy-fit score to appear in results.\n90+ Elite · 80+ Strong · 70+ Solid · 60+ Moderate.",
             "Min Conf.":  "Minimum number of aligned supporting factors required.\nHigher confluence = more signals agree = higher-quality setup.\n7+ means trend, Bollinger, RSI, IV, support, and MACD all align.",
         }.get(tip_key, "")
-        safe = t.replace('"', '&quot;')
+        safe = t.replace('"', '&quot;').replace("'", '&#39;')
         return f"<span class='mc-tip' data-tip='{safe}' style='font-size:0.68rem;color:var(--muted);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:help;'>{label}</span>"
 
     def _si(lst, val, d=0):
