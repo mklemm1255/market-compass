@@ -13559,4 +13559,17 @@ elif nav == "Learn":
     bottom = st.columns(3, gap="large")
     cards = [
         ("New Trader Path", "Start with why the strategy exists, how assignment works, and how to read scanner output without blindly trusting a score."),
-        ("Trade Planning", "Ev
+        ("Trade Planning", "Every strategy section should eventually have the printable worksheet / one-page playbook style you liked."),
+        ("Resource Attachments", "This lane is ready for PDFs, checklists, chart examples, and deeper written lessons.")
+    ]
+    for col, (title, desc) in zip(bottom, cards):
+        with col:
+            open_panel(title, "Learning structure", desc)
+            close_panel()
+
+elif nav == "DELTA":
+    render_delta_v49_module()
+
+else:
+    render_radar_v3_module()
+
