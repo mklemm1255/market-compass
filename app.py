@@ -13520,10 +13520,10 @@ def render_delta_v49_module() -> None:
         )
     with row2[3]:
         st.select_slider(
-            "Model at Day",
+            "Trade Snapshot",
             options=list(day_labels.keys()),
             key="delta_graph_day",
-            help="Preview how the trade looks at different points between today and expiration."
+            help="Slide to see how your position looks at different points in time — all the way from today to expiration day."
         )
     iv = iv_percent / 100.0
 
@@ -13581,8 +13581,8 @@ def render_delta_v49_module() -> None:
         f"border:1px solid rgba(76,195,255,0.15);border-radius:9px;margin-bottom:0.5rem;"
         f"display:flex;align-items:center;gap:1rem;'>"
         f"<div style='font-size:0.95rem;font-weight:900;color:#d0e2f6;min-width:160px;'>{structure.strategy}</div>"
-        f"<div style='font-size:0.73rem;color:#4db8ff;font-weight:700;'>{structure.tags}</div>"
-        f"<div style='flex:1;font-size:0.73rem;color:var(--muted);'>{structure.summary}</div>"
+        f"<div style='font-size:0.82rem;color:#4db8ff;font-weight:700;'>{structure.tags}</div>"
+        f"<div style='flex:1;font-size:0.82rem;color:var(--muted);'>{structure.summary}</div>"
         f"</div>"
     )
 
@@ -13602,7 +13602,7 @@ def render_delta_v49_module() -> None:
             figure = plot_payoff_chart(structure, ticker, stock_price, dte, iv, float(chart_range), graph_mode, day_labels[graph_day_label])
             st.plotly_chart(figure, use_container_width=True, config={"displayModeBar": False})
             render_html(
-                "<div style='font-size:0.67rem;color:var(--muted);margin-top:-0.3rem;'>"
+                "<div style='font-size:0.76rem;color:var(--muted);margin-top:-0.3rem;'>"
                 "Hover over the curve to read the exact price, move %, and modeled value at any point. "
                 "The vertical dashed line marks your strike. The shaded zone shows your profit range.</div>"
             )
@@ -13623,7 +13623,7 @@ def render_delta_v49_module() -> None:
             styled_html = render_styled_table(table_df, table_mode)
             render_html(styled_html)
             render_html(
-                "<div style='font-size:0.67rem;color:var(--muted);margin-top:0.3rem;'>"
+                "<div style='font-size:0.76rem;color:var(--muted);margin-top:0.3rem;'>"
                 "Green = profitable at that price. Red = a loss. Darker shading = bigger move in that direction.</div>"
             )
 
@@ -13633,7 +13633,7 @@ def render_delta_v49_module() -> None:
                 f"border:1px solid rgba(76,195,255,0.15);border-radius:10px;'>"
                 f"<div style='font-size:1.2rem;font-weight:900;color:#d0e2f6;margin-bottom:0.4rem;'>{structure.strategy}</div>"
                 f"<div style='font-size:0.75rem;color:#4db8ff;font-weight:700;margin-bottom:0.5rem;'>Bias: {structure.bias}</div>"
-                f"<div style='font-size:0.8rem;color:#d0e2f6;line-height:1.6;'>{structure.guide}</div>"
+                f"<div style='font-size:0.86rem;color:#d0e2f6;line-height:1.65;'>{structure.guide}</div>"
                 f"</div>"
             )
 
@@ -13651,8 +13651,8 @@ def render_delta_v49_module() -> None:
             render_html(
                 f"<div style='padding:0.45rem 0.6rem;background:rgba(255,255,255,0.03);"
                 f"border:1px solid rgba(208,226,246,0.07);border-radius:8px;margin-bottom:0.3rem;'>"
-                f"<div style='font-size:0.68rem;font-weight:800;color:#4db8ff;'>{label}</div>"
-                f"<div style='font-size:0.65rem;color:var(--muted);line-height:1.4;'>{desc}</div>"
+                f"<div style='font-size:0.8rem;font-weight:800;color:#4db8ff;'>{label}</div>"
+                f"<div style='font-size:0.74rem;color:var(--muted);line-height:1.45;'>{desc}</div>"
                 f"</div>"
             )
         st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
