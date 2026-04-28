@@ -792,7 +792,7 @@ def render_masthead() -> None:
                             <div class='mc-title' style='margin:0;'>Market Compass</div>
                             <div style='display:flex; align-items:center; gap:0.5rem; background:rgba(109,192,64,0.08); border:1px solid rgba(109,192,64,0.35); border-radius:999px; padding:0.4rem 1.1rem;'>
                                 <span style='font-size:0.58rem; color:rgba(255,255,255,0.4); letter-spacing:0.14em; text-transform:uppercase; font-weight:700;'>by</span>
-                                <span style='font-size:0.82rem; font-weight:900; color:#6DC040; letter-spacing:0.07em; text-transform:uppercase; font-family:sans-serif;'>Practical Income Investing</span>
+                                <span style='font-size:0.82rem; font-weight:900; letter-spacing:0.07em; text-transform:uppercase; font-family:sans-serif;'><span style='color:#FFFFFF;'>Practical </span><span style='color:#6DC040;'>Income </span><span style='color:#FFFFFF;'>Investing</span></span>
                             </div>
                         </div>
                         <div class='mc-subtitle'>
