@@ -14176,7 +14176,7 @@ elif nav == "analyze":
         st.session_state["analyze_ticker_nonce"] = 0
 
     # ── Full-width ticker input ───────────────────────────────────────────
-    _inp_c, _btn_c = st.columns([5, 1], gap="small")
+    _inp_c, _btn_c = st.columns([2, 1], gap="small")
     with _inp_c:
         _tkey = f"analyze_ticker_entry_{st.session_state['analyze_ticker_nonce']}"
         _entered = st.text_input(
@@ -14320,7 +14320,7 @@ elif nav == "analyze":
                 f"<div style='padding:0.42rem 0.65rem;background:rgba(255,255,255,0.03);"
                 f"border:1px solid rgba(208,226,246,0.08);border-radius:8px;margin-bottom:0.28rem;'>"
                 f"<div style='display:flex;align-items:center;gap:0.5rem;margin-bottom:0.22rem;'>"
-                f"  <div style='flex:1;font-size:0.76rem;color:#d0e2f6;font-weight:700;'>{_pn}</div>"
+                f"  <div style='flex:1;font-size:0.83rem;color:#d0e2f6;font-weight:700;'>{_pn}</div>"
                 f"  <div style='font-size:0.64rem;font-weight:800;color:{_badge_txt};'>{_ps}/{_pm}</div>"
                 f"  <div style='padding:0.08rem 0.45rem;background:{_badge_bg};border:1px solid {_badge_bdr};"
                 f"    border-radius:5px;font-size:0.6rem;font-weight:800;color:{_badge_txt};'>{_pv}</div>"
@@ -14328,7 +14328,7 @@ elif nav == "analyze":
                 f"<div style='height:5px;background:rgba(255,255,255,0.07);border-radius:3px;margin-bottom:0.22rem;'>"
                 f"  <div style='height:100%;width:{_pct_fill}%;background:{_bar_color};border-radius:3px;'></div>"
                 f"</div>"
-                f"<div style='font-size:0.62rem;color:var(--muted);line-height:1.45;'>{_pe}</div>"
+                f"<div style='font-size:0.76rem;color:var(--muted);line-height:1.5;'>{_pe}</div>"
                 f"</div>"
             )
 
@@ -14379,8 +14379,8 @@ elif nav == "analyze":
                 f"padding:0.38rem 0.65rem;background:rgba(255,255,255,0.03);border-radius:7px;"
                 f"margin-bottom:0.28rem;border:1px solid rgba(208,226,246,0.08);'>"
                 f"<div style='flex:1;'>"
-                f"  <div style='font-size:0.76rem;color:#d0e2f6;font-weight:700;'>{tname}</div>"
-                f"  <div style='font-size:0.63rem;color:var(--muted);'>{tdesc}</div>"
+                f"  <div style='font-size:0.83rem;color:#d0e2f6;font-weight:700;'>{tname}</div>"
+                f"  <div style='font-size:0.76rem;color:var(--muted);'>{tdesc}</div>"
                 f"</div>"
                 f"<div style='font-size:0.86rem;font-weight:800;color:{_t_col};white-space:nowrap;margin-left:0.5rem;'>{tval}</div>"
                 f"</div>"
