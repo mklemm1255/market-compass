@@ -796,7 +796,7 @@ def render_masthead() -> None:
                             </div>
                         </div>
                         <div class='mc-subtitle'>
-                            Income investing tools for serious traders — scanner, analysis, strategy education, and AI-powered research. A Practical Income Investing platform. · v2.0
+                            Income investing tools for serious traders — scanner, analysis, strategy education, and AI-powered research. A Practical Income Investing platform. · v2.1
                         </div>
                     </div>
                 </div>
