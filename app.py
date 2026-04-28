@@ -872,7 +872,7 @@ def analyze_matrix(ticker: str) -> pd.DataFrame:
         weekly_macd = "Bullish" if trend == "Bullish" else "Neutral"
         daily_macd = "Bullish" if row["Score"] >= 80 else "Neutral"
         hourly_rsi = "Constructive" if bias == "Bullish" else "Neutral"
-        five_min = "Pass" if row["Strategy"] == "CC & CSP" else "Neutral"
+        five_min = "Pass" if row["Strategy"] in ("Covered Call", "Cash-Secured Put") else "Neutral"
         bb = "Support zone" if bias == "Bullish" else "Middle band"
         confluence = f"{row['Confluence']} / 10"
     else:
