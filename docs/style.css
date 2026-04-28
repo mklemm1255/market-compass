@@ -532,6 +532,27 @@ nav {
   font-size: 0.72rem; color: rgba(255,255,255,0.3);
   margin: 0;
 }
+.compass-gate-label {
+  font-size: 0.82rem; font-weight: 700; color: rgba(255,255,255,0.75);
+  margin-bottom: 10px; letter-spacing: 0.02em;
+}
+.compass-gate-form {
+  display: flex; gap: 8px; width: 100%; margin-bottom: 12px;
+}
+.compass-gate-form input[type="email"] {
+  flex: 1; padding: 11px 14px; border-radius: 8px;
+  border: 1px solid rgba(109,192,64,0.4);
+  background: rgba(255,255,255,0.07); color: #fff;
+  font-size: 0.85rem; font-family: 'Montserrat', sans-serif; outline: none;
+}
+.compass-gate-form input[type="email"]::placeholder { color: rgba(255,255,255,0.35); }
+.compass-gate-form input[type="email"]:focus { border-color: var(--green); }
+.compass-gate-form .btn { white-space: nowrap; padding: 11px 18px; font-size: 0.78rem; border-radius: 8px; }
+.compass-skip {
+  color: rgba(255,255,255,0.3); text-decoration: underline; font-size: 0.72rem;
+  transition: color 0.2s;
+}
+.compass-skip:hover { color: var(--green); }
 
 /* ── FOOTER ── */
 footer {
