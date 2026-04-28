@@ -13737,12 +13737,14 @@ _NAV_ITEMS = [
      "Visual payoff diagrams for any option structure.\nMap your risk, reward, and breakeven before you place the trade."),
     ("radar",    "🤖", "Ask RADAR",        "AI research assistant",
      "Ask RADAR anything about strategies, setups, market conditions,\nor how to interpret scanner output.\nPowered by AI trained on Practical Income Investing methodology."),
+    ("indicators", "📈", "TV Indicators",    "PII TradingView tools",
+     "Proprietary TradingView indicators built for Practical Income Investing.\nVisual signals designed around the PII methodology.\nRequest access to add them to your TradingView account."),
 ]
 if "mc_nav" not in st.session_state:
     st.session_state["mc_nav"] = "scanner"
 
 # ── Navigation buttons (5 big prominent tabs) ───────────────────────────
-_nav_cols = st.columns(5, gap="small")
+_nav_cols = st.columns(6, gap="small")
 for _ci, (_col, (_key, _icon, _label, _sub, _tip)) in enumerate(zip(_nav_cols, _NAV_ITEMS)):
     with _col:
         _is_active = st.session_state["mc_nav"] == _key
