@@ -919,6 +919,31 @@ def enrich_scanner_df(df: pd.DataFrame) -> pd.DataFrame:
         work["MACD Zero"] = work["Ticker"].map(lambda t: TECHNICAL_SHELL.get(t, {}).get("MACD Zero", "Above"))
     if "Bollinger" not in work.columns:
         work["Bollinger"] = work["Ticker"].map(lambda t: TECHNICAL_SHELL.get(t, {}).get("Bollinger", "Mid Band"))
+
+    def _compute_strike(row):
+        price = float(row["Price"])
+        delta = float(row.get("Delta", 0.25))
+        strat = row["Strategy"]
+        if price < 20:   step = 0.5
+        elif price < 50:  step = 1
+        elif price < 200: step = 2.5
+        else:             step = 5
+        if strat in ("Covered Call", "Buy-Write"):
+            raw = price + price * max(0, 0.30 - delta) * 0.9
+        elif strat == "Cash-Secured Put":
+            raw = price - price * max(0, 0.30 - delta) * 0.9
+        elif strat == "Credit Spread":
+            raw = price - price * max(0, 0.25 - delta) * 0.8
+        elif strat in ("Buy Call", "LEAPS"):
+            raw = price * (1 + max(0, delta - 0.40) * 0.5 + 0.01)
+        elif strat == "Buy Put":
+            raw = price * (1 - max(0, delta - 0.40) * 0.5 - 0.01)
+        else:
+            return "—"
+        val = round(raw / step) * step
+        return f"${val:,.0f}" if val >= 10 else f"${val:.1f}"
+
+    work["Strike"] = work.apply(_compute_strike, axis=1)
     return work
 
 
