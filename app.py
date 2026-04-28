@@ -739,27 +739,36 @@ def inject_styles() -> None:
         .sc-conv-developing{color:#777;   font-weight:500; font-size:0.75rem; letter-spacing:0.04em; }
         .sc-table-wrap { max-height:390px; overflow-y:auto; border-radius:6px; }
         /* ── Result cards ───────────────────────────────────────────────── */
-        .sc-cards-wrap { max-height:560px; overflow-y:auto; padding-right:4px; }
-        .sc-cards-wrap::-webkit-scrollbar { width:4px; }
-        .sc-cards-wrap::-webkit-scrollbar-track { background:rgba(255,255,255,0.02); }
-        .sc-cards-wrap::-webkit-scrollbar-thumb { background:rgba(108,192,64,0.45); border-radius:3px; }
-        .sc-result-card {
-            display:flex; align-items:center; gap:0.9rem;
-            padding:0.7rem 1rem; margin-bottom:0.45rem;
+        /* ── Scanner result grid ───────────────────────────────────────── */
+        .sc-grid-wrap { max-height:580px; overflow-y:auto; overflow-x:auto; }
+        .sc-grid-wrap::-webkit-scrollbar { width:5px; height:5px; }
+        .sc-grid-wrap::-webkit-scrollbar-track { background:rgba(255,255,255,0.02); }
+        .sc-grid-wrap::-webkit-scrollbar-thumb { background:rgba(108,192,64,0.45); border-radius:3px; }
+        .sc-grid-inner { min-width:900px; }
+        .sc-grid-hdr {
+            display:grid;
+            grid-template-columns:72px 68px 1.6fr 1.3fr 1.2fr 1.6fr 1fr 0.9fr 1fr 0.8fr 1.1fr 1fr 1.4fr 1fr;
+            gap:0 0.55rem; padding:0.4rem 1rem;
+            background:rgba(6,14,28,0.97);
+            border:1px solid rgba(108,192,64,0.25); border-radius:8px;
+            position:sticky; top:0; z-index:10; margin-bottom:0.4rem;
+        }
+        .sc-grid-row {
+            display:grid;
+            grid-template-columns:72px 68px 1.6fr 1.3fr 1.2fr 1.6fr 1fr 0.9fr 1fr 0.8fr 1.1fr 1fr 1.4fr 1fr;
+            gap:0 0.55rem; padding:0.6rem 1rem;
             background:rgba(13,25,48,0.65);
             border:1px solid rgba(208,226,246,0.1);
-            border-radius:10px; cursor:help;
+            border-radius:10px; margin-bottom:0.38rem;
+            align-items:center; cursor:help;
             transition:border-color 0.15s, background 0.15s;
         }
-        .sc-result-card:hover { border-color:rgba(108,192,64,0.4); background:rgba(13,25,48,0.85); }
-        .sc-card-id { min-width:56px; }
-        .sc-card-ticker { font-size:1.2rem; font-weight:900; color:#d0e2f6; letter-spacing:0.04em; }
-        .sc-card-price  { font-size:0.75rem; color:var(--muted); margin-top:0.05rem; }
-        .sc-card-stats  { display:flex; flex:1; gap:0.35rem 1.1rem; flex-wrap:wrap; align-items:center; }
-        .sc-stat        { display:flex; flex-direction:column; }
-        .sc-stat-lbl    { font-size:0.62rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.07em; }
-        .sc-stat-val    { font-size:0.92rem; color:#d0e2f6; font-weight:700; margin-top:0.05rem; }
-        .sc-card-badge  { display:flex; align-items:center; }
+        .sc-grid-row:hover { border-color:rgba(108,192,64,0.4); background:rgba(13,25,48,0.85); }
+        .sc-col-hdr { font-size:0.58rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.07em; white-space:nowrap; }
+        .sc-col-ticker { font-size:1.05rem; font-weight:900; color:#d0e2f6; letter-spacing:0.03em; }
+        .sc-col-price  { font-size:0.82rem; color:var(--muted); font-weight:600; }
+        .sc-col-val    { font-size:0.88rem; color:#d0e2f6; font-weight:700; white-space:nowrap; }
+        .sc-col-accent { font-size:0.88rem; color:#6DC040; font-weight:700; white-space:nowrap; }
         .sc-table-wrap::-webkit-scrollbar { width:4px; }
         .sc-table-wrap::-webkit-scrollbar-track { background:rgba(255,255,255,0.02); }
         .sc-table-wrap::-webkit-scrollbar-thumb { background:rgba(108,192,64,0.45); border-radius:3px; }
@@ -13704,7 +13713,26 @@ if nav == "scanner":
             f"{_scroll_note} · Hover any card for score breakdown</div>"
         )
 
-        _cards_html = ""
+        _GC = "72px 68px 1.6fr 1.3fr 1.2fr 1.6fr 1fr 0.9fr 1fr 0.8fr 1.1fr 1fr 1.4fr 1fr"
+        _hdr_html = (
+            f"<div class='sc-grid-hdr'>"
+            f"<div class='sc-col-hdr'>Ticker</div>"
+            f"<div class='sc-col-hdr'>Price</div>"
+            f"<div class='sc-col-hdr'>Score</div>"
+            f"<div class='sc-col-hdr'>Setup</div>"
+            f"<div class='sc-col-hdr'>RSI</div>"
+            f"<div class='sc-col-hdr'>Strike &middot; Prem</div>"
+            f"<div class='sc-col-hdr'>&Delta; &middot; DTE</div>"
+            f"<div class='sc-col-hdr'>IV Rank</div>"
+            f"<div class='sc-col-hdr'>Ann. Yield</div>"
+            f"<div class='sc-col-hdr'>POP</div>"
+            f"<div class='sc-col-hdr'>Breakeven</div>"
+            f"<div class='sc-col-hdr'>Dist. OTM</div>"
+            f"<div class='sc-col-hdr'>Confluence Score</div>"
+            f"<div class='sc-col-hdr'>Conviction</div>"
+            f"</div>"
+        )
+        _rows_html = ""
         for _, _r in _sc_df.iterrows():
             _r_cv     = conviction_label(int(_r["Score"]))
             _r_col    = _cv_colors.get(_r_cv, "#aaa")
@@ -13734,55 +13762,34 @@ if nav == "scanner":
                 else:
                     _r_dist = f"-{abs((_r_price_f-_r_sk_n)/_r_price_f*100):.1f}%"
             except Exception:
-                _r_be   = "—"
-                _r_dist = "—"
+                _r_be = "—"; _r_dist = "—"
             _r_tip = (
                 f"Score: {int(_r['Score'])} · {_r_cv} | "
                 f"Confluence: {int(_r['Confluence'])}/10 aligned | "
-                f"Bollinger: {_r['Bollinger']} | "
-                f"RSI: {_r['RSI State']} | "
-                f"IV Rank: {int(_r['IV Rank'])}% | "
-                f"Trend: {_r['Trend']} | "
+                f"Bollinger: {_r['Bollinger']} | RSI: {_r['RSI State']} | "
+                f"IV Rank: {int(_r['IV Rank'])}% | Trend: {_r['Trend']} | "
                 f"Liquidity: {_r['Liquidity']}"
             ).replace('"','&quot;').replace("'","&#39;")
-            _r_chip_c = _cv_chip_c.get(_r_cv, "gray")
-            _r_chip   = chip(_r_cv, _r_chip_c)
-
-            _cards_html += (
-                f"<div class='sc-result-card mc-tip' data-tip='{_r_tip}'>"
-                f"<div class='sc-card-id'>"
-                f"  <div class='sc-card-ticker'>{_r['Ticker']}</div>"
-                f"  <div class='sc-card-price'>{format_price(float(_r['Price']))}</div>"
-                f"</div>"
-                f"<div class='sc-card-stats'>"
-                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Score</div>"
-                f"    <div class='sc-stat-val' style='color:{_r_col}'>{int(_r['Score'])} · {_r_cv}</div></div>"
-                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Setup</div>"
-                f"    <div class='sc-stat-val'>{_r['Bollinger']}</div></div>"
-                f"  <div class='sc-stat'><div class='sc-stat-lbl'>RSI</div>"
-                f"    <div class='sc-stat-val'>{_r['RSI State']}</div></div>"
-                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Strike / Prem</div>"
-                f"    <div class='sc-stat-val'>{_r_strike} &middot; {_r_prem}</div></div>"
-                f"  <div class='sc-stat'><div class='sc-stat-lbl'>&Delta; &middot; DTE</div>"
-                f"    <div class='sc-stat-val'>{_r_delt} &middot; {_r_dte_i}d</div></div>"
-                f"  <div class='sc-stat'><div class='sc-stat-lbl'>IV Rank</div>"
-                f"    <div class='sc-stat-val'>{int(_r['IV Rank'])}%</div></div>"
-                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Ann. Yield</div>"
-                f"    <div class='sc-stat-val' style='color:#6DC040'>{_r_ann}</div></div>"
-                f"  <div class='sc-stat'><div class='sc-stat-lbl'>POP</div>"
-                f"    <div class='sc-stat-val'>{_r_pop}</div></div>"
-                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Breakeven</div>"
-                f"    <div class='sc-stat-val'>{_r_be}</div></div>"
-                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Dist. OTM</div>"
-                f"    <div class='sc-stat-val'>{_r_dist}</div></div>"
-                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Conf.</div>"
-                f"    <div class='sc-stat-val'>{int(_r['Confluence'])}/10</div></div>"
-                f"</div>"
-                f"<div class='sc-card-badge'>{_r_chip}</div>"
+            _r_chip = chip(_r_cv, _cv_chip_c.get(_r_cv,"gray"))
+            _rows_html += (
+                f"<div class='sc-grid-row mc-tip' data-tip='{_r_tip}'>"
+                f"<div class='sc-col-ticker'>{_r['Ticker']}</div>"
+                f"<div class='sc-col-price'>{format_price(float(_r['Price']))}</div>"
+                f"<div class='sc-col-val' style='color:{_r_col}'>{int(_r['Score'])} · {_r_cv}</div>"
+                f"<div class='sc-col-val'>{_r['Bollinger']}</div>"
+                f"<div class='sc-col-val'>{_r['RSI State']}</div>"
+                f"<div class='sc-col-val'>{_r_strike} &middot; {_r_prem}</div>"
+                f"<div class='sc-col-val'>{_r_delt} &middot; {_r_dte_i}d</div>"
+                f"<div class='sc-col-val'>{int(_r['IV Rank'])}%</div>"
+                f"<div class='sc-col-accent'>{_r_ann}</div>"
+                f"<div class='sc-col-val'>{_r_pop}</div>"
+                f"<div class='sc-col-val'>{_r_be}</div>"
+                f"<div class='sc-col-val'>{_r_dist}</div>"
+                f"<div class='sc-col-val'>{int(_r['Confluence'])}/10</div>"
+                f"<div>{_r_chip}</div>"
                 f"</div>"
             )
-
-        render_html(f"<div class='sc-cards-wrap'>{_cards_html}</div>")
+        render_html(f"<div class='sc-grid-wrap'><div class='sc-grid-inner'>{_hdr_html}{_rows_html}</div></div>")
 
         render_html(
             "<div class='mc-shell-note' style='margin-top:0.5rem;'>"
