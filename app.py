@@ -14435,18 +14435,33 @@ elif nav == "analyze":
         "Buy Put":          "Long puts provide downside protection or a bearish directional position.",
         "Stock":            "Outright share ownership — straightforward equity exposure to this company.",
     }.get(_top_strat, "Review the strategy scorecard for the full picture.")
+    # Combine fundamental + technical for composite verdict
+    _fund_total_v   = _eng["total_score"]
+    _fund_verdict_v = _eng["overall_verdict"]
+    _fund_action_v  = _eng["action_label"]
+    _combo_score = int((_fund_total_v + _top_score) / 2)
+    _combo_color = "#6DC040" if _combo_score >= 75 else ("#f0c040" if _combo_score >= 55 else "#ff6b6b")
+    _combo_read  = (
+        "Strong conviction — fundamentals and technicals aligned" if _combo_score >= 75 else
+        "Moderate setup — some conditions favor a trade" if _combo_score >= 55 else
+        "Proceed with caution — mixed signals across both lenses"
+    )
     render_html(
         f"<div style='padding:0.75rem 1.1rem;background:rgba(13,25,48,0.7);"
         f"border:1px solid rgba(208,226,246,0.12);border-radius:10px;"
-        f"border-left:3px solid {_verdict_color};'>"
-        f"<div style='font-size:0.62rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
-        f"letter-spacing:0.09em;margin-bottom:0.35rem;'>Overall Verdict &middot; {ticker}</div>"
+        f"border-left:3px solid {_combo_color};'>"
+        f"<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem;'>"
+        f"  <div style='font-size:0.62rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
+        f"  letter-spacing:0.09em;'>Overall Verdict &middot; {ticker}</div>"
+        f"  <div style='font-size:0.65rem;color:{_combo_color};font-weight:800;'>"
+        f"  Fund {_fund_total_v} &middot; Tech {_top_score} &middot; "
+        f"  Composite <span style='font-size:0.9rem'>{_combo_score}</span>/100</div>"
+        f"</div>"
         f"<div style='font-size:0.86rem;color:#d0e2f6;line-height:1.65;'>"
-        f"The current technical setup gives <strong>{ticker}</strong> a signal score of "
-        f"<strong style='color:{_verdict_color}'>{_top_score} ({_verdict_read})</strong>. "
+        f"<strong>{ticker}</strong> scores <strong style='color:{_combo_color}'>{_combo_score}/100</strong> "
+        f"on a combined fundamental + technical read. {_combo_read}. "
         f"The strongest strategy fit is <strong>{_top_strat}</strong>. {_strat_note} "
-        f"Once your 7 fundamental principles are scored against this company, the verdict will reflect "
-        f"both sides — fundamental conviction plus technical timing — for a complete picture."
+        f"PII Action: <strong style='color:{_combo_color}'>{_fund_action_v}</strong>."
         f"</div>"
         f"</div>"
     )
