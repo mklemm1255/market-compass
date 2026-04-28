@@ -13861,9 +13861,10 @@ elif nav == "analyze":
             </div>
             """
         )
+
         close_panel()
 
-elif nav == "learn":
+elif nav == "Learn":
     top = st.columns([0.85, 1.55], gap="large")
     with top[0]:
         open_panel("Learning Portal", "Strategy-first education", "Strategy-first education for income investors.")
@@ -13910,7 +13911,7 @@ elif nav == "learn":
             open_panel(title, "Learning structure", desc)
             close_panel()
 
-elif nav == "delta":
+elif nav == "DELTA":
     render_delta_v49_module()
 
 else:
