@@ -72,6 +72,37 @@ def render_tradingview_chart(ticker: str, height: int = 430) -> None:
     components.html(tv_html, height=height + 10)
 
 
+# ── Tooltip style injector (runs in parent window) ────────────────────────
+def inject_tooltip_styles():
+    components.html("""
+    <script>
+    (function() {
+        function styleTooltips() {
+            try {
+                var doc = window.parent.document;
+                // Brighten all help icons
+                var icons = doc.querySelectorAll('[data-testid="tooltipHoverTarget"]');
+                icons.forEach(function(btn) {
+                    btn.style.setProperty('filter', 'brightness(0) invert(1)', 'important');
+                    btn.style.setProperty('opacity', '1', 'important');
+                });
+                // Style tooltip popups when they appear
+                var tooltips = doc.querySelectorAll('[data-baseweb="tooltip"] [role="tooltip"], [data-baseweb="popover"] div');
+                tooltips.forEach(function(t) {
+                    t.style.setProperty('background', '#ffffff', 'important');
+                    t.style.setProperty('color', '#000000', 'important');
+                });
+            } catch(e) {}
+        }
+        // Run immediately and watch for new elements
+        styleTooltips();
+        setInterval(styleTooltips, 800);
+        var obs = new MutationObserver(styleTooltips);
+        try { obs.observe(window.parent.document.body, {childList:true, subtree:true}); } catch(e) {}
+    })();
+    </script>
+    """, height=0)
+
 # ═══════════════════════════════════════════════════════════════════════════
 #  PII — 7 FUNDAMENTAL PRINCIPLES SCORING ENGINE
 # ═══════════════════════════════════════════════════════════════════════════
