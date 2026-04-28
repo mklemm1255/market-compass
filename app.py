@@ -80,23 +80,58 @@ def inject_tooltip_styles():
         function styleTooltips() {
             try {
                 var doc = window.parent.document;
-                // Brighten all help icons
+
+                // ── Brighten help icons ────────────────────────────────────
                 var icons = doc.querySelectorAll('[data-testid="tooltipHoverTarget"]');
                 icons.forEach(function(btn) {
                     btn.style.setProperty('filter', 'brightness(0) invert(1)', 'important');
                     btn.style.setProperty('opacity', '1', 'important');
                 });
-                // Style tooltip popups when they appear
-                var tooltips = doc.querySelectorAll('[data-baseweb="tooltip"] [role="tooltip"], [data-baseweb="popover"] div');
-                tooltips.forEach(function(t) {
-                    t.style.setProperty('background', '#ffffff', 'important');
-                    t.style.setProperty('color', '#000000', 'important');
+
+                // ── Style tooltip popup containers + ALL descendants ───────
+                // Streamlit renders tooltips in a portal at body level.
+                // We must explicitly walk every child to override inherited gray.
+                var containers = doc.querySelectorAll(
+                    '[data-baseweb="tooltip"], [role="tooltip"], ' +
+                    '[data-baseweb="popover"] > div, ' +
+                    '[data-testid="stTooltipContent"]'
+                );
+                containers.forEach(function(container) {
+                    container.style.setProperty('background-color', '#ffffff', 'important');
+                    container.style.setProperty('background',       '#ffffff', 'important');
+                    container.style.setProperty('color',            '#111111', 'important');
+                    // Walk every child and force color black
+                    var kids = container.querySelectorAll('*');
+                    kids.forEach(function(el) {
+                        el.style.setProperty('color', '#111111', 'important');
+                        // Keep backgrounds transparent so the white box shows through
+                        var tag = el.tagName;
+                        if (tag !== 'BUTTON' && tag !== 'A') {
+                            el.style.setProperty('background-color', 'transparent', 'important');
+                            el.style.setProperty('background',       'transparent', 'important');
+                        }
+                    });
                 });
+
+                // ── Also inject a <style> tag in parent for extra coverage ─
+                if (!doc.getElementById('pii-tooltip-override')) {
+                    var s = doc.createElement('style');
+                    s.id = 'pii-tooltip-override';
+                    s.textContent = [
+                        '[data-baseweb="tooltip"],[role="tooltip"],[data-testid="stTooltipContent"]',
+                        '{background:#fff!important;background-color:#fff!important;color:#111!important;}',
+                        '[data-baseweb="tooltip"] *,[role="tooltip"] *,[data-testid="stTooltipContent"] *',
+                        '{color:#111!important;}'
+                    ].join('');
+                    doc.head.appendChild(s);
+                }
             } catch(e) {}
         }
-        // Run immediately and watch for new elements
+
+        // Fire immediately, then every 200 ms (faster than 800 so tooltip is caught)
         styleTooltips();
-        setInterval(styleTooltips, 800);
+        setInterval(styleTooltips, 200);
+        // Also fire on any DOM mutation (tooltip portal insertion)
         var obs = new MutationObserver(styleTooltips);
         try { obs.observe(window.parent.document.body, {childList:true, subtree:true}); } catch(e) {}
     })();
