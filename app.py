@@ -31,37 +31,78 @@ st.set_page_config(page_title="Market Compass", page_icon="🧭", layout="wide")
 # ---------------------------
 
 SCANNER_ROWS = [
-    # ── Covered Call (near upper band, elevated RSI — sell calls against long stock) ──
-    {"Ticker": "NVDA", "Strategy": "Covered Call", "Bias": "Bullish", "Price": 878, "Premium": 9.10, "Delta": 0.27, "DTE": 14, "IV Rank": 63, "Liquidity": "Excellent", "Confluence": 9, "Trend": "Bullish", "Bollinger": "Upper Band",  "RSI State": "Overbought", "Score": 93, "Note": "Extended into upper band on strong trend — ideal covered call timing."},
-    {"Ticker": "AMZN", "Strategy": "Covered Call", "Bias": "Bullish", "Price": 196, "Premium": 2.30, "Delta": 0.24, "DTE": 14, "IV Rank": 44, "Liquidity": "Excellent", "Confluence": 7, "Trend": "Bullish", "Bollinger": "Upper Half", "RSI State": "Neutral",    "Score": 82, "Note": "Steady push into upper half — controlled call premium opportunity."},
-    {"Ticker": "QQQ",  "Strategy": "Covered Call", "Bias": "Bullish", "Price": 456, "Premium": 5.10, "Delta": 0.25, "DTE": 21, "IV Rank": 37, "Liquidity": "Excellent", "Confluence": 7, "Trend": "Bullish", "Bollinger": "Upper Half", "RSI State": "Neutral",    "Score": 80, "Note": "Index momentum in upper half — clean buy-write or CC premium."},
-    {"Ticker": "HOOD", "Strategy": "Covered Call", "Bias": "Bullish", "Price": 29.40,"Premium": 0.92, "Delta": 0.26, "DTE": 14, "IV Rank": 68, "Liquidity": "Good",      "Confluence": 7, "Trend": "Bullish", "Bollinger": "Upper Band",  "RSI State": "Overbought", "Score": 85, "Note": "Rich IV and strong momentum — elevated CC premium available."},
-    # ── Cash-Secured Put (near lower band, oversold — sell puts to buy the dip) ──
-    {"Ticker": "NVDA", "Strategy": "Cash-Secured Put", "Bias": "Bullish", "Price": 832, "Premium": 8.40, "Delta": 0.22, "DTE": 21, "IV Rank": 63, "Liquidity": "Excellent", "Confluence": 9, "Trend": "Bullish", "Bollinger": "Lower Band",  "RSI State": "Oversold",   "Score": 94, "Note": "High-conviction CSP at key technical support — premium justifies the risk."},
-    {"Ticker": "AMD",  "Strategy": "Cash-Secured Put", "Bias": "Bullish", "Price": 159, "Premium": 2.60, "Delta": 0.22, "DTE": 21, "IV Rank": 58, "Liquidity": "Excellent", "Confluence": 8, "Trend": "Bullish", "Bollinger": "Lower Band",  "RSI State": "Oversold",   "Score": 88, "Note": "Pullback to prior demand zone — strong CSP setup with clean support."},
-    {"Ticker": "SOFI", "Strategy": "Cash-Secured Put", "Bias": "Bullish", "Price": 9.10,"Premium": 0.29, "Delta": 0.25, "DTE": 30, "IV Rank": 71, "Liquidity": "Good",      "Confluence": 7, "Trend": "Bullish", "Bollinger": "Lower Band",  "RSI State": "Oversold",   "Score": 83, "Note": "Oversold at prior support with elevated IV — attractive CSP premium."},
-    {"Ticker": "HOOD", "Strategy": "Cash-Secured Put", "Bias": "Bullish", "Price": 26.80,"Premium": 0.84, "Delta": 0.24, "DTE": 21, "IV Rank": 68, "Liquidity": "Good",    "Confluence": 7, "Trend": "Bullish", "Bollinger": "Lower Band",  "RSI State": "Oversold",   "Score": 82, "Note": "Testing prior support on oversold RSI — put-selling zone."},
-    # ── Credit Spread (mid band, neutral RSI — defined-risk swing premium) ──
-    {"Ticker": "META", "Strategy": "Credit Spread", "Bias": "Bullish", "Price": 516, "Premium": 6.20, "Delta": 0.18, "DTE": 35, "IV Rank": 45, "Liquidity": "Excellent", "Confluence": 7, "Trend": "Bullish", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 86, "Note": "Bull put spread candidate — controlled swing with defined max loss."},
-    {"Ticker": "IWM",  "Strategy": "Credit Spread", "Bias": "Neutral", "Price": 209, "Premium": 2.50, "Delta": 0.20, "DTE": 30, "IV Rank": 47, "Liquidity": "Excellent", "Confluence": 6, "Trend": "Neutral", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 74, "Note": "Range-bound index — spread structure preferred over naked short."},
-    {"Ticker": "AMZN", "Strategy": "Credit Spread", "Bias": "Bullish", "Price": 196, "Premium": 2.10, "Delta": 0.17, "DTE": 30, "IV Rank": 44, "Liquidity": "Excellent", "Confluence": 6, "Trend": "Bullish", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 78, "Note": "Mid-band stability makes defined-risk premium cleaner here."},
-    # ── LEAPS (long-duration bullish thesis — buy time, buy delta) ──
-    {"Ticker": "TSLA", "Strategy": "LEAPS", "Bias": "Bullish", "Price": 182, "Premium": 28.50, "Delta": 0.52, "DTE": 365, "IV Rank": 74, "Liquidity": "Excellent", "Confluence": 6, "Trend": "Bullish", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 78, "Note": "Long-thesis name — duration and delta matter more than short-dated calm."},
-    {"Ticker": "NVDA", "Strategy": "LEAPS", "Bias": "Bullish", "Price": 855, "Premium": 95.40,"Delta": 0.60, "DTE": 365, "IV Rank": 63, "Liquidity": "Excellent", "Confluence": 8, "Trend": "Bullish", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 87, "Note": "AI leadership thesis supports long-duration call exposure."},
-    # ── Buy-Write (own the stock, collect call premium, cap upside willingly) ──
-    {"Ticker": "AAPL", "Strategy": "Buy-Write", "Bias": "Neutral", "Price": 210, "Premium": 2.30, "Delta": 0.28, "DTE": 30, "IV Rank": 32, "Liquidity": "Excellent", "Confluence": 6, "Trend": "Neutral", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 77, "Note": "Low-IV name — buy-write earns better risk-adjusted income than pure CC."},
-    {"Ticker": "QQQ",  "Strategy": "Buy-Write", "Bias": "Neutral", "Price": 456, "Premium": 4.80, "Delta": 0.25, "DTE": 30, "IV Rank": 37, "Liquidity": "Excellent", "Confluence": 7, "Trend": "Bullish", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 83, "Note": "Stable index buy-write — strong liquidity, steady income, index safety."},
-    # ── Buy Call (dip into support, buy directional call) ──
-    {"Ticker": "NVDA", "Strategy": "Buy Call", "Bias": "Bullish", "Price": 832, "Premium": 11.20,"Delta": 0.45, "DTE": 45, "IV Rank": 63, "Liquidity": "Excellent", "Confluence": 8, "Trend": "Bullish", "Bollinger": "Lower Band", "RSI State": "Oversold", "Score": 88, "Note": "Dip to support with oversold RSI — high-quality long call entry."},
-    {"Ticker": "AMD",  "Strategy": "Buy Call", "Bias": "Bullish", "Price": 159, "Premium": 4.10, "Delta": 0.42, "DTE": 45, "IV Rank": 58, "Liquidity": "Excellent", "Confluence": 7, "Trend": "Bullish", "Bollinger": "Lower Band", "RSI State": "Oversold", "Score": 81, "Note": "Pullback to demand zone — favorable long call risk/reward."},
-    {"Ticker": "SOFI", "Strategy": "Buy Call", "Bias": "Bullish", "Price": 9.10, "Premium": 0.52, "Delta": 0.40, "DTE": 45, "IV Rank": 71, "Liquidity": "Good",      "Confluence": 6, "Trend": "Bullish", "Bollinger": "Lower Band", "RSI State": "Oversold", "Score": 74, "Note": "Speculative long call at oversold support — high IV means buy carefully."},
-    # ── Buy Put (extended into resistance, overbought — buy downside protection or direction) ──
-    {"Ticker": "SPY",  "Strategy": "Buy Put", "Bias": "Bearish", "Price": 548, "Premium": 5.60, "Delta": 0.38, "DTE": 30, "IV Rank": 36, "Liquidity": "Excellent", "Confluence": 5, "Trend": "Neutral", "Bollinger": "Upper Band", "RSI State": "Overbought", "Score": 73, "Note": "Extended index — protective put or directional bearish play."},
-    {"Ticker": "TSLA", "Strategy": "Buy Put", "Bias": "Bearish", "Price": 186, "Premium": 6.80, "Delta": 0.40, "DTE": 30, "IV Rank": 74, "Liquidity": "Excellent", "Confluence": 5, "Trend": "Bearish", "Bollinger": "Upper Band", "RSI State": "Overbought", "Score": 70, "Note": "Momentum fading at upper band — long put candidate for downside exposure."},
-    # ── Stock (clean dip into support — direct share entry) ──
-    {"Ticker": "AMD",  "Strategy": "Stock", "Bias": "Bullish", "Price": 159, "Premium": 0, "Delta": 1.00, "DTE": 0, "IV Rank": 58, "Liquidity": "Excellent", "Confluence": 8, "Trend": "Bullish", "Bollinger": "Lower Band", "RSI State": "Oversold", "Score": 84, "Note": "Strong pullback to demand zone — high-quality stock accumulation entry."},
-    {"Ticker": "SOFI", "Strategy": "Stock", "Bias": "Bullish", "Price": 9.10, "Premium": 0, "Delta": 1.00, "DTE": 0, "IV Rank": 71, "Liquidity": "Good",      "Confluence": 6, "Trend": "Bullish", "Bollinger": "Lower Band", "RSI State": "Oversold", "Score": 76, "Note": "Oversold bounce setup at prior support — speculative stock entry."},
-    {"Ticker": "NVDA", "Strategy": "Stock", "Bias": "Bullish", "Price": 832, "Premium": 0, "Delta": 1.00, "DTE": 0, "IV Rank": 63, "Liquidity": "Excellent", "Confluence": 9, "Trend": "Bullish", "Bollinger": "Lower Band", "RSI State": "Oversold", "Score": 91, "Note": "Institutional-quality dip — strong stock entry at high-conviction support."},
+    # ── Covered Call ────────────────────────────────────────────────────────
+    {"Ticker":"NVDA",  "Strategy":"Covered Call","Bias":"Bullish","Price":878,  "Premium":9.10, "Delta":0.27,"DTE":14, "IV Rank":63,"Liquidity":"Excellent","Confluence":9,"Trend":"Bullish","Bollinger":"Upper Band", "RSI State":"Overbought","Score":93,"Note":"Extended into upper band on strong trend — ideal covered call timing."},
+    {"Ticker":"META",  "Strategy":"Covered Call","Bias":"Bullish","Price":521,  "Premium":6.80, "Delta":0.26,"DTE":14, "IV Rank":47,"Liquidity":"Excellent","Confluence":8,"Trend":"Bullish","Bollinger":"Upper Band", "RSI State":"Overbought","Score":88,"Note":"Momentum at upper band with elevated IV — strong CC premium window."},
+    {"Ticker":"PLTR",  "Strategy":"Covered Call","Bias":"Bullish","Price":93,   "Premium":2.90, "Delta":0.28,"DTE":14, "IV Rank":71,"Liquidity":"Excellent","Confluence":8,"Trend":"Bullish","Bollinger":"Upper Band", "RSI State":"Overbought","Score":87,"Note":"High IV with upper band extension — aggressive CC premium opportunity."},
+    {"Ticker":"HOOD",  "Strategy":"Covered Call","Bias":"Bullish","Price":29.4, "Premium":0.92, "Delta":0.26,"DTE":14, "IV Rank":68,"Liquidity":"Good",     "Confluence":7,"Trend":"Bullish","Bollinger":"Upper Band", "RSI State":"Overbought","Score":85,"Note":"Rich IV and strong momentum — elevated CC premium available."},
+    {"Ticker":"GOOGL", "Strategy":"Covered Call","Bias":"Bullish","Price":178,  "Premium":3.40, "Delta":0.25,"DTE":14, "IV Rank":44,"Liquidity":"Excellent","Confluence":8,"Trend":"Bullish","Bollinger":"Upper Band", "RSI State":"Overbought","Score":84,"Note":"Upper band push with clean trend — quality CC entry."},
+    {"Ticker":"NFLX",  "Strategy":"Covered Call","Bias":"Bullish","Price":1082, "Premium":22.50,"Delta":0.24,"DTE":14, "IV Rank":52,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Upper Band", "RSI State":"Overbought","Score":83,"Note":"Upper band with strong momentum — solid CC premium for size."},
+    {"Ticker":"COIN",  "Strategy":"Covered Call","Bias":"Bullish","Price":218,  "Premium":7.60, "Delta":0.27,"DTE":14, "IV Rank":78,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Upper Band", "RSI State":"Overbought","Score":82,"Note":"Very high IV at upper band — substantial CC premium but respect volatility."},
+    {"Ticker":"MSFT",  "Strategy":"Covered Call","Bias":"Bullish","Price":417,  "Premium":5.80, "Delta":0.23,"DTE":21, "IV Rank":38,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Upper Half","RSI State":"Neutral",   "Score":81,"Note":"Steady push into upper half — controlled CC income opportunity."},
+    {"Ticker":"AMZN",  "Strategy":"Covered Call","Bias":"Bullish","Price":196,  "Premium":2.30, "Delta":0.24,"DTE":14, "IV Rank":44,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Upper Half","RSI State":"Neutral",   "Score":82,"Note":"Steady push into upper half — controlled call premium opportunity."},
+    {"Ticker":"QQQ",   "Strategy":"Covered Call","Bias":"Bullish","Price":456,  "Premium":5.10, "Delta":0.25,"DTE":21, "IV Rank":37,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Upper Half","RSI State":"Neutral",   "Score":80,"Note":"Index momentum in upper half — clean CC or buy-write premium."},
+    {"Ticker":"ORCL",  "Strategy":"Covered Call","Bias":"Bullish","Price":169,  "Premium":2.60, "Delta":0.22,"DTE":21, "IV Rank":35,"Liquidity":"Excellent","Confluence":6,"Trend":"Bullish","Bollinger":"Upper Half","RSI State":"Neutral",   "Score":78,"Note":"Steady trend in upper half — moderate CC income with quality name."},
+    {"Ticker":"UBER",  "Strategy":"Covered Call","Bias":"Bullish","Price":79,   "Premium":1.45, "Delta":0.25,"DTE":21, "IV Rank":41,"Liquidity":"Excellent","Confluence":6,"Trend":"Bullish","Bollinger":"Upper Half","RSI State":"Neutral",   "Score":76,"Note":"Upper half grind — decent CC premium for a large-cap growth name."},
+    # ── Cash-Secured Put ─────────────────────────────────────────────────────
+    {"Ticker":"NVDA",  "Strategy":"Cash-Secured Put","Bias":"Bullish","Price":832,  "Premium":8.40, "Delta":0.22,"DTE":21,"IV Rank":63,"Liquidity":"Excellent","Confluence":9,"Trend":"Bullish","Bollinger":"Lower Band", "RSI State":"Oversold","Score":94,"Note":"High-conviction CSP at key technical support — premium justifies the risk."},
+    {"Ticker":"GOOGL", "Strategy":"Cash-Secured Put","Bias":"Bullish","Price":168,  "Premium":3.10, "Delta":0.22,"DTE":21,"IV Rank":44,"Liquidity":"Excellent","Confluence":8,"Trend":"Bullish","Bollinger":"Lower Band", "RSI State":"Oversold","Score":88,"Note":"Mega-cap quality at oversold support — strong risk/reward CSP."},
+    {"Ticker":"MSFT",  "Strategy":"Cash-Secured Put","Bias":"Bullish","Price":400,  "Premium":5.20, "Delta":0.21,"DTE":21,"IV Rank":38,"Liquidity":"Excellent","Confluence":8,"Trend":"Bullish","Bollinger":"Lower Band", "RSI State":"Oversold","Score":86,"Note":"Blue-chip dip to support — conservative CSP with quality underlying."},
+    {"Ticker":"PLTR",  "Strategy":"Cash-Secured Put","Bias":"Bullish","Price":84,   "Premium":2.60, "Delta":0.24,"DTE":21,"IV Rank":71,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Lower Band", "RSI State":"Oversold","Score":85,"Note":"Oversold at demand zone with high IV — meaningful CSP premium."},
+    {"Ticker":"AMZN",  "Strategy":"Cash-Secured Put","Bias":"Bullish","Price":187,  "Premium":2.20, "Delta":0.21,"DTE":21,"IV Rank":44,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Lower Half", "RSI State":"Oversold","Score":82,"Note":"Pullback into lower half — solid CSP entry at prior demand."},
+    {"Ticker":"AMD",   "Strategy":"Cash-Secured Put","Bias":"Bullish","Price":159,  "Premium":2.60, "Delta":0.22,"DTE":21,"IV Rank":58,"Liquidity":"Excellent","Confluence":8,"Trend":"Bullish","Bollinger":"Lower Band", "RSI State":"Oversold","Score":88,"Note":"Pullback to prior demand zone — strong CSP setup with clean support."},
+    {"Ticker":"COIN",  "Strategy":"Cash-Secured Put","Bias":"Bullish","Price":197,  "Premium":6.80, "Delta":0.25,"DTE":21,"IV Rank":78,"Liquidity":"Excellent","Confluence":6,"Trend":"Bullish","Bollinger":"Lower Band", "RSI State":"Oversold","Score":79,"Note":"High IV at support — elevated premium but higher risk; size accordingly."},
+    {"Ticker":"UBER",  "Strategy":"Cash-Secured Put","Bias":"Bullish","Price":72,   "Premium":1.30, "Delta":0.23,"DTE":21,"IV Rank":41,"Liquidity":"Excellent","Confluence":6,"Trend":"Bullish","Bollinger":"Lower Band", "RSI State":"Oversold","Score":78,"Note":"Clean pullback to demand zone — solid CSP risk/reward."},
+    {"Ticker":"SOFI",  "Strategy":"Cash-Secured Put","Bias":"Bullish","Price":9.10, "Premium":0.29, "Delta":0.25,"DTE":30,"IV Rank":71,"Liquidity":"Good",     "Confluence":7,"Trend":"Bullish","Bollinger":"Lower Band", "RSI State":"Oversold","Score":83,"Note":"Oversold at prior support with elevated IV — attractive CSP premium."},
+    {"Ticker":"HOOD",  "Strategy":"Cash-Secured Put","Bias":"Bullish","Price":26.8, "Premium":0.84, "Delta":0.24,"DTE":21,"IV Rank":68,"Liquidity":"Good",     "Confluence":7,"Trend":"Bullish","Bollinger":"Lower Band", "RSI State":"Oversold","Score":82,"Note":"Testing prior support on oversold RSI — put-selling zone."},
+    {"Ticker":"SMCI",  "Strategy":"Cash-Secured Put","Bias":"Bullish","Price":47,   "Premium":1.80, "Delta":0.26,"DTE":21,"IV Rank":82,"Liquidity":"Good",     "Confluence":6,"Trend":"Bullish","Bollinger":"Lower Band", "RSI State":"Oversold","Score":76,"Note":"Extreme IV at deep support — high premium, respect the risk profile."},
+    # ── Credit Spread ────────────────────────────────────────────────────────
+    {"Ticker":"META",  "Strategy":"Credit Spread","Bias":"Bullish","Price":516, "Premium":6.20,"Delta":0.18,"DTE":35,"IV Rank":47,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Mid Band","RSI State":"Neutral","Score":86,"Note":"Bull put spread candidate — controlled swing with defined max loss."},
+    {"Ticker":"MSFT",  "Strategy":"Credit Spread","Bias":"Bullish","Price":417, "Premium":5.10,"Delta":0.17,"DTE":35,"IV Rank":38,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Mid Band","RSI State":"Neutral","Score":83,"Note":"High-quality mid-band base — defined-risk credit spread suits the setup."},
+    {"Ticker":"GOOGL", "Strategy":"Credit Spread","Bias":"Bullish","Price":175, "Premium":3.00,"Delta":0.18,"DTE":30,"IV Rank":44,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Mid Band","RSI State":"Neutral","Score":81,"Note":"Mega-cap swing posture — defined-risk premium makes sense here."},
+    {"Ticker":"SPY",   "Strategy":"Credit Spread","Bias":"Neutral", "Price":548, "Premium":4.80,"Delta":0.16,"DTE":30,"IV Rank":34,"Liquidity":"Excellent","Confluence":7,"Trend":"Neutral","Bollinger":"Mid Band","RSI State":"Neutral","Score":79,"Note":"Index in balance — bull put spread or iron condor setup available."},
+    {"Ticker":"QQQ",   "Strategy":"Credit Spread","Bias":"Bullish","Price":456, "Premium":4.20,"Delta":0.17,"DTE":30,"IV Rank":37,"Liquidity":"Excellent","Confluence":6,"Trend":"Bullish","Bollinger":"Mid Band","RSI State":"Neutral","Score":77,"Note":"Mid-band base with index liquidity — clean credit spread candidate."},
+    {"Ticker":"AAPL",  "Strategy":"Credit Spread","Bias":"Neutral", "Price":210, "Premium":2.00,"Delta":0.16,"DTE":30,"IV Rank":32,"Liquidity":"Excellent","Confluence":6,"Trend":"Neutral","Bollinger":"Mid Band","RSI State":"Neutral","Score":77,"Note":"Low-IV name in balance — spread structure preferred over naked short."},
+    {"Ticker":"AMZN",  "Strategy":"Credit Spread","Bias":"Bullish","Price":196, "Premium":2.10,"Delta":0.17,"DTE":30,"IV Rank":44,"Liquidity":"Excellent","Confluence":6,"Trend":"Bullish","Bollinger":"Mid Band","RSI State":"Neutral","Score":78,"Note":"Mid-band stability makes defined-risk premium cleaner here."},
+    {"Ticker":"XLF",   "Strategy":"Credit Spread","Bias":"Neutral", "Price":44,  "Premium":0.52,"Delta":0.16,"DTE":30,"IV Rank":28,"Liquidity":"Excellent","Confluence":5,"Trend":"Neutral","Bollinger":"Mid Band","RSI State":"Neutral","Score":72,"Note":"Sector ETF in range — low IV favors spread structure over naked selling."},
+    {"Ticker":"IWM",   "Strategy":"Credit Spread","Bias":"Neutral", "Price":209, "Premium":2.50,"Delta":0.20,"DTE":30,"IV Rank":47,"Liquidity":"Excellent","Confluence":6,"Trend":"Neutral","Bollinger":"Mid Band","RSI State":"Neutral","Score":74,"Note":"Range-bound index — spread structure preferred over naked short."},
+    # ── LEAPS ────────────────────────────────────────────────────────────────
+    {"Ticker":"NVDA",  "Strategy":"LEAPS","Bias":"Bullish","Price":855,  "Premium":95.40,"Delta":0.60,"DTE":365,"IV Rank":63,"Liquidity":"Excellent","Confluence":8,"Trend":"Bullish","Bollinger":"Mid Band","RSI State":"Neutral","Score":87,"Note":"AI leadership thesis supports long-duration call exposure."},
+    {"Ticker":"PLTR",  "Strategy":"LEAPS","Bias":"Bullish","Price":91,   "Premium":18.20,"Delta":0.55,"DTE":365,"IV Rank":71,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Mid Band","RSI State":"Neutral","Score":83,"Note":"Defense-tech growth thesis — long call gives duration without outsized capital risk."},
+    {"Ticker":"AMD",   "Strategy":"LEAPS","Bias":"Bullish","Price":160,  "Premium":22.50,"Delta":0.52,"DTE":365,"IV Rank":58,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Mid Band","RSI State":"Neutral","Score":81,"Note":"Semiconductor share-gain thesis — LEAPS captures long-duration upside cleanly."},
+    {"Ticker":"GOOGL", "Strategy":"LEAPS","Bias":"Bullish","Price":175,  "Premium":24.80,"Delta":0.58,"DTE":365,"IV Rank":44,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Mid Band","RSI State":"Neutral","Score":80,"Note":"AI/cloud thesis with mega-cap quality — LEAPS suits the multi-quarter timeframe."},
+    {"Ticker":"TSLA",  "Strategy":"LEAPS","Bias":"Bullish","Price":182,  "Premium":28.50,"Delta":0.52,"DTE":365,"IV Rank":74,"Liquidity":"Excellent","Confluence":6,"Trend":"Bullish","Bollinger":"Mid Band","RSI State":"Neutral","Score":78,"Note":"Long-thesis name — duration and delta matter more than short-dated calm."},
+    {"Ticker":"COIN",  "Strategy":"LEAPS","Bias":"Bullish","Price":200,  "Premium":48.60,"Delta":0.58,"DTE":365,"IV Rank":78,"Liquidity":"Excellent","Confluence":5,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":75,"Note":"Crypto cycle thesis — high IV means buy LEAPS carefully; size is critical."},
+    # ── Buy-Write ────────────────────────────────────────────────────────────
+    {"Ticker":"QQQ",   "Strategy":"Buy-Write","Bias":"Neutral","Price":456, "Premium":4.80,"Delta":0.25,"DTE":30,"IV Rank":37,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Mid Band","RSI State":"Neutral","Score":83,"Note":"Stable index buy-write — strong liquidity, steady income, index safety."},
+    {"Ticker":"MSFT",  "Strategy":"Buy-Write","Bias":"Neutral","Price":417, "Premium":4.60,"Delta":0.24,"DTE":30,"IV Rank":38,"Liquidity":"Excellent","Confluence":7,"Trend":"Neutral","Bollinger":"Mid Band","RSI State":"Neutral","Score":80,"Note":"Quality name with steady price action — solid buy-write income profile."},
+    {"Ticker":"SPY",   "Strategy":"Buy-Write","Bias":"Neutral","Price":548, "Premium":5.80,"Delta":0.24,"DTE":30,"IV Rank":34,"Liquidity":"Excellent","Confluence":7,"Trend":"Neutral","Bollinger":"Mid Band","RSI State":"Neutral","Score":79,"Note":"Broadest index for buy-write income — consistent premium and max liquidity."},
+    {"Ticker":"AAPL",  "Strategy":"Buy-Write","Bias":"Neutral","Price":210, "Premium":2.30,"Delta":0.28,"DTE":30,"IV Rank":32,"Liquidity":"Excellent","Confluence":6,"Trend":"Neutral","Bollinger":"Mid Band","RSI State":"Neutral","Score":77,"Note":"Low-IV name — buy-write earns better risk-adjusted income than pure CC."},
+    {"Ticker":"GLD",   "Strategy":"Buy-Write","Bias":"Neutral","Price":298, "Premium":3.10,"Delta":0.22,"DTE":30,"IV Rank":26,"Liquidity":"Excellent","Confluence":5,"Trend":"Neutral","Bollinger":"Mid Band","RSI State":"Neutral","Score":72,"Note":"Gold ETF buy-write — inflation hedge with modest premium overlay."},
+    {"Ticker":"ORCL",  "Strategy":"Buy-Write","Bias":"Neutral","Price":169, "Premium":2.40,"Delta":0.25,"DTE":30,"IV Rank":35,"Liquidity":"Excellent","Confluence":6,"Trend":"Neutral","Bollinger":"Mid Band","RSI State":"Neutral","Score":75,"Note":"Steady enterprise name — buy-write extracts income from stable price action."},
+    # ── Buy Call ─────────────────────────────────────────────────────────────
+    {"Ticker":"NVDA",  "Strategy":"Buy Call","Bias":"Bullish","Price":832,  "Premium":11.20,"Delta":0.45,"DTE":45,"IV Rank":63,"Liquidity":"Excellent","Confluence":8,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":88,"Note":"Dip to support with oversold RSI — high-quality long call entry."},
+    {"Ticker":"PLTR",  "Strategy":"Buy Call","Bias":"Bullish","Price":84,   "Premium":5.20, "Delta":0.43,"DTE":45,"IV Rank":71,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":84,"Note":"Oversold pullback on a growth name with bullish structure — strong long call setup."},
+    {"Ticker":"GOOGL", "Strategy":"Buy Call","Bias":"Bullish","Price":168,  "Premium":5.80, "Delta":0.42,"DTE":45,"IV Rank":44,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Lower Half","RSI State":"Oversold","Score":81,"Note":"Mega-cap dip into lower half — quality long call with defined risk."},
+    {"Ticker":"AMD",   "Strategy":"Buy Call","Bias":"Bullish","Price":159,  "Premium":4.10, "Delta":0.42,"DTE":45,"IV Rank":58,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":81,"Note":"Pullback to demand zone — favorable long call risk/reward."},
+    {"Ticker":"COIN",  "Strategy":"Buy Call","Bias":"Bullish","Price":197,  "Premium":12.40,"Delta":0.42,"DTE":45,"IV Rank":78,"Liquidity":"Excellent","Confluence":6,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":78,"Note":"Crypto dip with high IV — long call captures bounce; size carefully."},
+    {"Ticker":"TSLA",  "Strategy":"Buy Call","Bias":"Bullish","Price":172,  "Premium":6.80, "Delta":0.40,"DTE":45,"IV Rank":74,"Liquidity":"Excellent","Confluence":6,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":77,"Note":"Oversold dip with bullish EV thesis — long call with 45-day runway."},
+    {"Ticker":"SOFI",  "Strategy":"Buy Call","Bias":"Bullish","Price":9.10, "Premium":0.52, "Delta":0.40,"DTE":45,"IV Rank":71,"Liquidity":"Good",     "Confluence":6,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":74,"Note":"Speculative long call at oversold support — high IV means buy carefully."},
+    {"Ticker":"MARA",  "Strategy":"Buy Call","Bias":"Bullish","Price":14.8, "Premium":1.20, "Delta":0.38,"DTE":45,"IV Rank":89,"Liquidity":"Good",     "Confluence":5,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":70,"Note":"Crypto miner deep dip — high IV, high risk; speculative long call only."},
+    # ── Buy Put ──────────────────────────────────────────────────────────────
+    {"Ticker":"SPY",   "Strategy":"Buy Put","Bias":"Bearish","Price":548, "Premium":5.60,"Delta":0.38,"DTE":30,"IV Rank":34,"Liquidity":"Excellent","Confluence":5,"Trend":"Neutral","Bollinger":"Upper Band","RSI State":"Overbought","Score":73,"Note":"Extended index — protective put or directional bearish play."},
+    {"Ticker":"QQQ",   "Strategy":"Buy Put","Bias":"Bearish","Price":463, "Premium":5.20,"Delta":0.36,"DTE":30,"IV Rank":37,"Liquidity":"Excellent","Confluence":5,"Trend":"Neutral","Bollinger":"Upper Band","RSI State":"Overbought","Score":71,"Note":"Tech-heavy index extended — put hedge makes sense at these levels."},
+    {"Ticker":"TSLA",  "Strategy":"Buy Put","Bias":"Bearish","Price":186, "Premium":6.80,"Delta":0.40,"DTE":30,"IV Rank":74,"Liquidity":"Excellent","Confluence":5,"Trend":"Bearish","Bollinger":"Upper Band","RSI State":"Overbought","Score":70,"Note":"Momentum fading at upper band — long put candidate for downside exposure."},
+    {"Ticker":"NFLX",  "Strategy":"Buy Put","Bias":"Bearish","Price":1090,"Premium":28.40,"Delta":0.35,"DTE":30,"IV Rank":52,"Liquidity":"Excellent","Confluence":4,"Trend":"Neutral","Bollinger":"Upper Band","RSI State":"Overbought","Score":68,"Note":"Stretched valuation at upper band — defined-risk put for downside capture."},
+    {"Ticker":"SMCI",  "Strategy":"Buy Put","Bias":"Bearish","Price":52,  "Premium":3.20,"Delta":0.42,"DTE":21,"IV Rank":82,"Liquidity":"Good",     "Confluence":5,"Trend":"Bearish","Bollinger":"Upper Band","RSI State":"Overbought","Score":72,"Note":"High-volatility name extended into resistance — long put with defined risk."},
+    # ── Stock ─────────────────────────────────────────────────────────────────
+    {"Ticker":"NVDA",  "Strategy":"Stock","Bias":"Bullish","Price":832,  "Premium":0,"Delta":1.00,"DTE":0,"IV Rank":63,"Liquidity":"Excellent","Confluence":9,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":91,"Note":"Institutional-quality dip — strong stock entry at high-conviction support."},
+    {"Ticker":"MSFT",  "Strategy":"Stock","Bias":"Bullish","Price":400,  "Premium":0,"Delta":1.00,"DTE":0,"IV Rank":38,"Liquidity":"Excellent","Confluence":8,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":85,"Note":"Blue-chip pullback to demand — quality accumulation zone."},
+    {"Ticker":"GOOGL", "Strategy":"Stock","Bias":"Bullish","Price":168,  "Premium":0,"Delta":1.00,"DTE":0,"IV Rank":44,"Liquidity":"Excellent","Confluence":8,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":82,"Note":"Mega-cap AI name at oversold support — strong stock accumulation thesis."},
+    {"Ticker":"PLTR",  "Strategy":"Stock","Bias":"Bullish","Price":84,   "Premium":0,"Delta":1.00,"DTE":0,"IV Rank":71,"Liquidity":"Excellent","Confluence":7,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":79,"Note":"Growth name oversold at key support — stock entry ahead of potential re-rate."},
+    {"Ticker":"AMD",   "Strategy":"Stock","Bias":"Bullish","Price":159,  "Premium":0,"Delta":1.00,"DTE":0,"IV Rank":58,"Liquidity":"Excellent","Confluence":8,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":84,"Note":"Strong pullback to demand zone — high-quality stock accumulation entry."},
+    {"Ticker":"SOFI",  "Strategy":"Stock","Bias":"Bullish","Price":9.10, "Premium":0,"Delta":1.00,"DTE":0,"IV Rank":71,"Liquidity":"Good",     "Confluence":6,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":76,"Note":"Oversold bounce setup at prior support — speculative stock entry."},
+    {"Ticker":"COIN",  "Strategy":"Stock","Bias":"Bullish","Price":197,  "Premium":0,"Delta":1.00,"DTE":0,"IV Rank":78,"Liquidity":"Excellent","Confluence":6,"Trend":"Bullish","Bollinger":"Lower Band","RSI State":"Oversold","Score":74,"Note":"Crypto correction to support — higher risk speculative stock add."},
 ]
 
 TICKER_FACTS = {
@@ -564,6 +605,25 @@ def inject_styles() -> None:
             color: var(--text); font-weight:800;
         }
         .mc-footer-note {color:var(--muted); font-size:0.82rem; text-align:center; margin-top:0.45rem;}
+        /* ── Scanner compact styles ─────────────────────────────────────── */
+        .sc-header { display:flex; align-items:baseline; gap:0.6rem; padding-bottom:0.45rem; border-bottom:1px solid rgba(208,226,246,0.12); margin-bottom:0.6rem; }
+        .sc-header-title { font-size:0.9rem; font-weight:800; color:var(--text); letter-spacing:0.06em; text-transform:uppercase; }
+        .sc-header-kicker { font-size:0.68rem; color:var(--accent); font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
+        .sc-top-bar { display:flex; align-items:center; gap:0.5rem; padding:0.38rem 0.7rem; background:rgba(108,192,64,0.07); border-left:2px solid var(--accent); border-radius:0 5px 5px 0; margin-bottom:0.55rem; flex-wrap:wrap; font-size:0.8rem; }
+        .sc-top-ticker { font-size:1.0rem; font-weight:900; color:var(--text); letter-spacing:0.05em; }
+        .sc-top-label { color:var(--muted); font-weight:500; font-size:0.72rem; }
+        .sc-top-val { color:var(--text); font-weight:700; font-size:0.8rem; }
+        .sc-top-note { color:var(--muted); font-size:0.72rem; font-style:italic; }
+        .sc-top-div { color:rgba(255,255,255,0.18); font-size:0.9rem; }
+        .sc-conv-elite    { color:#6DC040; font-weight:800; font-size:0.75rem; letter-spacing:0.04em; }
+        .sc-conv-strong   { color:#4db8ff; font-weight:700; font-size:0.75rem; letter-spacing:0.04em; }
+        .sc-conv-solid    { color:#f0c040; font-weight:700; font-size:0.75rem; letter-spacing:0.04em; }
+        .sc-conv-moderate { color:#aaa;    font-weight:600; font-size:0.75rem; letter-spacing:0.04em; }
+        .sc-conv-developing{color:#777;   font-weight:500; font-size:0.75rem; letter-spacing:0.04em; }
+        .sc-table-wrap { max-height:390px; overflow-y:auto; border-radius:6px; }
+        .sc-table-wrap::-webkit-scrollbar { width:4px; }
+        .sc-table-wrap::-webkit-scrollbar-track { background:rgba(255,255,255,0.02); }
+        .sc-table-wrap::-webkit-scrollbar-thumb { background:rgba(108,192,64,0.45); border-radius:3px; }
         @media (max-width: 1100px) {
             .mc-metric-grid, .mc-status-grid {grid-template-columns: repeat(2, minmax(0, 1fr));}
         }
@@ -685,6 +745,18 @@ MARKET_CAP_BUCKETS = {
     "QQQ": "ETF",
     "IWM": "ETF",
     "SPY": "ETF",
+    "MSFT": "Mega Cap",
+    "GOOGL": "Mega Cap",
+    "NFLX": "Large Cap",
+    "PLTR": "Mid Cap",
+    "COIN": "Large Cap",
+    "UBER": "Large Cap",
+    "MARA": "Small Cap",
+    "ORCL": "Mega Cap",
+    "XLF": "ETF",
+    "GLD": "ETF",
+    "SMCI": "Mid Cap",
+    "AAPL": "Mega Cap",
 }
 
 TECHNICAL_SHELL = {
@@ -698,7 +770,19 @@ TECHNICAL_SHELL = {
     "TSLA": {"RSI State": "Overbought", "MACD Timeframe": "Weekly", "MACD Zero": "Above", "Bollinger": "Upper Band"},
     "QQQ": {"RSI State": "Neutral", "MACD Timeframe": "Daily", "MACD Zero": "Above", "Bollinger": "Upper Half"},
     "IWM": {"RSI State": "Neutral", "MACD Timeframe": "Daily", "MACD Zero": "Below", "Bollinger": "Mid Band"},
-    "SPY": {"RSI State": "Overbought", "MACD Timeframe": "Daily", "MACD Zero": "Above", "Bollinger": "Upper Band"},
+    "SPY":   {"RSI State": "Overbought", "MACD Timeframe": "Daily",   "MACD Zero": "Above", "Bollinger": "Upper Band"},
+    "MSFT":  {"RSI State": "Neutral",    "MACD Timeframe": "Daily",   "MACD Zero": "Above", "Bollinger": "Mid Band"},
+    "GOOGL": {"RSI State": "Neutral",    "MACD Timeframe": "Daily",   "MACD Zero": "Above", "Bollinger": "Mid Band"},
+    "NFLX":  {"RSI State": "Overbought", "MACD Timeframe": "Weekly",  "MACD Zero": "Above", "Bollinger": "Upper Band"},
+    "PLTR":  {"RSI State": "Neutral",    "MACD Timeframe": "Daily",   "MACD Zero": "Above", "Bollinger": "Mid Band"},
+    "COIN":  {"RSI State": "Oversold",   "MACD Timeframe": "Daily",   "MACD Zero": "Below", "Bollinger": "Lower Band"},
+    "UBER":  {"RSI State": "Neutral",    "MACD Timeframe": "Daily",   "MACD Zero": "Above", "Bollinger": "Mid Band"},
+    "MARA":  {"RSI State": "Oversold",   "MACD Timeframe": "Daily",   "MACD Zero": "Below", "Bollinger": "Lower Band"},
+    "ORCL":  {"RSI State": "Neutral",    "MACD Timeframe": "Weekly",  "MACD Zero": "Above", "Bollinger": "Upper Half"},
+    "XLF":   {"RSI State": "Neutral",    "MACD Timeframe": "Daily",   "MACD Zero": "Above", "Bollinger": "Mid Band"},
+    "GLD":   {"RSI State": "Neutral",    "MACD Timeframe": "Daily",   "MACD Zero": "Above", "Bollinger": "Mid Band"},
+    "SMCI":  {"RSI State": "Overbought", "MACD Timeframe": "Daily",   "MACD Zero": "Above", "Bollinger": "Upper Band"},
+    "AAPL":  {"RSI State": "Neutral",    "MACD Timeframe": "Daily",   "MACD Zero": "Above", "Bollinger": "Mid Band"},
 }
 
 def price_band_for_value(price: float) -> str:
@@ -13117,37 +13201,30 @@ nav = st.radio(
 )
 
 if nav == "Scanner":
-    # ── Strategy defaults: each strategy auto-populates the filter row ─────
+    # ── Strategy defaults ────────────────────────────────────────────────────
     _SC_DEFAULTS = {
-        "Covered Call":     {"bias": "Bullish", "bollinger": "Upper Band",  "rsi": "Overbought", "max_dte": 21,   "max_delta": 0.30},
-        "Cash-Secured Put": {"bias": "Bullish", "bollinger": "Lower Band",  "rsi": "Oversold",   "max_dte": 30,   "max_delta": 0.25},
-        "Credit Spread":    {"bias": "Bullish", "bollinger": "Mid Band",    "rsi": "Neutral",    "max_dte": 45,   "max_delta": 0.20},
-        "LEAPS":            {"bias": "Bullish", "bollinger": "Any",         "rsi": "Any",        "max_dte": 9999, "max_delta": 0.65},
-        "Buy-Write":        {"bias": "Neutral", "bollinger": "Mid Band",    "rsi": "Neutral",    "max_dte": 30,   "max_delta": 0.30},
-        "Buy Call":         {"bias": "Bullish", "bollinger": "Lower Band",  "rsi": "Oversold",   "max_dte": 45,   "max_delta": 0.55},
-        "Buy Put":          {"bias": "Bearish", "bollinger": "Upper Band",  "rsi": "Overbought", "max_dte": 30,   "max_delta": 0.45},
-        "Stock":            {"bias": "Bullish", "bollinger": "Lower Band",  "rsi": "Oversold",   "max_dte": 9999, "max_delta": 1.00},
+        "Covered Call":     {"bias":"Bullish","bollinger":"Upper Band", "rsi":"Overbought","max_dte":21,  "max_delta":0.30},
+        "Cash-Secured Put": {"bias":"Bullish","bollinger":"Lower Band", "rsi":"Oversold",  "max_dte":30,  "max_delta":0.25},
+        "Credit Spread":    {"bias":"Bullish","bollinger":"Mid Band",   "rsi":"Neutral",   "max_dte":45,  "max_delta":0.20},
+        "LEAPS":            {"bias":"Bullish","bollinger":"Any",        "rsi":"Any",       "max_dte":9999,"max_delta":0.65},
+        "Buy-Write":        {"bias":"Neutral","bollinger":"Mid Band",   "rsi":"Neutral",   "max_dte":30,  "max_delta":0.30},
+        "Buy Call":         {"bias":"Bullish","bollinger":"Lower Band", "rsi":"Oversold",  "max_dte":45,  "max_delta":0.55},
+        "Buy Put":          {"bias":"Bearish","bollinger":"Upper Band", "rsi":"Overbought","max_dte":30,  "max_delta":0.45},
+        "Stock":            {"bias":"Bullish","bollinger":"Lower Band", "rsi":"Oversold",  "max_dte":9999,"max_delta":1.00},
     }
     _SC_LIST = list(_SC_DEFAULTS.keys())
 
-    # Session state bootstrap
-    if "sc_strategy" not in st.session_state:
-        st.session_state["sc_strategy"] = "Covered Call"
-    if "sc_prev_strategy" not in st.session_state:
-        st.session_state["sc_prev_strategy"] = ""
+    if "sc_strategy"      not in st.session_state: st.session_state["sc_strategy"]      = "Covered Call"
+    if "sc_prev_strategy" not in st.session_state: st.session_state["sc_prev_strategy"] = ""
 
-    open_panel("Strategy Scanner", "Strategy-first · one-page · auto-filters", "Select a strategy — filters load automatically based on what that setup requires. Adjust any filter to narrow the results further.")
+    # ── Slim header ──────────────────────────────────────────────────────────
+    render_html("<div class='sc-header'><span class='sc-header-title'>Scanner</span><span class='sc-header-kicker'>Strategy-first · auto-filters · live scoring</span></div>")
 
-    # ── Strategy radio (horizontal pill row) ───────────────────────────────
-    sc_strat = st.radio(
-        "Strategy",
-        _SC_LIST,
-        index=_SC_LIST.index(st.session_state["sc_strategy"]),
-        horizontal=True,
-        label_visibility="collapsed",
-    )
+    # ── Strategy selector ────────────────────────────────────────────────────
+    sc_strat = st.radio("Strategy", _SC_LIST,
+                        index=_SC_LIST.index(st.session_state["sc_strategy"]),
+                        horizontal=True, label_visibility="collapsed")
 
-    # Auto-populate filters when strategy changes (runs on same cycle — no rerun needed)
     if sc_strat != st.session_state.get("sc_prev_strategy"):
         _d = _SC_DEFAULTS[sc_strat]
         st.session_state["sc_strategy"]      = sc_strat
@@ -13158,105 +13235,103 @@ if nav == "Scanner":
         st.session_state["sc_max_dte"]       = _d["max_dte"]
         st.session_state["sc_max_delta"]     = _d["max_delta"]
 
-    st.markdown("<div style='height:0.2rem;'></div>", unsafe_allow_html=True)
+    # ── Filter row ───────────────────────────────────────────────────────────
+    _bias_opts    = ["Any","Bullish","Neutral","Bearish"]
+    _boll_opts    = ["Any","Lower Band","Mid Band","Upper Half","Upper Band"]
+    _rsi_opts     = ["Any","Oversold","Neutral","Overbought"]
+    _dte_vals     = [7,14,21,30,45,60,90,180,365,9999]
+    _dte_labels   = ["≤7","≤14","≤21","≤30","≤45","≤60","≤90","≤180","≤365","Any"]
+    _delta_vals   = [0.10,0.15,0.20,0.25,0.30,0.35,0.40,0.45,0.50,0.55,0.60,0.65,0.70,0.80,1.00]
+    _delta_labels = ["≤.10","≤.15","≤.20","≤.25","≤.30","≤.35","≤.40","≤.45","≤.50","≤.55","≤.60","≤.65","≤.70","≤.80","Any"]
 
-    # ── Filter row (5 inline dropdowns, auto-set from strategy) ───────────
-    _bias_opts  = ["Any", "Bullish", "Neutral", "Bearish"]
-    _boll_opts  = ["Any", "Lower Band", "Mid Band", "Upper Half", "Upper Band"]
-    _rsi_opts   = ["Any", "Oversold", "Neutral", "Overbought"]
-    _dte_vals   = [7, 14, 21, 30, 45, 60, 90, 180, 365, 9999]
-    _dte_labels = ["≤7 DTE", "≤14 DTE", "≤21 DTE", "≤30 DTE", "≤45 DTE", "≤60 DTE", "≤90 DTE", "≤180 DTE", "≤365 DTE", "Any DTE"]
-    _delta_vals   = [0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.80, 1.00]
-    _delta_labels = ["≤0.10 Δ", "≤0.15 Δ", "≤0.20 Δ", "≤0.25 Δ", "≤0.30 Δ", "≤0.35 Δ", "≤0.40 Δ", "≤0.45 Δ", "≤0.50 Δ", "≤0.55 Δ", "≤0.60 Δ", "≤0.65 Δ", "≤0.70 Δ", "≤0.80 Δ", "Any Δ"]
+    def _si(lst, val, d=0):
+        try: return lst.index(val)
+        except: return d
 
-    def _safe_idx(lst, val, default=0):
-        try:
-            return lst.index(val)
-        except (ValueError, TypeError):
-            return default
-
-    _fc = st.columns(5, gap="small")
+    _fc = st.columns([1.2,1.4,1.3,0.9,1.0], gap="small")
     with _fc[0]:
-        _bias_val = st.selectbox("Bias", _bias_opts, index=_safe_idx(_bias_opts, st.session_state.get("sc_bias", "Bullish")), label_visibility="visible")
+        _bias_val = st.selectbox("Bias", _bias_opts, index=_si(_bias_opts, st.session_state.get("sc_bias","Bullish")))
     with _fc[1]:
-        _boll_val = st.selectbox("Bollinger", _boll_opts, index=_safe_idx(_boll_opts, st.session_state.get("sc_bollinger", "Any")), label_visibility="visible")
+        _boll_val = st.selectbox("Bollinger", _boll_opts, index=_si(_boll_opts, st.session_state.get("sc_bollinger","Any")))
     with _fc[2]:
-        _rsi_val  = st.selectbox("RSI State", _rsi_opts, index=_safe_idx(_rsi_opts, st.session_state.get("sc_rsi", "Any")), label_visibility="visible")
+        _rsi_val  = st.selectbox("RSI State", _rsi_opts, index=_si(_rsi_opts, st.session_state.get("sc_rsi","Any")))
     with _fc[3]:
-        _cur_dte  = st.session_state.get("sc_max_dte", 45)
-        _dte_idx  = _safe_idx(_dte_vals, _cur_dte, default=4)
-        _dte_lbl  = st.selectbox("Max DTE", _dte_labels, index=_dte_idx, label_visibility="visible")
+        _dte_lbl  = st.selectbox("DTE", _dte_labels, index=_si(_dte_vals, st.session_state.get("sc_max_dte",45), 4))
         _max_dte  = _dte_vals[_dte_labels.index(_dte_lbl)]
     with _fc[4]:
-        _cur_delta  = st.session_state.get("sc_max_delta", 0.30)
-        _delta_idx  = _safe_idx(_delta_vals, _cur_delta, default=4)
-        _delta_lbl  = st.selectbox("Max Delta", _delta_labels, index=_delta_idx, label_visibility="visible")
-        _max_delta  = _delta_vals[_delta_labels.index(_delta_lbl)]
+        _delta_lbl = st.selectbox("Max Δ", _delta_labels, index=_si(_delta_vals, st.session_state.get("sc_max_delta",0.30), 4))
+        _max_delta = _delta_vals[_delta_labels.index(_delta_lbl)]
 
-    # Persist any manual filter tweaks back to session state
-    st.session_state["sc_bias"]      = _bias_val
-    st.session_state["sc_bollinger"] = _boll_val
-    st.session_state["sc_rsi"]       = _rsi_val
-    st.session_state["sc_max_dte"]   = _max_dte
-    st.session_state["sc_max_delta"] = _max_delta
+    st.session_state.update({"sc_bias":_bias_val,"sc_bollinger":_boll_val,"sc_rsi":_rsi_val,
+                              "sc_max_dte":_max_dte,"sc_max_delta":_max_delta})
 
-    st.markdown("<div style='height:0.2rem;'></div>", unsafe_allow_html=True)
-
-    # ── Filter the data ────────────────────────────────────────────────────
+    # ── Filter & sort ────────────────────────────────────────────────────────
     _sc_df = pd.DataFrame(SCANNER_ROWS)
     _sc_df = _sc_df[_sc_df["Strategy"] == sc_strat]
-    if _bias_val != "Any":
-        _sc_df = _sc_df[_sc_df["Bias"] == _bias_val]
-    if _boll_val != "Any":
-        _sc_df = _sc_df[_sc_df["Bollinger"] == _boll_val]
-    if _rsi_val != "Any":
-        _sc_df = _sc_df[_sc_df["RSI State"] == _rsi_val]
-    if _max_dte < 9999:
-        _sc_df = _sc_df[_sc_df["DTE"] <= _max_dte]
+    if _bias_val != "Any":    _sc_df = _sc_df[_sc_df["Bias"]      == _bias_val]
+    if _boll_val != "Any":    _sc_df = _sc_df[_sc_df["Bollinger"] == _boll_val]
+    if _rsi_val  != "Any":    _sc_df = _sc_df[_sc_df["RSI State"] == _rsi_val]
+    if _max_dte  < 9999:      _sc_df = _sc_df[_sc_df["DTE"]       <= _max_dte]
     if sc_strat != "Stock" and _max_delta < 1.00:
         _sc_df = _sc_df[_sc_df["Delta"] <= _max_delta]
-    _sc_df = _sc_df.sort_values(["Score", "Confluence"], ascending=[False, False]).reset_index(drop=True)
+    _sc_df = _sc_df.sort_values(["Score","Confluence"], ascending=[False,False]).reset_index(drop=True)
     _sc_df = enrich_scanner_df(_sc_df)
 
-    # ── Results ────────────────────────────────────────────────────────────
+    # ── Compact top-pick bar ─────────────────────────────────────────────────
     if not _sc_df.empty:
-        _best = _sc_df.iloc[0]
-        _note_short = _best["Note"][:72] + "…" if len(_best.get("Note", "")) > 72 else _best.get("Note", "")
-        _mc = st.columns(4, gap="small")
-        with _mc[0]:
-            render_metric("Top Pick", str(_best["Ticker"]), _note_short)
-        with _mc[1]:
-            render_metric("Score", str(_best["Score"]), f"Conviction: {conviction_label(int(_best['Score']))}")
-        with _mc[2]:
-            render_metric("Setup", f"{_best['Bollinger']}", f"RSI: {_best['RSI State']}")
-        with _mc[3]:
-            _prem_str = format_price(_best["Premium"]) if float(_best.get("Premium", 0)) > 0 else "—"
-            _delta_str = f"{float(_best['Delta']):.2f}" if float(_best.get("Delta", 1)) < 1.0 else "—"
-            _dte_str = str(int(_best["DTE"])) if int(_best.get("DTE", 0)) > 0 else "—"
-            render_metric("Est. Premium", _prem_str, f"Δ {_delta_str} · DTE {_dte_str}")
+        _b = _sc_df.iloc[0]
+        _cv = conviction_label(int(_b["Score"]))
+        _cv_cls = f"sc-conv-{_cv.lower()}"
+        _prem   = format_price(float(_b["Premium"])) if float(_b.get("Premium",0)) > 0 else "—"
+        _delt   = f"{float(_b['Delta']):.2f}"        if float(_b.get("Delta",1)) < 1.0  else "—"
+        _dte_d  = str(int(_b["DTE"]))               if int(_b.get("DTE",0)) > 0        else "—"
+        _note_s = (_b["Note"][:80] + "…") if len(_b.get("Note","")) > 80 else _b.get("Note","")
+        render_html(
+            f"<div class='sc-top-bar'>"
+            f"<span class='sc-top-ticker'>{_b['Ticker']}</span>"
+            f"<span class='sc-top-div'>·</span>"
+            f"<span class='sc-top-label'>Score</span>&nbsp;<span class='sc-top-val'>{_b['Score']}</span>"
+            f"<span class='sc-top-div'>·</span>"
+            f"<span class='{_cv_cls}'>{_cv}</span>"
+            f"<span class='sc-top-div'>·</span>"
+            f"<span class='sc-top-val'>{_b['Bollinger']}</span>&nbsp;<span class='sc-top-label'>/ RSI {_b['RSI State']}</span>"
+            f"<span class='sc-top-div'>·</span>"
+            f"<span class='sc-top-label'>Prem</span>&nbsp;<span class='sc-top-val'>{_prem}</span>"
+            f"<span class='sc-top-div'>·</span>"
+            f"<span class='sc-top-label'>Δ</span>&nbsp;<span class='sc-top-val'>{_delt}</span>"
+            f"<span class='sc-top-div'>·</span>"
+            f"<span class='sc-top-label'>DTE</span>&nbsp;<span class='sc-top-val'>{_dte_d}</span>"
+            f"<span class='sc-top-div'>·</span>"
+            f"<span class='sc-top-note'>{_note_s}</span>"
+            f"</div>"
+        )
 
-        st.markdown("<div style='height:0.3rem;'></div>", unsafe_allow_html=True)
-
+        # ── Scrollable results table ─────────────────────────────────────────
         _show = _sc_df.copy()
-        _show["Conviction"] = _show["Score"].apply(lambda s: conviction_label(int(s)))
+        def _conv_chip(s):
+            _colors = {"Elite":"green","Strong":"blue","Solid":"yellow","Moderate":"gray","Developing":"gray"}
+            return chip(conviction_label(int(s)), _colors.get(conviction_label(int(s)), "gray"))
+        _show["Conviction"] = _show["Score"].apply(_conv_chip)
         _show["Price"]      = _show["Price"].map(format_price)
+        _show["IV Rank"]    = _show["IV Rank"].apply(lambda v: f"{int(v)}%")
         _show["Est. Prem"]  = _show["Premium"].apply(lambda v: format_price(float(v)) if float(v) > 0 else "—")
-        _show["Delta"]      = _show["Delta"].apply(lambda v: f"{float(v):.2f}" if float(v) < 1.0 else "—")
+        _show["Δ"]          = _show["Delta"].apply(lambda v: f"{float(v):.2f}" if float(v) < 1.0 else "—")
         _show["DTE"]        = _show["DTE"].apply(lambda v: str(int(v)) if int(v) > 0 else "—")
         _show["Conf."]      = _show["Confluence"]
-        _sc_cols = ["Ticker", "Price", "Bias", "Bollinger", "RSI State", "Est. Prem", "Delta", "DTE", "Conf.", "Score", "Conviction"]
+        _show["Setup"]      = _show["Bollinger"] + " · " + _show["RSI State"]
+        _sc_cols = ["Ticker","Price","IV Rank","Setup","Est. Prem","Δ","DTE","Conf.","Score","Conviction"]
+        render_html("<div class='sc-table-wrap'>")
         render_table(_show[_sc_cols])
-
+        render_html("</div>")
         render_html(
-            "<div class='mc-shell-note'><strong>Scanner note:</strong> "
-            "Est. Premium is a model placeholder — not a live contract quote tied to a specific strike. "
-            "Bollinger and RSI reflect the condition that qualifies this ticker for the selected strategy. "
-            "Use Analyze to pressure-test any specific name.</div>"
+            "<div class='mc-shell-note' style='margin-top:0.4rem;'>"
+            "<strong>Note:</strong> Est. Premium is a model placeholder, not a live quote. "
+            "Setup shows the Bollinger/RSI condition that qualifies each name for this strategy. "
+            "Use <strong>Analyze</strong> to pressure-test any ticker."
+            "</div>"
         )
     else:
         st.info("No candidates matched — try relaxing a filter or switching strategies.")
-
-    close_panel()
 
 elif nav == "Analyze":
     row = st.columns([0.92, 1.48], gap="large")
@@ -13484,17 +13559,4 @@ elif nav == "Learn":
     bottom = st.columns(3, gap="large")
     cards = [
         ("New Trader Path", "Start with why the strategy exists, how assignment works, and how to read scanner output without blindly trusting a score."),
-        ("Trade Planning", "Every strategy section should eventually have the printable worksheet / one-page playbook style you liked."),
-        ("Resource Attachments", "This lane is ready for PDFs, checklists, chart examples, and deeper written lessons.")
-    ]
-    for col, (title, desc) in zip(bottom, cards):
-        with col:
-            open_panel(title, "Learning structure", desc)
-            close_panel()
-
-elif nav == "DELTA":
-    render_delta_v49_module()
-
-else:
-    render_radar_v3_module()
-
+        ("Trade Planning", "Ev
