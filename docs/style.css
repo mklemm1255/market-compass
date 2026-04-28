@@ -116,6 +116,7 @@ nav {
   color: rgba(255,255,255,0.7); text-decoration: none;
   font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
   text-transform: uppercase; transition: color 0.2s;
+  white-space: nowrap;
 }
 .nav-links a:hover { color: var(--green); }
 .nav-cta { margin-left: 12px; }
@@ -449,4 +450,211 @@ nav {
 .nl-note { font-size: 0.72rem; color: rgba(255,255,255,0.25); margin-top: 14px; }
 
 /* ── MARKET COMPASS SECTION ── */
-.
+.compass-section { background: var(--dark-card); }
+.compass-header { text-align: center; max-width: 720px; margin: 0 auto 56px; }
+.compass-header p { font-size: 1.05rem; margin-top: 14px; }
+.compass-grid {
+  display: grid; grid-template-columns: 1fr 420px; gap: 64px; align-items: start;
+}
+.compass-features { display: flex; flex-direction: column; gap: 28px; }
+.compass-feat { display: flex; gap: 18px; align-items: flex-start; }
+.compass-feat-icon {
+  font-size: 1.6rem; width: 52px; height: 52px; flex-shrink: 0;
+  background: rgba(109,192,64,0.1); border: 1px solid rgba(109,192,64,0.2);
+  border-radius: 12px; display: flex; align-items: center; justify-content: center;
+}
+.compass-feat-title { font-weight: 700; font-size: 1rem; color: var(--white); margin-bottom: 4px; }
+.compass-feat-desc  { font-size: 0.85rem; color: rgba(255,255,255,0.55); line-height: 1.65; }
+
+/* CTA Card — centered column */
+.compass-cta-card {
+  background: linear-gradient(160deg, #0A1A08 0%, #121E10 100%);
+  border: 1px solid rgba(109,192,64,0.3);
+  border-radius: 20px;
+  padding: 40px 32px;
+  box-shadow: var(--glow-green), var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* ← CENTER everything */
+  text-align: center;
+  gap: 0;
+}
+
+/* Logo lockup inside card */
+.compass-logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+.compass-logo-icon {
+  font-size: 3.2rem;
+  line-height: 1;
+}
+.compass-logo-text {
+  font-size: 1.7rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  line-height: 1;
+}
+.compass-logo-by {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.compass-cta-desc {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.65;
+  margin-bottom: 22px;
+}
+
+.compass-badge-row {
+  display: flex; gap: 10px; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 28px;
+}
+.compass-badge {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 20px;
+}
+.badge-free { background: rgba(109,192,64,0.15); color: var(--green); border: 1px solid rgba(109,192,64,0.3); }
+.badge-pro  { background: rgba(212,175,55,0.12); color: var(--gold);  border: 1px solid rgba(212,175,55,0.3); }
+
+.compass-launch-btn {
+  width: 100%; font-size: 1rem; padding: 15px 28px; text-align: center;
+  border-radius: 10px; margin-bottom: 12px;
+}
+.compass-disclaimer {
+  font-size: 0.72rem; color: rgba(255,255,255,0.3);
+  margin: 0;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: #050510; padding: 48px 0 32px;
+  border-top: 1px solid var(--dark-border);
+}
+.footer-inner {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 20px;
+}
+.footer-logo { display: flex; align-items: center; gap: 12px; }
+.footer-emblem { width: 32px; opacity: 0.7; }
+.footer-brand { font-weight: 800; font-size: 0.85rem; letter-spacing: 0.04em; color: rgba(255,255,255,0.5); }
+.footer-brand span { color: var(--green); }
+.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-links a { font-size: 0.78rem; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--green); }
+.footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.2); text-align: center; margin-top: 28px; }
+.footer-disc { font-size: 0.68rem; color: rgba(255,255,255,0.15); text-align: center; margin-top: 8px; max-width: 680px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .compass-grid { grid-template-columns: 1fr; }
+  .compass-cta-card { max-width: 480px; margin: 0 auto; }
+  .journal-grid, .about-grid, .what-grid { grid-template-columns: 1fr; }
+  .strategies-grid { grid-template-columns: 1fr 1fr; }
+  .creds { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .strategies-grid { grid-template-columns: 1fr; }
+  .hero-stats { flex-direction: column; gap: 16px; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+  .nav-links, .nav-cta { display: none; }
+}
+
+/* ── MARKET COMPASS SECTION ── */
+.compass-section { background: var(--dark-card); }
+.compass-header { text-align: center; max-width: 720px; margin: 0 auto 56px; }
+.compass-header p { font-size: 1.05rem; margin-top: 14px; }
+.compass-grid {
+  display: grid; grid-template-columns: 1fr 420px; gap: 64px; align-items: start;
+}
+.compass-features { display: flex; flex-direction: column; gap: 28px; }
+.compass-feat { display: flex; gap: 18px; align-items: flex-start; }
+.compass-feat-icon {
+  font-size: 1.6rem; width: 52px; height: 52px; flex-shrink: 0;
+  background: rgba(109,192,64,0.1); border: 1px solid rgba(109,192,64,0.2);
+  border-radius: 12px; display: flex; align-items: center; justify-content: center;
+}
+.compass-feat-title { font-weight: 700; font-size: 1rem; color: var(--white); margin-bottom: 4px; }
+.compass-feat-desc  { font-size: 0.85rem; color: rgba(255,255,255,0.55); line-height: 1.65; }
+
+/* CTA Card — centered column */
+.compass-cta-card {
+  background: linear-gradient(160deg, #0A1A08 0%, #121E10 100%);
+  border: 1px solid rgba(109,192,64,0.3);
+  border-radius: 20px;
+  padding: 40px 32px;
+  box-shadow: 0 0 24px rgba(109,192,64,0.25), 0 12px 48px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+}
+.compass-logo-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 22px;
+}
+.compass-logo-icon { font-size: 3.2rem; line-height: 1; }
+.compass-logo-text {
+  font-size: 1.7rem; font-weight: 900; letter-spacing: -0.01em;
+  color: var(--white); line-height: 1;
+}
+.compass-logo-by {
+  font-size: 0.75rem; color: rgba(255,255,255,0.45);
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.compass-cta-desc {
+  font-size: 0.88rem; color: rgba(255,255,255,0.6); line-height: 1.65; margin-bottom: 22px;
+}
+.compass-badge-row {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px;
+}
+.compass-badge {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 20px;
+}
+.badge-free { background: rgba(109,192,64,0.15); color: var(--green); border: 1px solid rgba(109,192,64,0.3); }
+.badge-pro  { background: rgba(212,175,55,0.12); color: var(--gold);  border: 1px solid rgba(212,175,55,0.3); }
+.compass-launch-btn {
+  width: 100%; font-size: 1rem; padding: 15px 28px; text-align: center;
+  border-radius: 10px; margin-bottom: 12px;
+}
+.compass-disclaimer { font-size: 0.72rem; color: rgba(255,255,255,0.3); margin: 0; }
+
+/* ── FOOTER ── */
+footer {
+  background: #050510; padding: 48px 0 32px;
+  border-top: 1px solid var(--dark-border);
+}
+.footer-inner {
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;
+}
+.footer-logo { display: flex; align-items: center; gap: 12px; }
+.footer-emblem { width: 32px; opacity: 0.7; }
+.footer-brand { font-weight: 800; font-size: 0.85rem; letter-spacing: 0.04em; color: rgba(255,255,255,0.5); }
+.footer-brand span { color: var(--green); }
+.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-links a { font-size: 0.78rem; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--green); }
+.footer-copy { font-size: 0.72rem; color: rgba(255,255,255,0.2); text-align: center; margin-top: 28px; }
+.footer-disc { font-size: 0.68rem; color: rgba(255,255,255,0.15); text-align: center; margin-top: 8px; max-width: 680px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .compass-grid { grid-template-columns: 1fr; }
+  .compass-cta-card { max-width: 480px; margin: 0 auto; }
+  .journal-grid, .about-grid, .what-grid { grid-template-columns: 1fr; }
+  .strategies-grid { grid-template-columns: 1fr 1fr; }
+  .creds { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .strategies-grid { grid-template-columns: 1fr; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+  .nav-links, .nav-cta { display: none; }
+}
