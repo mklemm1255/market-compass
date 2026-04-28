@@ -505,6 +505,58 @@ TICKER_FACTS = {
     "AMZN": {"Sector": "Consumer Discretionary", "Headline": "Broad quality name with income flexibility."},
 }
 
+# ── YouTube channel video fetcher ─────────────────────────────────────────
+_PII_CHANNEL_HANDLE = "@PracticalIncomeInvestingYT"
+_PII_CHANNEL_ID     = "UCRuOVMnlLTBHtP_BNFvQ9Ug"  # fallback direct ID
+
+def get_youtube_api_key() -> str | None:
+    for name in ("YOUTUBE_API_KEY",):
+        try:
+            val = st.secrets.get(name)
+            if val:
+                return val
+        except Exception:
+            pass
+        val = os.environ.get(name)
+        if val:
+            return val
+    return None
+
+@st.cache_data(ttl=3600)  # cache 1 hour so we don't hammer the API
+def fetch_latest_youtube_videos(max_results: int = 50) -> list:
+    """Fetch latest videos from PII YouTube channel via Data API v3."""
+    api_key = get_youtube_api_key()
+    if not api_key:
+        return []
+    try:
+        # Search for videos from the channel, ordered by date
+        params = urlencode({
+            "key": api_key,
+            "channelId": _PII_CHANNEL_ID,
+            "part": "snippet",
+            "order": "date",
+            "type": "video",
+            "maxResults": max_results,
+        })
+        url = f"https://www.googleapis.com/youtube/v3/search?{params}"
+        with urlopen(url, timeout=10) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        videos = []
+        for item in data.get("items", []):
+            vid_id = item["id"].get("videoId")
+            snip   = item.get("snippet", {})
+            if vid_id:
+                videos.append({
+                    "title":     snip.get("title", "Untitled"),
+                    "watch_url": f"https://www.youtube.com/watch?v={vid_id}",
+                    "thumbnail": snip.get("thumbnails", {}).get("medium", {}).get("url", ""),
+                    "date":      snip.get("publishedAt", "")[:10],
+                    "description": snip.get("description", "")[:120],
+                })
+        return videos
+    except Exception:
+        return []
+
 STRATEGY_VIDEO_SEEDS = {
     "Covered Calls & Cash-Secured Puts": [
         {"title": "This Trade Annualizes at 111% — Live CSP Walkthrough", "watch_url": "https://youtu.be/C-WfV1xAZSQ"},
@@ -14564,28 +14616,52 @@ elif nav == "learn":
         close_panel()
 
     with top[1]:
-        videos = STRATEGY_VIDEO_SEEDS[strategy_pick]
-        selected_video = st.selectbox(f"{strategy_pick} videos", [v["title"] for v in videos])
-        selected = next(v for v in videos if v["title"] == selected_video)
-        open_panel(f"{strategy_pick} Educational Videos", "Video + playbook", "Playbook reference and video walkthrough.")
-        vcols = st.columns([1.0, 1.3], gap="large")
-        with vcols[0]:
-            playbook = PLAYBOOKS[strategy_pick]
+        open_panel("PII Video Library", "Latest from the channel", "All videos from Practical Income Investing, newest first.")
+        # Try live YouTube feed first, fall back to curated seeds
+        _live_videos = fetch_latest_youtube_videos(50)
+        _using_live  = len(_live_videos) > 0
+        _video_pool  = _live_videos if _using_live else STRATEGY_VIDEO_SEEDS.get(strategy_pick, [])
+
+        if _using_live:
             render_html(
-                f"<div class='mc-download-card'><div class='mc-strategy-title'>{playbook['title']}</div><div class='mc-mini-note'>{playbook['summary']}</div></div>"
+                f"<div style='font-size:0.62rem;color:#6DC040;font-weight:700;margin-bottom:0.5rem;'>"
+                f"&#9679; Live — {len(_live_videos)} videos from your channel &middot; updates every hour</div>"
             )
-            st.download_button(
-                f"Download {playbook['title']}",
-                data=playbook_text(strategy_pick),
-                file_name=f"{strategy_pick.lower()}_playbook.md",
-                mime="text/markdown",
-                use_container_width=True,
+        else:
+            render_html(
+                "<div style='font-size:0.62rem;color:var(--muted);margin-bottom:0.5rem;'>"
+                "Showing curated videos — connect YouTube API key for live channel feed.</div>"
             )
-            render_html("<div style='height:0.6rem;'></div>")
-            for bullet in playbook["bullets"]:
-                render_html(f"<div class='mc-strategy-card'><div class='mc-mini-note'>• {bullet}</div></div><div style='height:0.5rem;'></div>")
-        with vcols[1]:
-            st.video(selected["watch_url"])
+
+        # Video selector
+        _vid_titles  = [v["title"] for v in _video_pool]
+        _sel_title   = st.selectbox("Select a video", _vid_titles, key="edu_video_select")
+        _sel_video   = next((v for v in _video_pool if v["title"] == _sel_title), _video_pool[0] if _video_pool else None)
+
+        if _sel_video:
+            vcols = st.columns([1.0, 1.3], gap="large")
+            with vcols[0]:
+                playbook = PLAYBOOKS[strategy_pick]
+                render_html(
+                    f"<div class='mc-download-card'><div class='mc-strategy-title'>{playbook['title']}</div><div class='mc-mini-note'>{playbook['summary']}</div></div>"
+                )
+                st.download_button(
+                    f"Download {playbook['title']}",
+                    data=playbook_text(strategy_pick),
+                    file_name=f"{strategy_pick.lower()}_playbook.md",
+                    mime="text/markdown",
+                    use_container_width=True,
+                )
+                render_html("<div style='height:0.6rem;'></div>")
+                for bullet in playbook["bullets"]:
+                    render_html(f"<div class='mc-strategy-card'><div class='mc-mini-note'>• {bullet}</div></div><div style='height:0.5rem;'></div>")
+                if _using_live and _sel_video.get("date"):
+                    render_html(
+                        f"<div style='font-size:0.65rem;color:var(--muted);margin-top:0.5rem;'>"
+                        f"Published: {_sel_video['date']}</div>"
+                    )
+            with vcols[1]:
+                st.video(_sel_video["watch_url"])
         close_panel()
 
     bottom = st.columns(3, gap="large")
