@@ -804,7 +804,7 @@ def render_table(df: pd.DataFrame, mode: str = "default", return_html: bool = Fa
             elif col == "Trend":
                 cell = trend_chip(str(val))
             elif col == "Score":
-                cell = badge_for_score(int(val))
+                cell = str(val) if str(val).startswith("<") else badge_for_score(int(val))
             elif idx == 0:
                 cell = f"<span class='mc-row-strong'>{val}</span>"
             elif col in {"Status", "Read"}:
