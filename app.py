@@ -31,16 +31,37 @@ st.set_page_config(page_title="Market Compass", page_icon="🧭", layout="wide")
 # ---------------------------
 
 SCANNER_ROWS = [
-    {"Ticker": "NVDA", "Strategy": "CC & CSP", "Bias": "Bullish", "Price": 902, "Premium": 7.40, "Delta": 0.23, "DTE": 21, "IV Rank": 61, "Liquidity": "Excellent", "Confluence": 8, "Trend": "Bullish", "Score": 92, "Note": "Weekly and daily trend aligned near support."},
-    {"Ticker": "AMD", "Strategy": "CC & CSP", "Bias": "Bullish", "Price": 171, "Premium": 2.20, "Delta": 0.20, "DTE": 21, "IV Rank": 57, "Liquidity": "Excellent", "Confluence": 7, "Trend": "Bullish", "Score": 87, "Note": "Pullback support and healthy premium."},
-    {"Ticker": "META", "Strategy": "Credit Spread", "Bias": "Bullish", "Price": 505, "Premium": 5.80, "Delta": 0.18, "DTE": 30, "IV Rank": 42, "Liquidity": "Excellent", "Confluence": 7, "Trend": "Bullish", "Score": 84, "Note": "Cleaner swing posture than fast intraday income."},
-    {"Ticker": "AMZN", "Strategy": "CC & CSP", "Bias": "Bullish", "Price": 186, "Premium": 1.85, "Delta": 0.17, "DTE": 21, "IV Rank": 38, "Liquidity": "Excellent", "Confluence": 6, "Trend": "Bullish", "Score": 79, "Note": "Trend quality is steady, premium is acceptable."},
-    {"Ticker": "SOFI", "Strategy": "Credit Spread", "Bias": "Bullish", "Price": 9.35, "Premium": 0.24, "Delta": 0.25, "DTE": 30, "IV Rank": 68, "Liquidity": "Good", "Confluence": 7, "Trend": "Bullish", "Score": 76, "Note": "Swing-friendly but less conservative than large caps."},
-    {"Ticker": "HOOD", "Strategy": "CC & CSP", "Bias": "Bullish", "Price": 28.70, "Premium": 0.76, "Delta": 0.22, "DTE": 21, "IV Rank": 64, "Liquidity": "Good", "Confluence": 7, "Trend": "Bullish", "Score": 83, "Note": "Attractive premium and momentum for put selling."},
-    {"Ticker": "AAPL", "Strategy": "Buy-Write", "Bias": "Neutral", "Price": 211, "Premium": 2.10, "Delta": 0.29, "DTE": 30, "IV Rank": 29, "Liquidity": "Excellent", "Confluence": 6, "Trend": "Neutral", "Score": 74, "Note": "Cleaner for income with shares than aggressive short puts."},
-    {"Ticker": "TSLA", "Strategy": "LEAPS", "Bias": "Bullish", "Price": 187, "Premium": 5.10, "Delta": 0.36, "DTE": 365, "IV Rank": 72, "Liquidity": "Excellent", "Confluence": 5, "Trend": "Bullish", "Score": 73, "Note": "Better long-duration optionality candidate than conservative premium sale."},
-    {"Ticker": "QQQ", "Strategy": "Buy-Write", "Bias": "Neutral", "Price": 451, "Premium": 4.40, "Delta": 0.24, "DTE": 30, "IV Rank": 34, "Liquidity": "Excellent", "Confluence": 7, "Trend": "Bullish", "Score": 81, "Note": "Stable buy-write fit with index liquidity."},
-    {"Ticker": "IWM", "Strategy": "Credit Spread", "Bias": "Neutral", "Price": 209, "Premium": 2.50, "Delta": 0.21, "DTE": 30, "IV Rank": 46, "Liquidity": "Excellent", "Confluence": 6, "Trend": "Neutral", "Score": 71, "Note": "Tradable, but breadth keeps it from scoring higher."},
+    # ── Covered Call (near upper band, elevated RSI — sell calls against long stock) ──
+    {"Ticker": "NVDA", "Strategy": "Covered Call", "Bias": "Bullish", "Price": 878, "Premium": 9.10, "Delta": 0.27, "DTE": 14, "IV Rank": 63, "Liquidity": "Excellent", "Confluence": 9, "Trend": "Bullish", "Bollinger": "Upper Band",  "RSI State": "Overbought", "Score": 93, "Note": "Extended into upper band on strong trend — ideal covered call timing."},
+    {"Ticker": "AMZN", "Strategy": "Covered Call", "Bias": "Bullish", "Price": 196, "Premium": 2.30, "Delta": 0.24, "DTE": 14, "IV Rank": 44, "Liquidity": "Excellent", "Confluence": 7, "Trend": "Bullish", "Bollinger": "Upper Half", "RSI State": "Neutral",    "Score": 82, "Note": "Steady push into upper half — controlled call premium opportunity."},
+    {"Ticker": "QQQ",  "Strategy": "Covered Call", "Bias": "Bullish", "Price": 456, "Premium": 5.10, "Delta": 0.25, "DTE": 21, "IV Rank": 37, "Liquidity": "Excellent", "Confluence": 7, "Trend": "Bullish", "Bollinger": "Upper Half", "RSI State": "Neutral",    "Score": 80, "Note": "Index momentum in upper half — clean buy-write or CC premium."},
+    {"Ticker": "HOOD", "Strategy": "Covered Call", "Bias": "Bullish", "Price": 29.40,"Premium": 0.92, "Delta": 0.26, "DTE": 14, "IV Rank": 68, "Liquidity": "Good",      "Confluence": 7, "Trend": "Bullish", "Bollinger": "Upper Band",  "RSI State": "Overbought", "Score": 85, "Note": "Rich IV and strong momentum — elevated CC premium available."},
+    # ── Cash-Secured Put (near lower band, oversold — sell puts to buy the dip) ──
+    {"Ticker": "NVDA", "Strategy": "Cash-Secured Put", "Bias": "Bullish", "Price": 832, "Premium": 8.40, "Delta": 0.22, "DTE": 21, "IV Rank": 63, "Liquidity": "Excellent", "Confluence": 9, "Trend": "Bullish", "Bollinger": "Lower Band",  "RSI State": "Oversold",   "Score": 94, "Note": "High-conviction CSP at key technical support — premium justifies the risk."},
+    {"Ticker": "AMD",  "Strategy": "Cash-Secured Put", "Bias": "Bullish", "Price": 159, "Premium": 2.60, "Delta": 0.22, "DTE": 21, "IV Rank": 58, "Liquidity": "Excellent", "Confluence": 8, "Trend": "Bullish", "Bollinger": "Lower Band",  "RSI State": "Oversold",   "Score": 88, "Note": "Pullback to prior demand zone — strong CSP setup with clean support."},
+    {"Ticker": "SOFI", "Strategy": "Cash-Secured Put", "Bias": "Bullish", "Price": 9.10,"Premium": 0.29, "Delta": 0.25, "DTE": 30, "IV Rank": 71, "Liquidity": "Good",      "Confluence": 7, "Trend": "Bullish", "Bollinger": "Lower Band",  "RSI State": "Oversold",   "Score": 83, "Note": "Oversold at prior support with elevated IV — attractive CSP premium."},
+    {"Ticker": "HOOD", "Strategy": "Cash-Secured Put", "Bias": "Bullish", "Price": 26.80,"Premium": 0.84, "Delta": 0.24, "DTE": 21, "IV Rank": 68, "Liquidity": "Good",    "Confluence": 7, "Trend": "Bullish", "Bollinger": "Lower Band",  "RSI State": "Oversold",   "Score": 82, "Note": "Testing prior support on oversold RSI — put-selling zone."},
+    # ── Credit Spread (mid band, neutral RSI — defined-risk swing premium) ──
+    {"Ticker": "META", "Strategy": "Credit Spread", "Bias": "Bullish", "Price": 516, "Premium": 6.20, "Delta": 0.18, "DTE": 35, "IV Rank": 45, "Liquidity": "Excellent", "Confluence": 7, "Trend": "Bullish", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 86, "Note": "Bull put spread candidate — controlled swing with defined max loss."},
+    {"Ticker": "IWM",  "Strategy": "Credit Spread", "Bias": "Neutral", "Price": 209, "Premium": 2.50, "Delta": 0.20, "DTE": 30, "IV Rank": 47, "Liquidity": "Excellent", "Confluence": 6, "Trend": "Neutral", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 74, "Note": "Range-bound index — spread structure preferred over naked short."},
+    {"Ticker": "AMZN", "Strategy": "Credit Spread", "Bias": "Bullish", "Price": 196, "Premium": 2.10, "Delta": 0.17, "DTE": 30, "IV Rank": 44, "Liquidity": "Excellent", "Confluence": 6, "Trend": "Bullish", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 78, "Note": "Mid-band stability makes defined-risk premium cleaner here."},
+    # ── LEAPS (long-duration bullish thesis — buy time, buy delta) ──
+    {"Ticker": "TSLA", "Strategy": "LEAPS", "Bias": "Bullish", "Price": 182, "Premium": 28.50, "Delta": 0.52, "DTE": 365, "IV Rank": 74, "Liquidity": "Excellent", "Confluence": 6, "Trend": "Bullish", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 78, "Note": "Long-thesis name — duration and delta matter more than short-dated calm."},
+    {"Ticker": "NVDA", "Strategy": "LEAPS", "Bias": "Bullish", "Price": 855, "Premium": 95.40,"Delta": 0.60, "DTE": 365, "IV Rank": 63, "Liquidity": "Excellent", "Confluence": 8, "Trend": "Bullish", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 87, "Note": "AI leadership thesis supports long-duration call exposure."},
+    # ── Buy-Write (own the stock, collect call premium, cap upside willingly) ──
+    {"Ticker": "AAPL", "Strategy": "Buy-Write", "Bias": "Neutral", "Price": 210, "Premium": 2.30, "Delta": 0.28, "DTE": 30, "IV Rank": 32, "Liquidity": "Excellent", "Confluence": 6, "Trend": "Neutral", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 77, "Note": "Low-IV name — buy-write earns better risk-adjusted income than pure CC."},
+    {"Ticker": "QQQ",  "Strategy": "Buy-Write", "Bias": "Neutral", "Price": 456, "Premium": 4.80, "Delta": 0.25, "DTE": 30, "IV Rank": 37, "Liquidity": "Excellent", "Confluence": 7, "Trend": "Bullish", "Bollinger": "Mid Band", "RSI State": "Neutral", "Score": 83, "Note": "Stable index buy-write — strong liquidity, steady income, index safety."},
+    # ── Buy Call (dip into support, buy directional call) ──
+    {"Ticker": "NVDA", "Strategy": "Buy Call", "Bias": "Bullish", "Price": 832, "Premium": 11.20,"Delta": 0.45, "DTE": 45, "IV Rank": 63, "Liquidity": "Excellent", "Confluence": 8, "Trend": "Bullish", "Bollinger": "Lower Band", "RSI State": "Oversold", "Score": 88, "Note": "Dip to support with oversold RSI — high-quality long call entry."},
+    {"Ticker": "AMD",  "Strategy": "Buy Call", "Bias": "Bullish", "Price": 159, "Premium": 4.10, "Delta": 0.42, "DTE": 45, "IV Rank": 58, "Liquidity": "Excellent", "Confluence": 7, "Trend": "Bullish", "Bollinger": "Lower Band", "RSI State": "Oversold", "Score": 81, "Note": "Pullback to demand zone — favorable long call risk/reward."},
+    {"Ticker": "SOFI", "Strategy": "Buy Call", "Bias": "Bullish", "Price": 9.10, "Premium": 0.52, "Delta": 0.40, "DTE": 45, "IV Rank": 71, "Liquidity": "Good",      "Confluence": 6, "Trend": "Bullish", "Bollinger": "Lower Band", "RSI State": "Oversold", "Score": 74, "Note": "Speculative long call at oversold support — high IV means buy carefully."},
+    # ── Buy Put (extended into resistance, overbought — buy downside protection or direction) ──
+    {"Ticker": "SPY",  "Strategy": "Buy Put", "Bias": "Bearish", "Price": 548, "Premium": 5.60, "Delta": 0.38, "DTE": 30, "IV Rank": 36, "Liquidity": "Excellent", "Confluence": 5, "Trend": "Neutral", "Bollinger": "Upper Band", "RSI State": "Overbought", "Score": 73, "Note": "Extended index — protective put or directional bearish play."},
+    {"Ticker": "TSLA", "Strategy": "Buy Put", "Bias": "Bearish", "Price": 186, "Premium": 6.80, "Delta": 0.40, "DTE": 30, "IV Rank": 74, "Liquidity": "Excellent", "Confluence": 5, "Trend": "Bearish", "Bollinger": "Upper Band", "RSI State": "Overbought", "Score": 70, "Note": "Momentum fading at upper band — long put candidate for downside exposure."},
+    # ── Stock (clean dip into support — direct share entry) ──
+    {"Ticker": "AMD",  "Strategy": "Stock", "Bias": "Bullish", "Price": 159, "Premium": 0, "Delta": 1.00, "DTE": 0, "IV Rank": 58, "Liquidity": "Excellent", "Confluence": 8, "Trend": "Bullish", "Bollinger": "Lower Band", "RSI State": "Oversold", "Score": 84, "Note": "Strong pullback to demand zone — high-quality stock accumulation entry."},
+    {"Ticker": "SOFI", "Strategy": "Stock", "Bias": "Bullish", "Price": 9.10, "Premium": 0, "Delta": 1.00, "DTE": 0, "IV Rank": 71, "Liquidity": "Good",      "Confluence": 6, "Trend": "Bullish", "Bollinger": "Lower Band", "RSI State": "Oversold", "Score": 76, "Note": "Oversold bounce setup at prior support — speculative stock entry."},
+    {"Ticker": "NVDA", "Strategy": "Stock", "Bias": "Bullish", "Price": 832, "Premium": 0, "Delta": 1.00, "DTE": 0, "IV Rank": 63, "Liquidity": "Excellent", "Confluence": 9, "Trend": "Bullish", "Bollinger": "Lower Band", "RSI State": "Oversold", "Score": 91, "Note": "Institutional-quality dip — strong stock entry at high-conviction support."},
 ]
 
 TICKER_FACTS = {
@@ -663,6 +684,7 @@ MARKET_CAP_BUCKETS = {
     "TSLA": "Large Cap",
     "QQQ": "ETF",
     "IWM": "ETF",
+    "SPY": "ETF",
 }
 
 TECHNICAL_SHELL = {
@@ -676,6 +698,7 @@ TECHNICAL_SHELL = {
     "TSLA": {"RSI State": "Overbought", "MACD Timeframe": "Weekly", "MACD Zero": "Above", "Bollinger": "Upper Band"},
     "QQQ": {"RSI State": "Neutral", "MACD Timeframe": "Daily", "MACD Zero": "Above", "Bollinger": "Upper Half"},
     "IWM": {"RSI State": "Neutral", "MACD Timeframe": "Daily", "MACD Zero": "Below", "Bollinger": "Mid Band"},
+    "SPY": {"RSI State": "Overbought", "MACD Timeframe": "Daily", "MACD Zero": "Above", "Bollinger": "Upper Band"},
 }
 
 def price_band_for_value(price: float) -> str:
@@ -693,11 +716,29 @@ def enrich_scanner_df(df: pd.DataFrame) -> pd.DataFrame:
     work = df.copy()
     work["Market Cap"] = work["Ticker"].map(MARKET_CAP_BUCKETS).fillna("Unknown")
     work["Price Band"] = work["Price"].apply(price_band_for_value)
-    work["RSI State"] = work["Ticker"].map(lambda t: TECHNICAL_SHELL.get(t, {}).get("RSI State", "Neutral"))
-    work["MACD Timeframe"] = work["Ticker"].map(lambda t: TECHNICAL_SHELL.get(t, {}).get("MACD Timeframe", "Daily"))
-    work["MACD Zero"] = work["Ticker"].map(lambda t: TECHNICAL_SHELL.get(t, {}).get("MACD Zero", "Above"))
-    work["Bollinger"] = work["Ticker"].map(lambda t: TECHNICAL_SHELL.get(t, {}).get("Bollinger", "Mid Band"))
+    # Prefer inline row data if present; fall back to TECHNICAL_SHELL
+    if "RSI State" not in work.columns:
+        work["RSI State"] = work["Ticker"].map(lambda t: TECHNICAL_SHELL.get(t, {}).get("RSI State", "Neutral"))
+    if "MACD Timeframe" not in work.columns:
+        work["MACD Timeframe"] = work["Ticker"].map(lambda t: TECHNICAL_SHELL.get(t, {}).get("MACD Timeframe", "Daily"))
+    if "MACD Zero" not in work.columns:
+        work["MACD Zero"] = work["Ticker"].map(lambda t: TECHNICAL_SHELL.get(t, {}).get("MACD Zero", "Above"))
+    if "Bollinger" not in work.columns:
+        work["Bollinger"] = work["Ticker"].map(lambda t: TECHNICAL_SHELL.get(t, {}).get("Bollinger", "Mid Band"))
     return work
+
+
+def conviction_label(score: int) -> str:
+    """Return a plain-English conviction tier for a strategy-fit score."""
+    if score >= 90:
+        return "Elite"
+    if score >= 80:
+        return "Strong"
+    if score >= 70:
+        return "Solid"
+    if score >= 60:
+        return "Moderate"
+    return "Developing"
 
 
 def filter_scanner(strategy: str, min_score: int, max_delta: float, min_confluence: int, biases: List[str], liquidity_choices: List[str], max_dte: int) -> pd.DataFrame:
@@ -13067,139 +13108,146 @@ nav = st.radio(
 )
 
 if nav == "Scanner":
-    top = st.columns([1.06, 1.44], gap="large")
-    with top[0]:
-        open_panel("Scanner Filters", "Core product", "Use the filters to narrow candidates before reviewing the best matches on the right.")
-        strategy_options = ["All", "CC & CSP", "Credit Spread", "LEAPS", "Buy-Write"]
-        bias_options = ["Any", "Bullish", "Neutral", "Bearish"]
-        market_cap_options = ["Any", "Mega Cap", "Large Cap", "Mid Cap", "ETF"]
-        price_band_options = ["Any", "Under $10", "$10 to $50", "$50 to $200", "Over $200"]
-        liquidity_options = ["Any", "Excellent", "Good"]
-        rsi_options = ["Any", "Oversold", "Neutral", "Overbought"]
-        macd_options = ["Any", "5-Minute", "Hourly", "Daily", "Weekly"]
-        bollinger_options = ["Any", "Lower Band", "Mid Band", "Upper Half", "Upper Band"]
-        delta_choices = [round(x / 100, 2) for x in range(10, 41)]
-        score_choices = list(range(50, 101))
-        confluence_choices = list(range(4, 11))
-        dte_choices = [1, 2, 3, 4, 5, 6, 7, 14, 21, 30, 45, 60, 90, 180, 365]
+    # ── Strategy defaults: each strategy auto-populates the filter row ─────
+    _SC_DEFAULTS = {
+        "Covered Call":     {"bias": "Bullish", "bollinger": "Upper Band",  "rsi": "Overbought", "max_dte": 21,   "max_delta": 0.30},
+        "Cash-Secured Put": {"bias": "Bullish", "bollinger": "Lower Band",  "rsi": "Oversold",   "max_dte": 30,   "max_delta": 0.25},
+        "Credit Spread":    {"bias": "Bullish", "bollinger": "Mid Band",    "rsi": "Neutral",    "max_dte": 45,   "max_delta": 0.20},
+        "LEAPS":            {"bias": "Bullish", "bollinger": "Any",         "rsi": "Any",        "max_dte": 9999, "max_delta": 0.65},
+        "Buy-Write":        {"bias": "Neutral", "bollinger": "Mid Band",    "rsi": "Neutral",    "max_dte": 30,   "max_delta": 0.30},
+        "Buy Call":         {"bias": "Bullish", "bollinger": "Lower Band",  "rsi": "Oversold",   "max_dte": 45,   "max_delta": 0.55},
+        "Buy Put":          {"bias": "Bearish", "bollinger": "Upper Band",  "rsi": "Overbought", "max_dte": 30,   "max_delta": 0.45},
+        "Stock":            {"bias": "Bullish", "bollinger": "Lower Band",  "rsi": "Oversold",   "max_dte": 9999, "max_delta": 1.00},
+    }
+    _SC_LIST = list(_SC_DEFAULTS.keys())
 
-        row1 = st.columns(3, gap="medium")
-        with row1[0]:
-            with st.container(border=True):
-                render_html("<div class='mc-filter-card-title mc-scanner-card-scope'>" + control_header("Strategy", "Choose which strategy playbook the scanner should favor.") + "</div>")
-                strategy = st.selectbox("Strategy", strategy_options, index=1, label_visibility="collapsed", width="stretch")
-        with row1[1]:
-            with st.container(border=True):
-                render_html("<div class='mc-filter-card-title mc-scanner-card-scope'>" + control_header("Bias", "Bullish looks for upside posture, Neutral looks for balanced posture, and Bearish is reserved for weak or defensive posture.") + "</div>")
-                bias_choice = st.selectbox("Bias", bias_options, index=0, label_visibility="collapsed", width="stretch")
-        with row1[2]:
-            with st.container(border=True):
-                render_html("<div class='mc-filter-card-title mc-scanner-card-scope'>" + control_header("Market Cap", "Filter by company size.") + "</div>")
-                market_cap_choice = st.selectbox("Market Cap", market_cap_options, index=0, label_visibility="collapsed", width="stretch")
+    # Session state bootstrap
+    if "sc_strategy" not in st.session_state:
+        st.session_state["sc_strategy"] = "Covered Call"
+    if "sc_prev_strategy" not in st.session_state:
+        st.session_state["sc_prev_strategy"] = ""
 
-        row2 = st.columns(3, gap="medium")
-        with row2[0]:
-            with st.container(border=True):
-                render_html("<div class='mc-filter-card-title mc-scanner-card-scope'>" + control_header("Price Band", "Filter by share-price comfort.") + "</div>")
-                price_band_choice = st.selectbox("Price Band", price_band_options, index=0, label_visibility="collapsed", width="stretch")
-        with row2[1]:
-            with st.container(border=True):
-                render_html("<div class='mc-filter-card-title mc-scanner-card-scope'>" + control_header("Liquidity", "Keep the scan focused on names that should trade more cleanly.") + "</div>")
-                liquidity_choice = st.selectbox("Liquidity", liquidity_options, index=0, label_visibility="collapsed", width="stretch")
-        with row2[2]:
-            with st.container(border=True):
-                render_html("<div class='mc-filter-card-title mc-scanner-card-scope'>" + control_header("RSI State", "Oversold means 30 or lower, Overbought means 70 or higher, and Neutral covers the middle.") + "</div>")
-                rsi_choice = st.selectbox("RSI State", rsi_options, index=0, label_visibility="collapsed", width="stretch")
+    open_panel("Strategy Scanner", "Strategy-first · one-page · auto-filters", "Select a strategy — filters load automatically based on what that setup requires. Adjust any filter to narrow the results further.")
 
-        row3 = st.columns(3, gap="medium")
-        with row3[0]:
-            with st.container(border=True):
-                render_html("<div class='mc-filter-card-title mc-scanner-card-scope'>" + control_header("MACD Timeframe", "Choose the timeframe whose MACD condition you care about most in this pass.") + "</div>")
-                macd_choice = st.selectbox("MACD Timeframe", macd_options, index=0, label_visibility="collapsed", width="stretch")
-        with row3[1]:
-            with st.container(border=True):
-                render_html("<div class='mc-filter-card-title mc-scanner-card-scope'>" + control_header("Bollinger Posture", "Shows where price sits inside the Bollinger structure.") + "</div>")
-                bollinger_choice = st.selectbox("Bollinger Posture", bollinger_options, index=0, label_visibility="collapsed", width="stretch")
-        with row3[2]:
-            with st.container(border=True):
-                render_html("<div class='mc-filter-card-title mc-scanner-card-scope'>" + control_header("Minimum Score", "Lowest composite strategy-fit score allowed through.") + "</div>")
-                min_score = st.selectbox("Minimum score", score_choices, index=score_choices.index(72), label_visibility="collapsed", width="stretch")
+    # ── Strategy radio (horizontal pill row) ───────────────────────────────
+    sc_strat = st.radio(
+        "Strategy",
+        _SC_LIST,
+        index=_SC_LIST.index(st.session_state["sc_strategy"]),
+        horizontal=True,
+        label_visibility="collapsed",
+    )
 
-        row4 = st.columns(3, gap="medium")
-        with row4[0]:
-            with st.container(border=True):
-                render_html("<div class='mc-filter-card-title mc-scanner-card-scope'>" + control_header("Maximum Short Delta", "Highest short-option delta you want the scanner to accept when it suggests a strike.") + "</div>")
-                max_delta = st.selectbox("Maximum short delta", delta_choices, index=delta_choices.index(0.25), label_visibility="collapsed", width="stretch")
-        with row4[1]:
-            with st.container(border=True):
-                render_html("<div class='mc-filter-card-title mc-scanner-card-scope'>" + control_header("Minimum Confluence", "How many supporting factors must line up before a candidate is allowed through.") + "</div>")
-                min_confluence = st.selectbox("Minimum confluence", confluence_choices, index=confluence_choices.index(6), label_visibility="collapsed", width="stretch")
-        with row4[2]:
-            with st.container(border=True):
-                render_html("<div class='mc-filter-card-title mc-scanner-card-scope'>" + control_header("Maximum DTE", "How far out the scanner is allowed to look for candidate option structures.") + "</div>")
-                max_dte = st.selectbox("Maximum DTE", dte_choices, index=dte_choices.index(45), label_visibility="collapsed", width="stretch")
+    # Auto-populate filters when strategy changes (runs on same cycle — no rerun needed)
+    if sc_strat != st.session_state.get("sc_prev_strategy"):
+        _d = _SC_DEFAULTS[sc_strat]
+        st.session_state["sc_strategy"]      = sc_strat
+        st.session_state["sc_prev_strategy"] = sc_strat
+        st.session_state["sc_bias"]          = _d["bias"]
+        st.session_state["sc_bollinger"]     = _d["bollinger"]
+        st.session_state["sc_rsi"]           = _d["rsi"]
+        st.session_state["sc_max_dte"]       = _d["max_dte"]
+        st.session_state["sc_max_delta"]     = _d["max_delta"]
 
-        with st.expander("Filter guide"):
-            st.markdown("""
-- **Strategy** tells the scanner which playbook it should favor.
-- **Bias** shapes the directional posture of the output.
-- **Market Cap** and **Price Band** are quick comfort filters.
-- **Minimum Score** is the lowest fit score you will allow through.
-- **Maximum Short Delta** helps control how aggressive the suggested strike can be.
-- **Minimum Confluence** is the minimum number of lined-up factors required.
-- **RSI State**, **MACD Timeframe**, and **Bollinger Posture** are the technical state filters in this shell.
-            """)
-        close_panel()
+    st.markdown("<div style='height:0.2rem;'></div>", unsafe_allow_html=True)
 
-    biases = [] if bias_choice == "Any" else [bias_choice]
-    liquidity_choices = [] if liquidity_choice == "Any" else [liquidity_choice]
-    scanner_df = filter_scanner(strategy, int(min_score), float(max_delta), int(min_confluence), biases, liquidity_choices, int(max_dte))
+    # ── Filter row (5 inline dropdowns, auto-set from strategy) ───────────
+    _bias_opts  = ["Any", "Bullish", "Neutral", "Bearish"]
+    _boll_opts  = ["Any", "Lower Band", "Mid Band", "Upper Half", "Upper Band"]
+    _rsi_opts   = ["Any", "Oversold", "Neutral", "Overbought"]
+    _dte_vals   = [7, 14, 21, 30, 45, 60, 90, 180, 365, 9999]
+    _dte_labels = ["≤7 DTE", "≤14 DTE", "≤21 DTE", "≤30 DTE", "≤45 DTE", "≤60 DTE", "≤90 DTE", "≤180 DTE", "≤365 DTE", "Any DTE"]
+    _delta_vals   = [0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.80, 1.00]
+    _delta_labels = ["≤0.10 Δ", "≤0.15 Δ", "≤0.20 Δ", "≤0.25 Δ", "≤0.30 Δ", "≤0.35 Δ", "≤0.40 Δ", "≤0.45 Δ", "≤0.50 Δ", "≤0.55 Δ", "≤0.60 Δ", "≤0.65 Δ", "≤0.70 Δ", "≤0.80 Δ", "Any Δ"]
 
-    if market_cap_choice != "Any":
-        scanner_df = scanner_df[scanner_df["Market Cap"] == market_cap_choice]
-    if price_band_choice != "Any":
-        scanner_df = scanner_df[scanner_df["Price Band"] == price_band_choice]
-    if rsi_choice != "Any":
-        scanner_df = scanner_df[scanner_df["RSI State"] == rsi_choice]
-    if macd_choice != "Any":
-        scanner_df = scanner_df[scanner_df["MACD Timeframe"] == macd_choice]
-    if bollinger_choice != "Any":
-        scanner_df = scanner_df[scanner_df["Bollinger"] == bollinger_choice]
-    scanner_df = scanner_df.reset_index(drop=True)
+    def _safe_idx(lst, val, default=0):
+        try:
+            return lst.index(val)
+        except (ValueError, TypeError):
+            return default
 
-    with top[1]:
-        open_panel("Scanner Output", "Best candidates", "Strategy determines which candidate list rises to the top, while Analyze answers whether a specific ticker fits a specific strategy right now.")
-        if not scanner_df.empty:
-            best = scanner_df.iloc[0]
-            cols = st.columns([1.02, 0.92, 0.98, 0.78])
-            metrics = [
-                ("Top candidate", f"{best['Ticker']} • {best['Strategy']}", best["Note"]),
-                ("Bias / trend", f"{best['Bias']} • {best['Trend']}", f"Confluence: {best['Confluence']}"),
-                ("Technical state", f"{best['RSI State']} • {best['MACD Timeframe']}", f"Bollinger: {best['Bollinger']}"),
-                ("Score", f"{best['Score']}", f"Liquidity: {best['Liquidity']}"),
-            ]
-            for col, (label, value, note) in zip(cols, metrics):
-                with col:
-                    render_metric(label, value, note)
+    _fc = st.columns(5, gap="small")
+    with _fc[0]:
+        _bias_val = st.selectbox("Bias", _bias_opts, index=_safe_idx(_bias_opts, st.session_state.get("sc_bias", "Bullish")), label_visibility="visible")
+    with _fc[1]:
+        _boll_val = st.selectbox("Bollinger", _boll_opts, index=_safe_idx(_boll_opts, st.session_state.get("sc_bollinger", "Any")), label_visibility="visible")
+    with _fc[2]:
+        _rsi_val  = st.selectbox("RSI State", _rsi_opts, index=_safe_idx(_rsi_opts, st.session_state.get("sc_rsi", "Any")), label_visibility="visible")
+    with _fc[3]:
+        _cur_dte  = st.session_state.get("sc_max_dte", 45)
+        _dte_idx  = _safe_idx(_dte_vals, _cur_dte, default=4)
+        _dte_lbl  = st.selectbox("Max DTE", _dte_labels, index=_dte_idx, label_visibility="visible")
+        _max_dte  = _dte_vals[_dte_labels.index(_dte_lbl)]
+    with _fc[4]:
+        _cur_delta  = st.session_state.get("sc_max_delta", 0.30)
+        _delta_idx  = _safe_idx(_delta_vals, _cur_delta, default=4)
+        _delta_lbl  = st.selectbox("Max Delta", _delta_labels, index=_delta_idx, label_visibility="visible")
+        _max_delta  = _delta_vals[_delta_labels.index(_delta_lbl)]
 
-            st.markdown("<div style='height:0.35rem;'></div>", unsafe_allow_html=True)
-            render_html(
-                "<div class='mc-shell-note'><strong>Scanner note:</strong> "
-                "Price is the underlying share price. Est. Prem is still a shell-model option premium placeholder, "
-                "not yet a live contract quote tied to a specific strike. Delta and DTE are model filters, not live chain selections.</div>"
-            )
-            show_df = scanner_df.copy()
-            show_df["Price"] = show_df["Price"].map(format_price)
-            show_df["Tech State"] = show_df["RSI State"] + " • " + show_df["MACD Timeframe"]
-            show_df["Est. Prem"] = show_df["Premium"].map(format_price)
-            show_df["Delta"] = show_df["Delta"].map(lambda value: f"{float(value):.2f}")
-            show_df["DTE"] = show_df["DTE"].map(lambda value: int(value))
-            show_df["Conf."] = show_df["Confluence"]
-            show_df = show_df[["Ticker", "Price", "Strategy", "Bias", "Trend", "Market Cap", "Tech State", "Est. Prem", "Delta", "DTE", "Conf.", "Score"]]
-            render_table(show_df)
-        else:
-            st.info("No candidates matched those settings.")
-        close_panel()
+    # Persist any manual filter tweaks back to session state
+    st.session_state["sc_bias"]      = _bias_val
+    st.session_state["sc_bollinger"] = _boll_val
+    st.session_state["sc_rsi"]       = _rsi_val
+    st.session_state["sc_max_dte"]   = _max_dte
+    st.session_state["sc_max_delta"] = _max_delta
+
+    st.markdown("<div style='height:0.2rem;'></div>", unsafe_allow_html=True)
+
+    # ── Filter the data ────────────────────────────────────────────────────
+    _sc_df = pd.DataFrame(SCANNER_ROWS)
+    _sc_df = _sc_df[_sc_df["Strategy"] == sc_strat]
+    if _bias_val != "Any":
+        _sc_df = _sc_df[_sc_df["Bias"] == _bias_val]
+    if _boll_val != "Any":
+        _sc_df = _sc_df[_sc_df["Bollinger"] == _boll_val]
+    if _rsi_val != "Any":
+        _sc_df = _sc_df[_sc_df["RSI State"] == _rsi_val]
+    if _max_dte < 9999:
+        _sc_df = _sc_df[_sc_df["DTE"] <= _max_dte]
+    if sc_strat != "Stock" and _max_delta < 1.00:
+        _sc_df = _sc_df[_sc_df["Delta"] <= _max_delta]
+    _sc_df = _sc_df.sort_values(["Score", "Confluence"], ascending=[False, False]).reset_index(drop=True)
+    _sc_df = enrich_scanner_df(_sc_df)
+
+    # ── Results ────────────────────────────────────────────────────────────
+    if not _sc_df.empty:
+        _best = _sc_df.iloc[0]
+        _note_short = _best["Note"][:72] + "…" if len(_best.get("Note", "")) > 72 else _best.get("Note", "")
+        _mc = st.columns(4, gap="small")
+        with _mc[0]:
+            render_metric("Top Pick", str(_best["Ticker"]), _note_short)
+        with _mc[1]:
+            render_metric("Score", str(_best["Score"]), f"Conviction: {conviction_label(int(_best['Score']))}")
+        with _mc[2]:
+            render_metric("Setup", f"{_best['Bollinger']}", f"RSI: {_best['RSI State']}")
+        with _mc[3]:
+            _prem_str = format_price(_best["Premium"]) if float(_best.get("Premium", 0)) > 0 else "—"
+            _delta_str = f"{float(_best['Delta']):.2f}" if float(_best.get("Delta", 1)) < 1.0 else "—"
+            _dte_str = str(int(_best["DTE"])) if int(_best.get("DTE", 0)) > 0 else "—"
+            render_metric("Est. Premium", _prem_str, f"Δ {_delta_str} · DTE {_dte_str}")
+
+        st.markdown("<div style='height:0.3rem;'></div>", unsafe_allow_html=True)
+
+        _show = _sc_df.copy()
+        _show["Conviction"] = _show["Score"].apply(lambda s: conviction_label(int(s)))
+        _show["Price"]      = _show["Price"].map(format_price)
+        _show["Est. Prem"]  = _show["Premium"].apply(lambda v: format_price(float(v)) if float(v) > 0 else "—")
+        _show["Delta"]      = _show["Delta"].apply(lambda v: f"{float(v):.2f}" if float(v) < 1.0 else "—")
+        _show["DTE"]        = _show["DTE"].apply(lambda v: str(int(v)) if int(v) > 0 else "—")
+        _show["Conf."]      = _show["Confluence"]
+        _sc_cols = ["Ticker", "Price", "Bias", "Bollinger", "RSI State", "Est. Prem", "Delta", "DTE", "Conf.", "Score", "Conviction"]
+        render_table(_show[_sc_cols])
+
+        render_html(
+            "<div class='mc-shell-note'><strong>Scanner note:</strong> "
+            "Est. Premium is a model placeholder — not a live contract quote tied to a specific strike. "
+            "Bollinger and RSI reflect the condition that qualifies this ticker for the selected strategy. "
+            "Use Analyze to pressure-test any specific name.</div>"
+        )
+    else:
+        st.info("No candidates matched — try relaxing a filter or switching strategies.")
+
+    close_panel()
 
 elif nav == "Analyze":
     row = st.columns([0.92, 1.48], gap="large")
