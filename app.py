@@ -605,6 +605,82 @@ def inject_styles() -> None:
             color: var(--text); font-weight:800;
         }
         .mc-footer-note {color:var(--muted); font-size:0.82rem; text-align:center; margin-top:0.45rem;}
+        /* ── Big nav buttons ───────────────────────────────────────────── */
+        .mc-nav-wrap { display:flex; gap:0.5rem; margin:0.9rem 0 0.5rem 0; }
+        .mc-nav-btn {
+            flex:1; padding:0.85rem 0.5rem; border-radius:10px; cursor:pointer;
+            border:1px solid rgba(208,226,246,0.18); background:rgba(15,25,45,0.7);
+            color:var(--muted); font-size:0.82rem; font-weight:700; text-align:center;
+            letter-spacing:0.04em; text-transform:uppercase; transition:all 0.18s;
+            position:relative; user-select:none;
+        }
+        .mc-nav-btn:hover { border-color:rgba(108,192,64,0.5); color:var(--text); background:rgba(108,192,64,0.07); }
+        .mc-nav-btn.active {
+            background:rgba(108,192,64,0.14); border-color:var(--accent);
+            color:var(--text); box-shadow:0 0 0 1px rgba(108,192,64,0.35);
+        }
+        .mc-nav-icon { font-size:1.3rem; display:block; margin-bottom:0.3rem; }
+        .mc-nav-label { font-size:0.75rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+        .mc-nav-sub { font-size:0.62rem; color:var(--muted); font-weight:500; margin-top:0.15rem; letter-spacing:0.02em; text-transform:none; }
+        /* ── CSS tooltip system ────────────────────────────────────────── */
+        .mc-tip { position:relative; display:inline-block; cursor:help; }
+        .mc-tip::after {
+            content: attr(data-tip);
+            position:absolute; bottom:calc(100% + 10px); left:50%;
+            transform:translateX(-50%); min-width:240px; max-width:300px;
+            background:#0d1f38; color:#d0e2f6; padding:0.6rem 0.8rem;
+            border-radius:8px; font-size:0.72rem; line-height:1.55;
+            font-weight:400; letter-spacing:0.01em; text-transform:none;
+            border:1px solid rgba(108,192,64,0.35);
+            box-shadow:0 6px 20px rgba(0,0,0,0.55);
+            white-space:pre-wrap; word-break:normal;
+            opacity:0; pointer-events:none; transition:opacity 0.18s;
+            z-index:9999;
+        }
+        .mc-tip:hover::after { opacity:1; }
+        .mc-tip-left::after { left:0; transform:none; }
+        .mc-tip-right::after { left:auto; right:0; transform:none; }
+        /* ── Strategy strategy-pill row ────────────────────────────────── */
+        .mc-strat-row { display:flex; flex-wrap:wrap; gap:0.45rem; margin:0.6rem 0; }
+        .mc-strat-pill {
+            padding:0.38rem 0.85rem; border-radius:999px; cursor:pointer;
+            border:1px solid rgba(208,226,246,0.2); background:rgba(15,25,45,0.6);
+            color:var(--muted); font-size:0.74rem; font-weight:700;
+            letter-spacing:0.04em; transition:all 0.15s; position:relative;
+        }
+        .mc-strat-pill:hover { border-color:rgba(108,192,64,0.5); color:var(--text); }
+        .mc-strat-pill.active { background:rgba(108,192,64,0.18); border-color:var(--accent); color:var(--text); }
+        /* ── Filter grid ────────────────────────────────────────────────── */
+        .mc-filter-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0.55rem; margin:0.5rem 0; }
+        .mc-filter-cell { display:flex; flex-direction:column; gap:0.15rem; }
+        .mc-filter-lbl { font-size:0.68rem; color:var(--muted); font-weight:600; letter-spacing:0.08em; text-transform:uppercase; }
+        /* ── Top-pick card ──────────────────────────────────────────────── */
+        .mc-pick-card {
+            display:grid; grid-template-columns:auto 1fr 1fr 1fr 1fr;
+            gap:0.6rem 1.1rem; align-items:center;
+            padding:0.65rem 0.9rem; border-radius:8px;
+            background:rgba(108,192,64,0.07); border-left:3px solid var(--accent);
+            margin-bottom:0.6rem;
+        }
+        .mc-pick-ticker { font-size:1.8rem; font-weight:900; color:var(--text); letter-spacing:0.04em; line-height:1; }
+        .mc-pick-cell { display:flex; flex-direction:column; gap:0.08rem; }
+        .mc-pick-lbl { font-size:0.65rem; color:var(--muted); font-weight:600; letter-spacing:0.08em; text-transform:uppercase; }
+        .mc-pick-val { font-size:0.92rem; font-weight:800; color:var(--text); }
+        .mc-pick-note { font-size:0.7rem; color:var(--muted); font-style:italic; grid-column:1/-1; margin-top:0.1rem; }
+        /* ── Conviction colors ──────────────────────────────────────────── */
+        .cv-elite     { color:#6DC040; }
+        .cv-strong    { color:#4db8ff; }
+        .cv-solid     { color:#f0c040; }
+        .cv-moderate  { color:#aaa; }
+        .cv-developing{ color:#666; }
+        /* ── Scrollable table ───────────────────────────────────────────── */
+        .sc-table-wrap { max-height:420px; overflow-y:auto; border-radius:6px; }
+        .sc-table-wrap::-webkit-scrollbar { width:4px; }
+        .sc-table-wrap::-webkit-scrollbar-thumb { background:rgba(108,192,64,0.45); border-radius:3px; }
+        /* ── Section header ─────────────────────────────────────────────── */
+        .mc-section-hdr { padding-bottom:0.45rem; border-bottom:1px solid rgba(208,226,246,0.12); margin-bottom:0.75rem; }
+        .mc-section-title { font-size:1.0rem; font-weight:800; color:var(--text); letter-spacing:0.05em; text-transform:uppercase; }
+        .mc-section-sub { font-size:0.72rem; color:var(--muted); margin-top:0.15rem; }
         /* ── Scanner compact styles ─────────────────────────────────────── */
         .sc-header { display:flex; align-items:baseline; gap:0.6rem; padding-bottom:0.45rem; border-bottom:1px solid rgba(208,226,246,0.12); margin-bottom:0.6rem; }
         .sc-header-title { font-size:0.9rem; font-weight:800; color:var(--text); letter-spacing:0.06em; text-transform:uppercase; }
@@ -934,11 +1010,7 @@ def render_masthead() -> None:
                         </div>
                     </div>
                 </div>
-                <div class='mc-status-grid'>
-                    <div class='mc-status-card'><div class='mc-status-kicker'>Primary product</div><div class='mc-status-value'>Options Scanner</div></div>
-                    <div class='mc-status-card'><div class='mc-status-kicker'>Scorecard module</div><div class='mc-status-value'>Ticker Analysis</div></div>
-                    <div class='mc-status-card'><div class='mc-status-kicker'>Education layer</div><div class='mc-status-value'>Videos + Playbooks</div></div>
-                </div>
+
             </div>
         </div>
         """
@@ -13193,34 +13265,90 @@ def render_radar_v3_module() -> None:
 inject_styles()
 render_masthead()
 
-nav = st.radio(
-    "Platform",
-    ["Scanner", "Analyze", "Learn", "DELTA", "Ask RADAR"],
-    horizontal=True,
-    label_visibility="collapsed",
-)
+# ── Session-state navigation ─────────────────────────────────────────────
+_NAV_ITEMS = [
+    ("scanner",  "🔍", "Option Scanner",   "Strategy-first scanner",
+     "Surface the best trade candidates for any strategy.\nFilters auto-load when you pick a strategy.\nAdjust any filter to narrow the list further.\nUse Analyze to pressure-test a specific name."),
+    ("analyze",  "📊", "Ticker Analysis",  "Scorecard & fit",
+     "Enter any ticker symbol and get a full strategy scorecard.\nSee which setup — CC, CSP, Spread, LEAPS, Buy-Write — fits best right now.\nDriven by technical posture, IV rank, trend, and confluence."),
+    ("learn",    "🎓", "Education",        "Videos & playbooks",
+     "Strategy videos from Practical Income Investing.\nPlaybooks that explain the rules for each strategy.\nSuitable for newer traders and a useful reference for experienced ones."),
+    ("delta",    "Δ",  "DELTA",            "Payoff diagrams",
+     "Visual payoff diagrams for any option structure.\nMap your risk, reward, and breakeven before you place the trade."),
+    ("radar",    "🤖", "Ask RADAR",        "AI research assistant",
+     "Ask RADAR anything about strategies, setups, market conditions,\nor how to interpret scanner output.\nPowered by AI trained on Practical Income Investing methodology."),
+]
+if "mc_nav" not in st.session_state:
+    st.session_state["mc_nav"] = "scanner"
 
-if nav == "Scanner":
-    # ── Strategy defaults ────────────────────────────────────────────────────
+# Render nav bar
+_nav_html = "<div class='mc-nav-wrap'>"
+for _key, _icon, _label, _sub, _tip in _NAV_ITEMS:
+    _active_cls = "active" if st.session_state["mc_nav"] == _key else ""
+    _safe_tip = _tip.replace('"', '&quot;')
+    _nav_html += (
+        f"<div class='mc-nav-btn {_active_cls} mc-tip' data-tip='{_safe_tip}'>"
+        f"<span class='mc-nav-icon'>{_icon}</span>"
+        f"<div class='mc-nav-label'>{_label}</div>"
+        f"<div class='mc-nav-sub'>{_sub}</div>"
+        f"</div>"
+    )
+_nav_html += "</div>"
+render_html(_nav_html)
+
+# Invisible radio drives actual tab switching (buttons are visual only)
+_nav_labels = [n[2] for n in _NAV_ITEMS]
+_nav_keys   = [n[0] for n in _NAV_ITEMS]
+_nav_cols = st.columns(5, gap="small")
+for _ci, (_col, (_key, _icon, _label, _sub, _tip)) in enumerate(zip(_nav_cols, _NAV_ITEMS)):
+    with _col:
+        if st.button(_label, key=f"_navbtn_{_key}", use_container_width=True,
+                     type="primary" if st.session_state["mc_nav"] == _key else "secondary"):
+            st.session_state["mc_nav"] = _key
+            st.rerun()
+
+nav = st.session_state["mc_nav"]
+
+# Divider
+render_html("<hr style='border:none;border-top:1px solid rgba(208,226,246,0.1);margin:0.2rem 0 0.8rem 0;'>")
+
+if nav == "scanner":
+    # ── Strategy defaults (auto-populate filters) ─────────────────────────
     _SC_DEFAULTS = {
-        "Covered Call":     {"bias":"Bullish","bollinger":"Upper Band", "rsi":"Overbought","max_dte":21,  "max_delta":0.30},
-        "Cash-Secured Put": {"bias":"Bullish","bollinger":"Lower Band", "rsi":"Oversold",  "max_dte":30,  "max_delta":0.25},
-        "Credit Spread":    {"bias":"Bullish","bollinger":"Mid Band",   "rsi":"Neutral",   "max_dte":45,  "max_delta":0.20},
-        "LEAPS":            {"bias":"Bullish","bollinger":"Any",        "rsi":"Any",       "max_dte":9999,"max_delta":0.65},
-        "Buy-Write":        {"bias":"Neutral","bollinger":"Mid Band",   "rsi":"Neutral",   "max_dte":30,  "max_delta":0.30},
-        "Buy Call":         {"bias":"Bullish","bollinger":"Lower Band", "rsi":"Oversold",  "max_dte":45,  "max_delta":0.55},
-        "Buy Put":          {"bias":"Bearish","bollinger":"Upper Band", "rsi":"Overbought","max_dte":30,  "max_delta":0.45},
-        "Stock":            {"bias":"Bullish","bollinger":"Lower Band", "rsi":"Oversold",  "max_dte":9999,"max_delta":1.00},
+        "Covered Call":     {"bias":"Bullish","bollinger":"Upper Band", "rsi":"Overbought","max_dte":21,  "max_delta":0.30,"liq":"Excellent","iv_min":45,"mkt":"Any","price":"Any","min_score":75,"min_conf":7},
+        "Cash-Secured Put": {"bias":"Bullish","bollinger":"Lower Band", "rsi":"Oversold",  "max_dte":30,  "max_delta":0.25,"liq":"Excellent","iv_min":40,"mkt":"Any","price":"Any","min_score":75,"min_conf":7},
+        "Credit Spread":    {"bias":"Bullish","bollinger":"Mid Band",   "rsi":"Neutral",   "max_dte":45,  "max_delta":0.20,"liq":"Excellent","iv_min":30,"mkt":"Any","price":"Any","min_score":70,"min_conf":6},
+        "LEAPS":            {"bias":"Bullish","bollinger":"Any",        "rsi":"Any",       "max_dte":9999,"max_delta":0.65,"liq":"Any",      "iv_min":0, "mkt":"Any","price":"Any","min_score":70,"min_conf":5},
+        "Buy-Write":        {"bias":"Neutral","bollinger":"Mid Band",   "rsi":"Neutral",   "max_dte":30,  "max_delta":0.30,"liq":"Excellent","iv_min":20,"mkt":"Any","price":"Any","min_score":70,"min_conf":5},
+        "Buy Call":         {"bias":"Bullish","bollinger":"Lower Band", "rsi":"Oversold",  "max_dte":45,  "max_delta":0.55,"liq":"Any",      "iv_min":0, "mkt":"Any","price":"Any","min_score":68,"min_conf":5},
+        "Buy Put":          {"bias":"Bearish","bollinger":"Upper Band", "rsi":"Overbought","max_dte":30,  "max_delta":0.45,"liq":"Any",      "iv_min":0, "mkt":"Any","price":"Any","min_score":65,"min_conf":4},
+        "Stock":            {"bias":"Bullish","bollinger":"Lower Band", "rsi":"Oversold",  "max_dte":9999,"max_delta":1.00,"liq":"Any",      "iv_min":0, "mkt":"Any","price":"Any","min_score":70,"min_conf":6},
     }
     _SC_LIST = list(_SC_DEFAULTS.keys())
 
     if "sc_strategy"      not in st.session_state: st.session_state["sc_strategy"]      = "Covered Call"
     if "sc_prev_strategy" not in st.session_state: st.session_state["sc_prev_strategy"] = ""
 
-    # ── Slim header ──────────────────────────────────────────────────────────
-    render_html("<div class='sc-header'><span class='sc-header-title'>Scanner</span><span class='sc-header-kicker'>Strategy-first · auto-filters · live scoring</span></div>")
+    # ── Section header ────────────────────────────────────────────────────
+    render_html(
+        "<div class='mc-section-hdr'>"
+        "<div class='mc-section-title'>Option Scanner</div>"
+        "<div class='mc-section-sub'>Select a strategy — filters load automatically. Adjust any filter to narrow results. Hover any label for an explanation.</div>"
+        "</div>"
+    )
 
-    # ── Strategy selector ────────────────────────────────────────────────────
+    # ── Strategy selector row ─────────────────────────────────────────────
+    render_html("<div style='font-size:0.68rem;color:var(--muted);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.35rem;'>Select Strategy</div>")
+    _strat_tips = {
+        "Covered Call":     "Sell a call against shares you own.\nBest near upper Bollinger Band with elevated RSI.\nCollect premium income and cap your upside.",
+        "Cash-Secured Put": "Sell a put with cash reserved to buy shares if assigned.\nBest near lower Bollinger Band with oversold RSI.\nOnly use on stocks you genuinely want to own.",
+        "Credit Spread":    "Sell one option, buy another further OTM to cap max loss.\nBest in mid-band with a clear trend.\nDefined risk — know your max loss before entry.",
+        "LEAPS":            "Buy a long-dated call (6–18+ months) with meaningful delta.\nBest when you have a strong multi-quarter thesis.\nCaptures upside with less capital than shares.",
+        "Buy-Write":        "Buy 100 shares and immediately sell a covered call.\nBest in mid-band when you want income right away.\nYou cap upside at the strike in exchange for premium.",
+        "Buy Call":         "Buy a call for directional upside with defined risk.\nBest when stock pulls back to support with oversold RSI.\nHigh IV makes bought options expensive — watch IV Rank.",
+        "Buy Put":          "Buy a put for downside exposure or portfolio protection.\nBest when stock is extended into resistance, RSI overbought.\nTiming matters more here than with selling strategies.",
+        "Stock":            "Direct share purchase — no options.\nBest when stock pulls back cleanly to support with oversold RSI.\nKnow your stop level before buying.",
+    }
     sc_strat = st.radio("Strategy", _SC_LIST,
                         index=_SC_LIST.index(st.session_state["sc_strategy"]),
                         horizontal=True, label_visibility="collapsed")
@@ -13229,111 +13357,227 @@ if nav == "Scanner":
         _d = _SC_DEFAULTS[sc_strat]
         st.session_state["sc_strategy"]      = sc_strat
         st.session_state["sc_prev_strategy"] = sc_strat
-        st.session_state["sc_bias"]          = _d["bias"]
-        st.session_state["sc_bollinger"]     = _d["bollinger"]
-        st.session_state["sc_rsi"]           = _d["rsi"]
-        st.session_state["sc_max_dte"]       = _d["max_dte"]
-        st.session_state["sc_max_delta"]     = _d["max_delta"]
+        for _k, _v in _d.items():
+            st.session_state[f"sc_{_k}"] = _v
 
-    # ── Filter row ───────────────────────────────────────────────────────────
-    _bias_opts    = ["Any","Bullish","Neutral","Bearish"]
-    _boll_opts    = ["Any","Lower Band","Mid Band","Upper Half","Upper Band"]
-    _rsi_opts     = ["Any","Oversold","Neutral","Overbought"]
-    _dte_vals     = [7,14,21,30,45,60,90,180,365,9999]
-    _dte_labels   = ["≤7","≤14","≤21","≤30","≤45","≤60","≤90","≤180","≤365","Any"]
-    _delta_vals   = [0.10,0.15,0.20,0.25,0.30,0.35,0.40,0.45,0.50,0.55,0.60,0.65,0.70,0.80,1.00]
-    _delta_labels = ["≤.10","≤.15","≤.20","≤.25","≤.30","≤.35","≤.40","≤.45","≤.50","≤.55","≤.60","≤.65","≤.70","≤.80","Any"]
+    st.markdown("<div style='height:0.1rem'></div>", unsafe_allow_html=True)
+
+    # ── Strategy tooltip strip (shows tip for active strategy) ────────────
+    _tip_text = _strat_tips.get(sc_strat, "")
+    _safe_tip = _tip_text.replace('"', '&quot;')
+    render_html(
+        f"<div style='font-size:0.75rem;color:var(--muted);background:rgba(108,192,64,0.06);"
+        f"border-left:2px solid rgba(108,192,64,0.4);padding:0.35rem 0.65rem;border-radius:0 5px 5px 0;"
+        f"margin-bottom:0.65rem;line-height:1.5;'>{_tip_text.replace(chr(10), ' · ')}</div>"
+    )
+
+    # ── Filter row 1: Technical ───────────────────────────────────────────
+    def _tip_lbl(label, tip_key):
+        t = {
+            "Bias":       "Directional posture of the candidates shown.\nBullish = upside expected. Neutral = no strong lean. Bearish = downside expected.",
+            "Bollinger":  "Where price sits within its Bollinger Band.\nLower Band = oversold/support zone (CSP, Buy Call, Stock).\nMid Band = balanced (Spreads, Buy-Write).\nUpper Band = extended/resistance (Covered Call, Buy Put).",
+            "RSI State":  "Relative Strength Index reading.\nOversold ≤30 = fast drop, potential bounce.\nNeutral 31–69 = neither extreme.\nOverbought ≥70 = fast rise, potential pause or pullback.",
+            "Max DTE":    "Maximum Days To Expiration for the option contract.\nShorter = faster decay, more active. Longer = more time for thesis.\nCC/CSP: 14–30. Spreads: 30–45. LEAPS: 180–365.",
+            "Max Δ":      "Maximum delta you'll accept.\nLower delta = more OTM, less premium, lower assignment odds.\nHigher delta = deeper ITM, more premium.\nIncome strategies: 0.20–0.30 is a common conservative range.",
+            "IV Rank ≥":  "Minimum IV Rank filter.\nIV Rank shows where current IV sits vs. the past year.\nHigh (>50%) = elevated premium — better for selling.\nLow (<30%) = depressed premium — better for buying.",
+            "Liquidity":  "Option market quality.\nExcellent = tight bid/ask, high volume.\nGood = acceptable spreads.\nAvoid Poor — wide spreads destroy edge.",
+            "Market Cap": "Company size tier.\nMega Cap $200B+, Large Cap $10B–$200B, Mid Cap $2B–$10B, ETF.",
+            "Price Band": "Underlying share price range.\nHigher price = more capital required for CSPs and buy-writes.",
+            "Min Score":  "Minimum strategy-fit score to appear in results.\n90+ Elite · 80+ Strong · 70+ Solid · 60+ Moderate.",
+            "Min Conf.":  "Minimum number of aligned supporting factors required.\nHigher confluence = more signals agree = higher-quality setup.\n7+ means trend, Bollinger, RSI, IV, support, and MACD all align.",
+        }.get(tip_key, "")
+        safe = t.replace('"', '&quot;')
+        return f"<span class='mc-tip' data-tip='{safe}' style='font-size:0.68rem;color:var(--muted);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:help;'>{label}</span>"
 
     def _si(lst, val, d=0):
         try: return lst.index(val)
         except: return d
 
-    _fc = st.columns([1.2,1.4,1.3,0.9,1.0], gap="small")
-    with _fc[0]:
-        _bias_val = st.selectbox("Bias", _bias_opts, index=_si(_bias_opts, st.session_state.get("sc_bias","Bullish")))
-    with _fc[1]:
-        _boll_val = st.selectbox("Bollinger", _boll_opts, index=_si(_boll_opts, st.session_state.get("sc_bollinger","Any")))
-    with _fc[2]:
-        _rsi_val  = st.selectbox("RSI State", _rsi_opts, index=_si(_rsi_opts, st.session_state.get("sc_rsi","Any")))
-    with _fc[3]:
-        _dte_lbl  = st.selectbox("DTE", _dte_labels, index=_si(_dte_vals, st.session_state.get("sc_max_dte",45), 4))
-        _max_dte  = _dte_vals[_dte_labels.index(_dte_lbl)]
-    with _fc[4]:
-        _delta_lbl = st.selectbox("Max Δ", _delta_labels, index=_si(_delta_vals, st.session_state.get("sc_max_delta",0.30), 4))
-        _max_delta = _delta_vals[_delta_labels.index(_delta_lbl)]
+    _bias_opts   = ["Any","Bullish","Neutral","Bearish"]
+    _boll_opts   = ["Any","Lower Band","Mid Band","Upper Half","Upper Band"]
+    _rsi_opts    = ["Any","Oversold","Neutral","Overbought"]
+    _liq_opts    = ["Any","Excellent","Good"]
+    _mkt_opts    = ["Any","Mega Cap","Large Cap","Mid Cap","ETF"]
+    _price_opts  = ["Any","Under $10","$10 to $50","$50 to $200","Over $200"]
+    _dte_vals    = [7,14,21,30,45,60,90,180,365,9999]
+    _dte_lbs     = ["7","14","21","30","45","60","90","180","365","Any"]
+    _delta_vals  = [0.10,0.15,0.20,0.25,0.30,0.35,0.40,0.45,0.50,0.55,0.60,0.65,0.70,0.80,1.00]
+    _delta_lbs   = [".10",".15",".20",".25",".30",".35",".40",".45",".50",".55",".60",".65",".70",".80","Any"]
+    _iv_opts     = [0,10,20,30,40,50,60,70,80]
+    _iv_lbs      = ["Any","≥10%","≥20%","≥30%","≥40%","≥50%","≥60%","≥70%","≥80%"]
+    _score_opts  = list(range(50,101))
+    _conf_opts   = list(range(3,11))
 
-    st.session_state.update({"sc_bias":_bias_val,"sc_bollinger":_boll_val,"sc_rsi":_rsi_val,
-                              "sc_max_dte":_max_dte,"sc_max_delta":_max_delta})
+    st.markdown("<div style='height:0.1rem'></div>", unsafe_allow_html=True)
+    render_html("<div style='font-size:0.68rem;color:var(--muted);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem;'>Technical Filters</div>")
+    _fr1 = st.columns(4, gap="small")
+    with _fr1[0]:
+        render_html(_tip_lbl("Bias","Bias"))
+        _bias_val = st.selectbox("Bias",_bias_opts,index=_si(_bias_opts,st.session_state.get("sc_bias","Bullish")),label_visibility="collapsed")
+    with _fr1[1]:
+        render_html(_tip_lbl("Bollinger","Bollinger"))
+        _boll_val = st.selectbox("Bollinger",_boll_opts,index=_si(_boll_opts,st.session_state.get("sc_bollinger","Any")),label_visibility="collapsed")
+    with _fr1[2]:
+        render_html(_tip_lbl("RSI State","RSI State"))
+        _rsi_val  = st.selectbox("RSI",_rsi_opts,index=_si(_rsi_opts,st.session_state.get("sc_rsi","Any")),label_visibility="collapsed")
+    with _fr1[3]:
+        render_html(_tip_lbl("IV Rank ≥","IV Rank ≥"))
+        _iv_lb  = st.selectbox("IV Rank",_iv_lbs,index=_si(_iv_vals,st.session_state.get("sc_iv_min",0)),label_visibility="collapsed")
+        _iv_val = _iv_opts[_iv_lbs.index(_iv_lb)]
 
-    # ── Filter & sort ────────────────────────────────────────────────────────
+    render_html("<div style='font-size:0.68rem;color:var(--muted);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin:0.5rem 0 0.3rem 0;'>Option Filters</div>")
+    _fr2 = st.columns(4, gap="small")
+    with _fr2[0]:
+        render_html(_tip_lbl("Max DTE","Max DTE"))
+        _dte_lb  = st.selectbox("DTE",_dte_lbs,index=_si(_dte_vals,st.session_state.get("sc_max_dte",45),4),label_visibility="collapsed")
+        _max_dte = _dte_vals[_dte_lbs.index(_dte_lb)]
+    with _fr2[1]:
+        render_html(_tip_lbl("Max Δ","Max Δ"))
+        _dlt_lb    = st.selectbox("Delta",_delta_lbs,index=_si(_delta_vals,st.session_state.get("sc_max_delta",0.30),4),label_visibility="collapsed")
+        _max_delta = _delta_vals[_delta_lbs.index(_dlt_lb)]
+    with _fr2[2]:
+        render_html(_tip_lbl("Liquidity","Liquidity"))
+        _liq_val = st.selectbox("Liquidity",_liq_opts,index=_si(_liq_opts,st.session_state.get("sc_liq","Excellent")),label_visibility="collapsed")
+    with _fr2[3]:
+        render_html(_tip_lbl("Min Score","Min Score"))
+        _min_score = st.selectbox("Min Score",_score_opts,index=_si(_score_opts,st.session_state.get("sc_min_score",75),25),label_visibility="collapsed")
+
+    render_html("<div style='font-size:0.68rem;color:var(--muted);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin:0.5rem 0 0.3rem 0;'>Candidate Filters</div>")
+    _fr3 = st.columns(4, gap="small")
+    with _fr3[0]:
+        render_html(_tip_lbl("Min Conf.","Min Conf."))
+        _min_conf = st.selectbox("Min Confluence",_conf_opts,index=_si(_conf_opts,st.session_state.get("sc_min_conf",6),3),label_visibility="collapsed")
+    with _fr3[1]:
+        render_html(_tip_lbl("Market Cap","Market Cap"))
+        _mkt_val = st.selectbox("Market Cap",_mkt_opts,index=_si(_mkt_opts,st.session_state.get("sc_mkt","Any")),label_visibility="collapsed")
+    with _fr3[2]:
+        render_html(_tip_lbl("Price Band","Price Band"))
+        _price_val = st.selectbox("Price Band",_price_opts,index=_si(_price_opts,st.session_state.get("sc_price","Any")),label_visibility="collapsed")
+    with _fr3[3]:
+        st.markdown("<div style='height:1.4rem'></div>", unsafe_allow_html=True)
+        if st.button("Reset to Strategy Defaults", use_container_width=True):
+            _d = _SC_DEFAULTS[sc_strat]
+            for _k, _v in _d.items():
+                st.session_state[f"sc_{_k}"] = _v
+            st.rerun()
+
+    # Persist filter state
+    st.session_state.update({
+        "sc_bias":_bias_val,"sc_bollinger":_boll_val,"sc_rsi":_rsi_val,
+        "sc_iv_min":_iv_val,"sc_max_dte":_max_dte,"sc_max_delta":_max_delta,
+        "sc_liq":_liq_val,"sc_min_score":_min_score,"sc_min_conf":_min_conf,
+        "sc_mkt":_mkt_val,"sc_price":_price_val,
+    })
+
+    # ── Filter & sort data ────────────────────────────────────────────────
     _sc_df = pd.DataFrame(SCANNER_ROWS)
     _sc_df = _sc_df[_sc_df["Strategy"] == sc_strat]
-    if _bias_val != "Any":    _sc_df = _sc_df[_sc_df["Bias"]      == _bias_val]
-    if _boll_val != "Any":    _sc_df = _sc_df[_sc_df["Bollinger"] == _boll_val]
-    if _rsi_val  != "Any":    _sc_df = _sc_df[_sc_df["RSI State"] == _rsi_val]
-    if _max_dte  < 9999:      _sc_df = _sc_df[_sc_df["DTE"]       <= _max_dte]
-    if sc_strat != "Stock" and _max_delta < 1.00:
+    if _bias_val  != "Any": _sc_df = _sc_df[_sc_df["Bias"]      == _bias_val]
+    if _boll_val  != "Any": _sc_df = _sc_df[_sc_df["Bollinger"] == _boll_val]
+    if _rsi_val   != "Any": _sc_df = _sc_df[_sc_df["RSI State"] == _rsi_val]
+    if _iv_val    > 0:      _sc_df = _sc_df[_sc_df["IV Rank"]   >= _iv_val]
+    if _max_dte   < 9999:   _sc_df = _sc_df[_sc_df["DTE"]       <= _max_dte]
+    if sc_strat  != "Stock" and _max_delta < 1.00:
         _sc_df = _sc_df[_sc_df["Delta"] <= _max_delta]
-    _sc_df = _sc_df.sort_values(["Score","Confluence"], ascending=[False,False]).reset_index(drop=True)
+    if _liq_val  != "Any":  _sc_df = _sc_df[_sc_df["Liquidity"] == _liq_val]
+    _sc_df = _sc_df[_sc_df["Score"] >= _min_score]
+    _sc_df = _sc_df[_sc_df["Confluence"] >= _min_conf]
     _sc_df = enrich_scanner_df(_sc_df)
+    if _mkt_val  != "Any":  _sc_df = _sc_df[_sc_df["Market Cap"] == _mkt_val]
+    if _price_val!= "Any":  _sc_df = _sc_df[_sc_df["Price Band"] == _price_val]
+    _sc_df = _sc_df.sort_values(["Score","Confluence"], ascending=[False,False]).reset_index(drop=True)
 
-    # ── Compact top-pick bar ─────────────────────────────────────────────────
+    st.markdown("<div style='height:0.4rem'></div>", unsafe_allow_html=True)
+    render_html("<hr style='border:none;border-top:1px solid rgba(208,226,246,0.1);margin:0 0 0.7rem 0;'>")
+
+    # ── Results ───────────────────────────────────────────────────────────
+    render_html("<div style='font-size:0.68rem;color:var(--muted);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem;'>Scanner Results</div>")
+
     if not _sc_df.empty:
-        _b = _sc_df.iloc[0]
-        _cv = conviction_label(int(_b["Score"]))
-        _cv_cls = f"sc-conv-{_cv.lower()}"
-        _prem   = format_price(float(_b["Premium"])) if float(_b.get("Premium",0)) > 0 else "—"
-        _delt   = f"{float(_b['Delta']):.2f}"        if float(_b.get("Delta",1)) < 1.0  else "—"
-        _dte_d  = str(int(_b["DTE"]))               if int(_b.get("DTE",0)) > 0        else "—"
-        _note_s = (_b["Note"][:80] + "…") if len(_b.get("Note","")) > 80 else _b.get("Note","")
+        _b   = _sc_df.iloc[0]
+        _cv  = conviction_label(int(_b["Score"]))
+        _cv_cls = {"Elite":"cv-elite","Strong":"cv-strong","Solid":"cv-solid",
+                   "Moderate":"cv-moderate","Developing":"cv-developing"}.get(_cv,"cv-developing")
+        _prem  = format_price(float(_b["Premium"])) if float(_b.get("Premium",0)) > 0 else "—"
+        _delt  = f"{float(_b['Delta']):.2f}"        if float(_b.get("Delta",1)) < 1.0  else "—"
+        _dte_d = str(int(_b["DTE"]))               if int(_b.get("DTE",0)) > 0        else "—"
+        _note  = _b.get("Note","")
+
+        # Score breakdown tip
+        _score_breakdown = (
+            f"Score: {int(_b['Score'])} · {_cv}\n"
+            f"Confluence: {int(_b['Confluence'])}/10 factors aligned\n"
+            f"Bollinger: {_b['Bollinger']}\n"
+            f"RSI: {_b['RSI State']}\n"
+            f"IV Rank: {int(_b['IV Rank'])}%\n"
+            f"Trend: {_b['Trend']}\n"
+            f"Liquidity: {_b['Liquidity']}\n"
+            f"Strategy fit: {sc_strat}"
+        ).replace('"', '&quot;')
+
         render_html(
-            f"<div class='sc-top-bar'>"
-            f"<span class='sc-top-ticker'>{_b['Ticker']}</span>"
-            f"<span class='sc-top-div'>·</span>"
-            f"<span class='sc-top-label'>Score</span>&nbsp;<span class='sc-top-val'>{_b['Score']}</span>"
-            f"<span class='sc-top-div'>·</span>"
-            f"<span class='{_cv_cls}'>{_cv}</span>"
-            f"<span class='sc-top-div'>·</span>"
-            f"<span class='sc-top-val'>{_b['Bollinger']}</span>&nbsp;<span class='sc-top-label'>/ RSI {_b['RSI State']}</span>"
-            f"<span class='sc-top-div'>·</span>"
-            f"<span class='sc-top-label'>Prem</span>&nbsp;<span class='sc-top-val'>{_prem}</span>"
-            f"<span class='sc-top-div'>·</span>"
-            f"<span class='sc-top-label'>Δ</span>&nbsp;<span class='sc-top-val'>{_delt}</span>"
-            f"<span class='sc-top-div'>·</span>"
-            f"<span class='sc-top-label'>DTE</span>&nbsp;<span class='sc-top-val'>{_dte_d}</span>"
-            f"<span class='sc-top-div'>·</span>"
-            f"<span class='sc-top-note'>{_note_s}</span>"
+            f"<div class='mc-pick-card'>"
+            f"  <div class='mc-pick-ticker mc-tip' data-tip='{_score_breakdown}' style='cursor:help'>{_b['Ticker']}</div>"
+            f"  <div class='mc-pick-cell'>"
+            f"    <div class='mc-pick-lbl'>Score</div>"
+            f"    <div class='mc-pick-val mc-tip {_cv_cls}' data-tip='{_score_breakdown}' style='cursor:help'>{int(_b['Score'])} · {_cv}</div>"
+            f"  </div>"
+            f"  <div class='mc-pick-cell'>"
+            f"    <div class='mc-pick-lbl'>Setup</div>"
+            f"    <div class='mc-pick-val'>{_b['Bollinger']}</div>"
+            f"    <div style='font-size:0.7rem;color:var(--muted)'>RSI {_b['RSI State']}</div>"
+            f"  </div>"
+            f"  <div class='mc-pick-cell'>"
+            f"    <div class='mc-pick-lbl'>Est. Premium</div>"
+            f"    <div class='mc-pick-val'>{_prem}</div>"
+            f"    <div style='font-size:0.7rem;color:var(--muted)'>Δ {_delt} · DTE {_dte_d}</div>"
+            f"  </div>"
+            f"  <div class='mc-pick-cell'>"
+            f"    <div class='mc-pick-lbl'>IV Rank</div>"
+            f"    <div class='mc-pick-val'>{int(_b['IV Rank'])}%</div>"
+            f"    <div style='font-size:0.7rem;color:var(--muted)'>{_b['Liquidity']} liquidity</div>"
+            f"  </div>"
+            f"  <div class='mc-pick-note'>{_note}</div>"
             f"</div>"
         )
 
-        # ── Scrollable results table ─────────────────────────────────────────
+        # Table
         _show = _sc_df.copy()
-        def _conv_chip(s):
-            _colors = {"Elite":"green","Strong":"blue","Solid":"yellow","Moderate":"gray","Developing":"gray"}
-            return chip(conviction_label(int(s)), _colors.get(conviction_label(int(s)), "gray"))
-        _show["Conviction"] = _show["Score"].apply(_conv_chip)
+        def _cv_chip(s):
+            _lbl = conviction_label(int(s))
+            _col = {"Elite":"green","Strong":"blue","Solid":"yellow","Moderate":"gray","Developing":"gray"}.get(_lbl,"gray")
+            return chip(_lbl, _col)
+        _show["Conviction"] = _show["Score"].apply(_cv_chip)
         _show["Price"]      = _show["Price"].map(format_price)
         _show["IV Rank"]    = _show["IV Rank"].apply(lambda v: f"{int(v)}%")
-        _show["Est. Prem"]  = _show["Premium"].apply(lambda v: format_price(float(v)) if float(v) > 0 else "—")
-        _show["Δ"]          = _show["Delta"].apply(lambda v: f"{float(v):.2f}" if float(v) < 1.0 else "—")
-        _show["DTE"]        = _show["DTE"].apply(lambda v: str(int(v)) if int(v) > 0 else "—")
+        _show["Est. Prem"]  = _show["Premium"].apply(lambda v: format_price(float(v)) if float(v)>0 else "—")
+        _show["Δ"]          = _show["Delta"].apply(lambda v: f"{float(v):.2f}" if float(v)<1.0 else "—")
+        _show["DTE"]        = _show["DTE"].apply(lambda v: str(int(v)) if int(v)>0 else "—")
         _show["Conf."]      = _show["Confluence"]
-        _show["Setup"]      = _show["Bollinger"] + " · " + _show["RSI State"]
+        _show["Setup"]      = _show["Bollinger"] + " / " + _show["RSI State"]
         _sc_cols = ["Ticker","Price","IV Rank","Setup","Est. Prem","Δ","DTE","Conf.","Score","Conviction"]
         render_html("<div class='sc-table-wrap'>")
         render_table(_show[_sc_cols])
         render_html("</div>")
+
         render_html(
-            "<div class='mc-shell-note' style='margin-top:0.4rem;'>"
-            "<strong>Note:</strong> Est. Premium is a model placeholder, not a live quote. "
-            "Setup shows the Bollinger/RSI condition that qualifies each name for this strategy. "
-            "Use <strong>Analyze</strong> to pressure-test any ticker."
+            "<div class='mc-shell-note' style='margin-top:0.5rem;'>"
+            f"Showing {len(_sc_df)} candidate{'s' if len(_sc_df)!=1 else ''} for <strong>{sc_strat}</strong>. "
+            "Est. Premium is a model placeholder — not a live quote. "
+            "Hover the top-pick ticker or score to see the full scoring breakdown. "
+            "Use <strong>Ticker Analysis</strong> to pressure-test any name."
             "</div>"
         )
     else:
-        st.info("No candidates matched — try relaxing a filter or switching strategies.")
+        render_html(
+            "<div style='padding:1.5rem;text-align:center;border:1px solid rgba(208,226,246,0.12);border-radius:8px;'>"
+            "<div style='font-size:1.0rem;color:var(--muted);margin-bottom:0.5rem;'>No candidates matched</div>"
+            "<div style='font-size:0.78rem;color:var(--muted);'>Try relaxing a filter — lower the Min Score, Min Confluence, or broaden Bollinger/RSI. "
+            "Or hit Reset to Strategy Defaults.</div>"
+            "</div>"
+        )
 
-elif nav == "Analyze":
+elif nav == "analyze":
     row = st.columns([0.92, 1.48], gap="large")
     with row[0]:
         open_panel("Ticker Lookup", "Scorecard module", "This is where a user should be able to type a symbol and quickly see whether it fits CC & CSP, Credit Spread, LEAPS, or Buy-Write right now.")
@@ -13520,7 +13764,7 @@ elif nav == "Analyze":
         )
         close_panel()
 
-elif nav == "Learn":
+elif nav == "learn":
     top = st.columns([0.85, 1.55], gap="large")
     with top[0]:
         open_panel("Learning Portal", "Strategy-first education", "Strategy-first education for income investors.")
@@ -13567,7 +13811,7 @@ elif nav == "Learn":
             open_panel(title, "Learning structure", desc)
             close_panel()
 
-elif nav == "DELTA":
+elif nav == "delta":
     render_delta_v49_module()
 
 else:
