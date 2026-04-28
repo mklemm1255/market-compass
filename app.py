@@ -13402,47 +13402,69 @@ def render_delta_v49_module() -> None:
     inject_delta_styles()
     render_html("<div class='mc-delta-scope'></div>")
 
-    render_html("""
-    <div class='delta-help-box'><strong>How to use DELTA:</strong> choose the strategy, set the ticker, pick the DTE, adjust the strike, then review the graph or P/L table. Spread strategies will also unlock width. This interface is built so live option-chain data can plug into these same controls later.</div>
-    """)
+    # ── DELTA header ──────────────────────────────────────────────────────
+    render_html(
+        "<div style='display:flex;align-items:center;gap:1rem;padding:0.6rem 1rem;"
+        "background:rgba(13,25,48,0.65);border-radius:10px;"
+        "border:1px solid rgba(76,195,255,0.15);margin-bottom:0.75rem;'>"
+        "<div style='flex:1;'>"
+        "  <div style='font-size:1.6rem;font-weight:900;color:#4db8ff;letter-spacing:0.08em;'>DELTA</div>"
+        "  <div style='font-size:0.78rem;color:#d0e2f6;margin-top:0.1rem;'>"
+        "  Model any options strategy before you place the trade — see your max profit, max loss, and breakeven visually.</div>"
+        "</div>"
+        "<div style='font-size:0.65rem;color:rgba(76,195,255,0.6);font-weight:700;text-align:right;'>"
+        "  Options Strategy<br>Calculator</div>"
+        "</div>"
+    )
 
-    main_controls = st.columns([1.25, 1.0, 0.75, 0.75, 0.65, 0.95])
-    with main_controls[0]:
-        strategy_name = st.selectbox("Strategy", list(STRATEGIES.keys()), index=0)
-        render_html(f"<div class='delta-bias-pill'>{STRATEGIES[strategy_name]['bias']} • {STRATEGIES[strategy_name]['summary']}</div>")
-    with main_controls[1]:
-        ticker = st.text_input("Ticker", value="AAPL")
+    # ── ROW 1: The four big decisions ────────────────────────────────────
+    render_html(
+        "<div style='font-size:0.6rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
+        "letter-spacing:0.09em;margin-bottom:0.3rem;'>Step 1 — Choose Your Setup</div>"
+    )
+    row1 = st.columns([1.4, 0.9, 1.1, 0.8], gap="medium")
+    with row1[0]:
+        strategy_name = st.selectbox(
+            "Strategy",
+            list(STRATEGIES.keys()), index=0,
+            help="Pick the options strategy you want to model."
+        )
+        render_html(
+            f"<div style='font-size:0.65rem;color:#4db8ff;font-weight:700;margin-top:0.15rem;'>"
+            f"{STRATEGIES[strategy_name]['bias']} &middot; {STRATEGIES[strategy_name]['summary']}</div>"
+        )
+    with row1[1]:
+        ticker = st.text_input("Ticker Symbol", value="AAPL", help="Enter the stock ticker you want to trade options on.")
+    with row1[2]:
+        dte = st.selectbox(
+            "Days to Expiration (DTE)",
+            [7, 14, 21, 30, 45, 60, 90, 120, 180, 270, 365, 540, 730], index=3,
+            help="How many days until the option expires. Shorter DTE = faster time decay."
+        )
+    with row1[3]:
+        contracts = st.selectbox(
+            "Contracts",
+            list(range(1, 11)), index=0,
+            help="Each contract controls 100 shares. Start with 1 to model a single position."
+        )
+
     stock_price = get_price_for_ticker(ticker)
-    with main_controls[2]:
-        render_html(f"""
-    <div class='delta-shell' style='padding:0.8rem 0.95rem; margin-bottom:0.2rem;'>
-        <div class='delta-section-kicker'>Current Price</div>
-        <div style='font-size:1.35rem;font-weight:800;color:#f8fcff;'>{ticker.upper()} ${stock_price:,.2f}</div>
-    </div>
-    """)
-    with main_controls[3]:
-        dte = st.selectbox("Expiration / DTE", [7, 14, 21, 30, 45, 60, 90, 120, 180, 270, 365, 540, 730], index=3)
-    with main_controls[4]:
-        contracts = st.selectbox("Contracts", list(range(1, 11)), index=0)
-    with main_controls[5]:
-        iv_percent = st.slider("Implied Volatility %", min_value=10, max_value=400, value=24, step=1)
-    iv = iv_percent / 100.0
 
+    # ── Strike + key numbers ──────────────────────────────────────────────
     increment = strike_increment(stock_price)
-    base_low = max(increment, math.floor((stock_price * 0.70) / increment) * increment)
+    base_low  = max(increment, math.floor((stock_price * 0.70) / increment) * increment)
     base_high = math.ceil((stock_price * 1.30) / increment) * increment
     strike_options = []
     current = base_low
     while current <= base_high + (increment / 2.0):
         strike_options.append(round(current, 2))
         current += increment
-    nearest_strike = min(strike_options, key=lambda value: abs(value - stock_price))
-    default_index = strike_options.index(nearest_strike)
-
-    width_choices = [round(increment * multiplier, 2) for multiplier in [1, 2, 3, 5, 8, 10, 15, 20]]
-    width_enabled = uses_secondary_width(strategy_name)
-    day_points = day_schedule(dte)
-    day_labels = {time_label(day, dte): day for day in day_points}
+    nearest_strike  = min(strike_options, key=lambda v: abs(v - stock_price))
+    default_index   = strike_options.index(nearest_strike)
+    width_choices   = [round(increment * m, 2) for m in [1, 2, 3, 5, 8, 10, 15, 20]]
+    width_enabled   = uses_secondary_width(strategy_name)
+    day_points      = day_schedule(dte)
+    day_labels      = {time_label(day, dte): day for day in day_points}
     default_graph_day = list(day_labels.keys())[-1]
 
     if "delta_strike" not in st.session_state or st.session_state["delta_strike"] not in strike_options:
@@ -13454,163 +13476,201 @@ def render_delta_v49_module() -> None:
     if "delta_graph_day" not in st.session_state or st.session_state["delta_graph_day"] not in day_labels:
         st.session_state["delta_graph_day"] = default_graph_day
 
-    strike = float(st.session_state["delta_strike"])
-    width = float(st.session_state["delta_width"])
-    chart_range = int(st.session_state["delta_chart_range"])
+    strike        = float(st.session_state["delta_strike"])
+    width         = float(st.session_state["delta_width"])
+    chart_range   = int(st.session_state["delta_chart_range"])
     graph_day_label = st.session_state["delta_graph_day"]
     if graph_day_label not in day_labels:
         graph_day_label = default_graph_day
         st.session_state["delta_graph_day"] = graph_day_label
 
-    structure = build_structure(strategy_name, stock_price, float(strike), float(width), dte, iv, contracts)
-
-    guide_col, guide_graph_col = st.columns([1.65, 0.85], gap="large")
-    with guide_col:
-        render_html(f"""
-    <div class='delta-shell' style='padding:0.9rem 1rem; margin-bottom:0.75rem;'>
-        <div class='delta-section-kicker'>Current Selected Strategy</div>
-        <div style='font-size:1.25rem;font-weight:800;color:#f7fbff;margin-bottom:0.35rem;'>{structure.strategy}</div>
-        <div style='color:{structure.accent}; font-weight:800; margin-bottom:0.45rem;'>{structure.tags}</div>
-        <div style='color:#d7e6ff; line-height:1.45; margin-bottom:0.35rem;'>{structure.summary}</div>
-        <div style='color:#bcd2ef; line-height:1.45;'>{structure.guide}</div>
-    </div>
-    """)
-    with guide_graph_col:
-        render_html(f"""
-    <div class='delta-shell' style='padding:0.75rem 0.9rem; margin-bottom:0.75rem;'>
-        <div class='delta-section-kicker'>Payoff Shape</div>
-        {mini_graph_svg(structure.strategy, structure.accent).strip()}
-    </div>
-    """)
-
-    width_note = "Spread width is active for this structure." if width_enabled else "No second-leg width is needed for this setup."
-    metric_cards_html = "".join([
-        metric_card("Net Debit", format_money(structure.net_debit if structure.net_debit > 0 else 0.0), "profit" if structure.net_credit == 0 else ""),
-        metric_card("Net Credit", format_money(structure.net_credit if structure.net_credit > 0 else 0.0), "profit" if structure.net_credit > 0 else ""),
-        metric_card("Max Profit", format_money(structure.max_profit), "profit"),
-        metric_card("Max Loss", format_money(structure.max_loss), "loss"),
-        metric_card("Breakeven", format_money(structure.breakeven), "highlight"),
-        metric_card("Chance of Profit", format_percent(structure.chance_of_profit), "warning"),
-    ])
-    builder_summary = textwrap.dedent(f"""
-    <div class='delta-shell' style='padding:0.95rem 1.05rem;'>
-        <div class='delta-builder-title'>DELTA Builder</div>
-        <div class='delta-builder-note'>Current structure: <strong>{structure.strategy}</strong> • Bias: <strong>{structure.bias}</strong>. The builder, graph, and table live in one connected workspace.</div>
-        <div class='delta-metric-row'>{metric_cards_html}</div>
-        <div class='delta-footnote'>Primary strike: <strong>{float(strike):,.2f}</strong> • Chart range: <strong>{chart_range}%</strong> • IV: <strong>{iv_percent}%</strong> • Contracts: <strong>{contracts}</strong> • {width_note}</div>
-    </div>
-    """).strip()
-    render_html(builder_summary)
-
-    render_html("""
-    <div class='delta-shell' style='padding:0.85rem 1rem; margin-top:-0.1rem;'>
-        <div class='delta-section-kicker'>Graph Controls</div>
-        <div style='color:#c9dbf7; font-size:0.93rem;'>Selected Strike changes the option strike you are modeling. Graph Range Around Price % widens or tightens how far left and right the chart extends from the current stock price.</div>
-    </div>
-    """)
-    graph_control_cols = st.columns([1.15, 1.15, 0.85, 1.0], gap="large")
-    with graph_control_cols[0]:
-        st.select_slider("Selected Strike", options=strike_options, key="delta_strike")
-    with graph_control_cols[1]:
+    # ── ROW 2: Strike + fine-tuning ──────────────────────────────────────
+    st.markdown("<div style='height:0.2rem'></div>", unsafe_allow_html=True)
+    render_html(
+        "<div style='font-size:0.6rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
+        "letter-spacing:0.09em;margin-bottom:0.3rem;'>Step 2 — Dial In Your Strike & Settings</div>"
+    )
+    row2 = st.columns([1.3, 1.1, 0.75, 0.85], gap="medium")
+    with row2[0]:
+        st.select_slider(
+            "Your Strike Price",
+            options=strike_options,
+            key="delta_strike",
+            help="The option strike price you are modeling. Move left for lower strikes, right for higher."
+        )
+    with row2[1]:
         if width_enabled:
-            st.select_slider(width_label_for_strategy(strategy_name), options=width_choices, key="delta_width")
+            st.select_slider(
+                width_label_for_strategy(strategy_name),
+                options=width_choices,
+                key="delta_width",
+                help="Distance between the two legs of your spread."
+            )
         else:
             render_html(
-                "<div class='delta-inline-note'><strong>Second leg not needed.</strong><br>This setup uses one option leg or a covered stock position, so the second-leg distance stays inactive here.</div>"
+                "<div style='padding:0.6rem 0.8rem;background:rgba(255,255,255,0.03);"
+                "border:1px dashed rgba(76,195,255,0.18);border-radius:10px;"
+                "font-size:0.72rem;color:var(--muted);line-height:1.5;'>"
+                "No second leg needed for this strategy.</div>"
             )
-    with graph_control_cols[2]:
-        st.slider("Graph Range Around Price %", min_value=5, max_value=35, step=1, key="delta_chart_range")
-    with graph_control_cols[3]:
-        st.select_slider("Model Day", options=list(day_labels.keys()), key="delta_graph_day")
+    with row2[2]:
+        iv_percent = st.slider(
+            "Implied Volatility %", min_value=10, max_value=400, value=24, step=1,
+            help="The market's expectation of future price movement. Higher IV = richer option premiums."
+        )
+    with row2[3]:
+        st.select_slider(
+            "Model at Day",
+            options=list(day_labels.keys()),
+            key="delta_graph_day",
+            help="Preview how the trade looks at different points between today and expiration."
+        )
+    iv = iv_percent / 100.0
 
-    render_html(f"""
-    <div class='delta-info-grid'>
-        <div class='delta-info-card'>
-            <div class='delta-info-title'>Selected Strike</div>
-            <div class='delta-info-copy'>Choose the option strike the graph and table are modeling for this setup.</div>
-        </div>
-        <div class='delta-info-card'>
-            <div class='delta-info-title'>Chart Range</div>
-            <div class='delta-info-copy'>Controls how far left and right the price axis extends around {ticker.upper()}.</div>
-        </div>
-        <div class='delta-info-card'>
-            <div class='delta-info-title'>Model Day</div>
-            <div class='delta-info-copy'>Shows what the position could look like at different points between now and expiration.</div>
-        </div>
-        <div class='delta-info-card'>
-            <div class='delta-info-title'>View Modes</div>
-            <div class='delta-info-copy'>P/L $, P/L %, contract value, and % of defined risk each answer a different question about the trade.</div>
-        </div>
-    </div>
-    """)
+    structure = build_structure(strategy_name, stock_price, float(strike), float(width), dte, iv, contracts)
 
-    analysis_col, side_col = st.columns([2.55, 0.75], gap="large")
-    with analysis_col:
-        tabs = st.tabs(["Graph", "P/L Table", "Strategy Guide"])
+    # ── Metric cards — front and center ──────────────────────────────────
+    st.markdown("<div style='height:0.4rem'></div>", unsafe_allow_html=True)
+    _price_color = "#4db8ff"
+    render_html(
+        f"<div style='display:grid;grid-template-columns:repeat(7,1fr);gap:0.5rem;margin-bottom:0.5rem;'>"
+        f"<div style='padding:0.55rem 0.7rem;background:rgba(13,25,48,0.7);"
+        f"border:1px solid rgba(76,195,255,0.2);border-radius:9px;text-align:center;'>"
+        f"  <div style='font-size:0.55rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
+        f"  letter-spacing:0.07em;'>Ticker</div>"
+        f"  <div style='font-size:1.1rem;font-weight:900;color:{_price_color};'>{ticker.upper()}</div>"
+        f"  <div style='font-size:0.65rem;color:var(--muted);'>${stock_price:,.2f}</div>"
+        f"</div>"
+        f"<div style='padding:0.55rem 0.7rem;background:rgba(13,25,48,0.7);"
+        f"border:1px solid rgba(76,195,255,0.2);border-radius:9px;text-align:center;'>"
+        f"  <div style='font-size:0.55rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
+        f"  letter-spacing:0.07em;'>Strike</div>"
+        f"  <div style='font-size:1.1rem;font-weight:900;color:#d0e2f6;'>${float(strike):,.0f}</div>"
+        f"  <div style='font-size:0.65rem;color:var(--muted);'>{dte}d DTE</div>"
+        f"</div>"
+        + "".join([
+            f"<div style='padding:0.55rem 0.7rem;background:{bg};"
+            f"border:1px solid {bdr};border-radius:9px;text-align:center;'>"
+            f"  <div style='font-size:0.55rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
+            f"  letter-spacing:0.07em;'>{label}</div>"
+            f"  <div style='font-size:1.1rem;font-weight:900;color:{col};'>{val}</div>"
+            f"  <div style='font-size:0.65rem;color:var(--muted);'>{note}</div>"
+            f"</div>"
+            for label, val, note, col, bg, bdr in [
+                ("Max Profit",  format_money(structure.max_profit),  "best case",
+                 "#6DC040", "rgba(108,192,64,0.08)", "rgba(108,192,64,0.3)"),
+                ("Max Loss",    format_money(structure.max_loss),    "worst case",
+                 "#ff6b6b", "rgba(255,107,107,0.08)", "rgba(255,107,107,0.3)"),
+                ("Breakeven",   format_money(structure.breakeven),   "price at zero",
+                 "#f0c040", "rgba(240,192,64,0.08)", "rgba(240,192,64,0.25)"),
+                ("Win Prob",    format_percent(structure.chance_of_profit), "chance of profit",
+                 "#4db8ff", "rgba(77,184,255,0.08)", "rgba(77,184,255,0.25)"),
+                ("Net " + ("Credit" if structure.net_credit > 0 else "Debit"),
+                 format_money(structure.net_credit if structure.net_credit > 0 else structure.net_debit),
+                 "per contract",
+                 "#6DC040" if structure.net_credit > 0 else "#ff6b6b",
+                 "rgba(13,25,48,0.7)", "rgba(208,226,246,0.12)"),
+            ]
+        ])
+        + "</div>"
+    )
+
+    # ── Strategy summary bar ──────────────────────────────────────────────
+    render_html(
+        f"<div style='padding:0.55rem 1rem;background:rgba(13,25,48,0.6);"
+        f"border:1px solid rgba(76,195,255,0.15);border-radius:9px;margin-bottom:0.5rem;"
+        f"display:flex;align-items:center;gap:1rem;'>"
+        f"<div style='font-size:0.95rem;font-weight:900;color:#d0e2f6;min-width:160px;'>{structure.strategy}</div>"
+        f"<div style='font-size:0.73rem;color:#4db8ff;font-weight:700;'>{structure.tags}</div>"
+        f"<div style='flex:1;font-size:0.73rem;color:var(--muted);'>{structure.summary}</div>"
+        f"</div>"
+    )
+
+    # ── Graph + table + guide ─────────────────────────────────────────────
+    main_col, side_col = st.columns([2.6, 0.75], gap="large")
+
+    with main_col:
+        tabs = st.tabs(["📈 Payoff Graph", "📋 P/L Table", "📖 Strategy Guide"])
 
         with tabs[0]:
-            graph_controls = st.columns([1.0])
-            with graph_controls[0]:
-                graph_mode = st.radio(
-                    "Graph Mode",
-                    ["Profit / Loss $", "Profit / Loss %", "Contract Value", "Risk Progress %"],
-                    horizontal=True,
-                    label_visibility="collapsed",
-                )
+            graph_mode = st.radio(
+                "View as",
+                ["Profit / Loss $", "Profit / Loss %", "Contract Value", "Risk Progress %"],
+                horizontal=True,
+            )
+            st.slider("Chart Width Around Price %", min_value=5, max_value=35, step=1, key="delta_chart_range")
             figure = plot_payoff_chart(structure, ticker, stock_price, dte, iv, float(chart_range), graph_mode, day_labels[graph_day_label])
             st.plotly_chart(figure, use_container_width=True, config={"displayModeBar": False})
-            st.caption("Hover the curve to read price, move %, and modeled value. Selected Strike changes the modeled option strike, Graph Range Around Price % widens or tightens the chart window, and Model Day shows how the trade could behave between now and expiration.")
+            render_html(
+                "<div style='font-size:0.67rem;color:var(--muted);margin-top:-0.3rem;'>"
+                "Hover over the curve to read the exact price, move %, and modeled value at any point. "
+                "The vertical dashed line marks your strike. The shaded zone shows your profit range.</div>"
+            )
 
         with tabs[1]:
-            table_controls = st.columns([0.85, 0.85, 1.4])
-            with table_controls[0]:
-                table_range = st.selectbox("Table Range %", [5, 7.5, 10, 12.5, 15, 20, 25], index=2)
-            with table_controls[1]:
-                table_step = st.selectbox("Table Step %", [0.25, 0.5, 1.0, 2.0], index=1)
-            with table_controls[2]:
-                table_mode = st.radio(
-                    "Table Mode",
+            tcols = st.columns([0.85, 0.85, 1.4])
+            with tcols[0]:
+                table_range = st.selectbox("Price Range %", [5, 7.5, 10, 12.5, 15, 20, 25], index=2)
+            with tcols[1]:
+                table_step  = st.selectbox("Step Size %", [0.25, 0.5, 1.0, 2.0], index=1)
+            with tcols[2]:
+                table_mode  = st.radio(
+                    "Show",
                     ["Profit / Loss $", "Profit / Loss %", "Contract Value", "Risk Progress %"],
-                    horizontal=True,
-                    label_visibility="collapsed",
+                    horizontal=True, label_visibility="collapsed",
                 )
-            table_df = build_table_df(structure, stock_price, dte, iv, float(table_range), float(table_step), table_mode)
+            table_df   = build_table_df(structure, stock_price, dte, iv, float(table_range), float(table_step), table_mode)
             styled_html = render_styled_table(table_df, table_mode)
             render_html(styled_html)
-            st.caption("The table scrolls inside a tighter window, prices are listed top-to-bottom in descending order, and the green/red shading shows stronger profits or losses more clearly.")
+            render_html(
+                "<div style='font-size:0.67rem;color:var(--muted);margin-top:0.3rem;'>"
+                "Green = profitable at that price. Red = a loss. Darker shading = bigger move in that direction.</div>"
+            )
 
         with tabs[2]:
-            render_html(f"""
-    <div class='delta-shell delta-roadmap' style='padding:1rem 1.05rem;'>
-        <div class='delta-section-kicker'>Strategy Guide</div>
-        <div style='font-size:1.45rem;font-weight:800;color:#f7fbff;margin-bottom:0.45rem;'>{structure.strategy}</div>
-        <div style='color:#d7e6ff;margin-bottom:0.7rem;'>{structure.guide}</div>
-        <ul>
-            <li><strong>Bias:</strong> {structure.bias}</li>
-            <li><strong>Capital logic now:</strong> conservative planning math so the interface works cleanly today.</li>
-            <li><strong>Next live-data hook later:</strong> option expirations, actual strikes, live bid/ask, Greeks, and broker-style chain details.</li>
-            <li><strong>Why this module exists:</strong> DELTA is one page inside the bigger dashboard and will later plug into the master app.</li>
-        </ul>
-    </div>
-    """)
+            render_html(
+                f"<div style='padding:1rem 1.05rem;background:rgba(13,25,48,0.6);"
+                f"border:1px solid rgba(76,195,255,0.15);border-radius:10px;'>"
+                f"<div style='font-size:1.2rem;font-weight:900;color:#d0e2f6;margin-bottom:0.4rem;'>{structure.strategy}</div>"
+                f"<div style='font-size:0.75rem;color:#4db8ff;font-weight:700;margin-bottom:0.5rem;'>Bias: {structure.bias}</div>"
+                f"<div style='font-size:0.8rem;color:#d0e2f6;line-height:1.6;'>{structure.guide}</div>"
+                f"</div>"
+            )
 
     with side_col:
-        render_html("""
-    <div class='delta-shell' style='padding:0.90rem 1rem;'>
-        <div class='delta-section-kicker'>How to Read DELTA</div>
-        <div style='color:#d7e6ff; line-height:1.55;'>
-            <strong>Profit / Loss $</strong> shows dollar outcome.<br>
-            <strong>Profit / Loss %</strong> shows return versus capital at risk.<br>
-            <strong>Contract Value</strong> shows the modeled option value itself.<br>
-            <strong>Risk Progress %</strong> shows how far the trade has moved relative to its maximum planned risk.
-        </div>
-    </div>
-    <div class='delta-shell' style='padding:0.90rem 1rem;'>
-        <div class='delta-section-kicker'>Module Notes</div>
-        <div style='color:#d7e6ff; line-height:1.5;'>This page is the DELTA options strategy workspace inside the larger Market Compass platform. The layout comes first, then live option-chain data, actual expirations, Greeks, and strategy-specific calculations plug into these same controls later.</div>
-    </div>
-    """)
-
+        render_html(
+            "<div style='font-size:0.6rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
+            "letter-spacing:0.09em;margin-bottom:0.4rem;'>Reading the Graph</div>"
+        )
+        for label, desc in [
+            ("Profit / Loss $",   "Dollar gain or loss at each price. Most straightforward."),
+            ("Profit / Loss %",   "Return as a percentage of your capital at risk."),
+            ("Contract Value",    "What the option itself is worth at each price point."),
+            ("Risk Progress %",   "How far the trade has moved toward max loss."),
+        ]:
+            render_html(
+                f"<div style='padding:0.45rem 0.6rem;background:rgba(255,255,255,0.03);"
+                f"border:1px solid rgba(208,226,246,0.07);border-radius:8px;margin-bottom:0.3rem;'>"
+                f"<div style='font-size:0.68rem;font-weight:800;color:#4db8ff;'>{label}</div>"
+                f"<div style='font-size:0.65rem;color:var(--muted);line-height:1.4;'>{desc}</div>"
+                f"</div>"
+            )
+        st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
+        render_html(
+            "<div style='font-size:0.6rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
+            "letter-spacing:0.09em;margin-bottom:0.4rem;'>Quick Tips</div>"
+        )
+        for tip in [
+            "Start with 1 contract to see the full picture before scaling up.",
+            "Move the strike slider to see how your numbers change instantly.",
+            "Try different DTE values — shorter expiration means faster decay.",
+            "Higher IV means richer premiums on credit strategies like CC and CSP.",
+        ]:
+            render_html(
+                f"<div style='padding:0.4rem 0.6rem;background:rgba(108,192,64,0.04);"
+                f"border-left:2px solid rgba(108,192,64,0.3);border-radius:0 7px 7px 0;"
+                f"margin-bottom:0.28rem;font-size:0.65rem;color:var(--muted);line-height:1.4;'>{tip}</div>"
+            )
 
 if "selected_module" not in st.session_state:
     st.session_state["selected_module"] = "CC & CSP"
