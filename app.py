@@ -753,12 +753,12 @@ def inject_styles() -> None:
         }
         .sc-result-card:hover { border-color:rgba(108,192,64,0.4); background:rgba(13,25,48,0.85); }
         .sc-card-id { min-width:56px; }
-        .sc-card-ticker { font-size:1.05rem; font-weight:900; color:#d0e2f6; letter-spacing:0.04em; }
-        .sc-card-price  { font-size:0.67rem; color:var(--muted); margin-top:0.05rem; }
+        .sc-card-ticker { font-size:1.2rem; font-weight:900; color:#d0e2f6; letter-spacing:0.04em; }
+        .sc-card-price  { font-size:0.75rem; color:var(--muted); margin-top:0.05rem; }
         .sc-card-stats  { display:flex; flex:1; gap:0.35rem 1.1rem; flex-wrap:wrap; align-items:center; }
         .sc-stat        { display:flex; flex-direction:column; }
-        .sc-stat-lbl    { font-size:0.54rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.07em; }
-        .sc-stat-val    { font-size:0.8rem; color:#d0e2f6; font-weight:700; margin-top:0.05rem; }
+        .sc-stat-lbl    { font-size:0.62rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.07em; }
+        .sc-stat-val    { font-size:0.92rem; color:#d0e2f6; font-weight:700; margin-top:0.05rem; }
         .sc-card-badge  { display:flex; align-items:center; }
         .sc-table-wrap::-webkit-scrollbar { width:4px; }
         .sc-table-wrap::-webkit-scrollbar-track { background:rgba(255,255,255,0.02); }
