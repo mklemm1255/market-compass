@@ -693,11 +693,21 @@ def inject_styles() -> None:
             background:rgba(108,192,64,0.07); border-left:3px solid var(--accent);
             margin-bottom:0.6rem;
         }
-        .mc-pick-ticker { font-size:1.8rem; font-weight:900; color:var(--text); letter-spacing:0.04em; line-height:1; }
-        .mc-pick-cell { display:flex; flex-direction:column; gap:0.08rem; }
-        .mc-pick-lbl { font-size:0.65rem; color:var(--muted); font-weight:600; letter-spacing:0.08em; text-transform:uppercase; }
-        .mc-pick-val { font-size:0.92rem; font-weight:800; color:var(--text); }
-        .mc-pick-note { font-size:0.7rem; color:var(--muted); font-style:italic; grid-column:1/-1; margin-top:0.1rem; }
+        .mc-pick-ticker {
+            font-size:2rem; font-weight:900; color:var(--text); letter-spacing:0.04em; line-height:1;
+            background:rgba(108,192,64,0.12); border:1px solid rgba(108,192,64,0.35);
+            border-radius:10px; padding:0.65rem 1.1rem;
+            display:flex; align-items:center; justify-content:center;
+            align-self:stretch; text-align:center;
+        }
+        .mc-pick-cell {
+            display:flex; flex-direction:column; gap:0.1rem;
+            background:rgba(255,255,255,0.04); border:1px solid rgba(208,226,246,0.1);
+            border-radius:8px; padding:0.5rem 0.75rem;
+        }
+        .mc-pick-lbl { font-size:0.62rem; color:var(--muted); font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
+        .mc-pick-val { font-size:0.96rem; font-weight:800; color:var(--text); margin-top:0.05rem; }
+        .mc-pick-note { font-size:0.7rem; color:var(--muted); font-style:italic; grid-column:1/-1; margin-top:0.05rem; padding:0.4rem 0.5rem; background:rgba(255,255,255,0.02); border-radius:6px; }
         /* ── Conviction colors ──────────────────────────────────────────── */
         .cv-elite     { color:#6DC040; }
         .cv-strong    { color:#4db8ff; }
