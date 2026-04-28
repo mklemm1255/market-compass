@@ -22,6 +22,7 @@ from typing import Dict, List, Tuple
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+import streamlit.components.v1 as components
 import numpy as np
 
 st.set_page_config(page_title="Market Compass", page_icon="🧭", layout="wide")
@@ -29,6 +30,46 @@ st.set_page_config(page_title="Market Compass", page_icon="🧭", layout="wide")
 # ---------------------------
 # Data
 # ---------------------------
+
+
+_AV_KEY_FALLBACK = ""  # ← paste your Alpha Vantage key here to enable live data
+
+def render_tradingview_chart(ticker: str, height: int = 430) -> None:
+    """Embed a live TradingView chart using the dark theme."""
+    uid = f"tv_{ticker.lower()}"
+    tv_html = f"""
+    <div id="{uid}" style="border-radius:10px;overflow:hidden;"></div>
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+    (function() {{
+        function tryLoad() {{
+            if (typeof TradingView !== 'undefined') {{
+                new TradingView.widget({{
+                    "container_id": "{uid}",
+                    "width":  "100%",
+                    "height": {height},
+                    "symbol": "{ticker}",
+                    "interval": "D",
+                    "timezone": "America/New_York",
+                    "theme": "dark",
+                    "style": "1",
+                    "locale": "en",
+                    "toolbar_bg": "#0a1628",
+                    "enable_publishing": false,
+                    "allow_symbol_change": false,
+                    "save_image": false,
+                    "hide_side_toolbar": false,
+                    "studies": ["RSI@tv-basicstudies","MACD@tv-basicstudies","BB@tv-basicstudies"]
+                }});
+            }} else {{
+                setTimeout(tryLoad, 200);
+            }}
+        }}
+        tryLoad();
+    }})();
+    </script>
+    """
+    components.html(tv_html, height=height + 10)
 
 SCANNER_ROWS = [
     # ── Covered Call ────────────────────────────────────────────────────────
@@ -1276,6 +1317,8 @@ def _get_streamlit_secret(name: str) -> str | None:
 
 
 def get_alpha_vantage_api_key() -> str | None:
+    if _AV_KEY_FALLBACK:
+        return _AV_KEY_FALLBACK
     for name in ("ALPHAVANTAGE_API_KEY", "ALPHA_VANTAGE_API_KEY"):
         secret_value = _get_streamlit_secret(name)
         if secret_value:
@@ -13809,192 +13852,261 @@ if nav == "scanner":
         )
 
 elif nav == "analyze":
-    row = st.columns([0.92, 1.48], gap="large")
-    with row[0]:
-        open_panel("Ticker Lookup", "Scorecard module", "This is where a user should be able to type a symbol and quickly see whether it fits CC & CSP, Credit Spread, LEAPS, or Buy-Write right now.")
-        if "analyze_active_ticker" not in st.session_state:
-            st.session_state["analyze_active_ticker"] = "NVDA"
-        if "analyze_ticker_nonce" not in st.session_state:
-            st.session_state["analyze_ticker_nonce"] = 0
+    # ── Ticker state ──────────────────────────────────────────────────────
+    if "analyze_active_ticker" not in st.session_state:
+        st.session_state["analyze_active_ticker"] = "NVDA"
+    if "analyze_ticker_nonce" not in st.session_state:
+        st.session_state["analyze_ticker_nonce"] = 0
 
-        ticker_key = f"analyze_ticker_entry_{st.session_state['analyze_ticker_nonce']}"
-        entered_ticker = st.text_input(
-            "Ticker",
-            key=ticker_key,
-            value="",
-            placeholder=f"Search new ticker (current: {st.session_state['analyze_active_ticker']})",
-            width="stretch",
+    # ── Full-width ticker input ───────────────────────────────────────────
+    _inp_c, _btn_c = st.columns([5, 1], gap="small")
+    with _inp_c:
+        _tkey = f"analyze_ticker_entry_{st.session_state['analyze_ticker_nonce']}"
+        _entered = st.text_input(
+            "Company / Ticker",
+            key=_tkey, value="",
+            placeholder=f"Enter any ticker symbol  (current: {st.session_state['analyze_active_ticker']})",
         )
-        cleaned_ticker = entered_ticker.upper().strip()
-        if cleaned_ticker and cleaned_ticker != st.session_state["analyze_active_ticker"]:
-            st.session_state["analyze_active_ticker"] = cleaned_ticker
-            st.session_state["analyze_ticker_nonce"] += 1
-            st.rerun()
+    with _btn_c:
+        st.markdown("<div style='height:1.7rem'></div>", unsafe_allow_html=True)
+        _analyze_clicked = st.button("Analyze →", use_container_width=True, type="primary")
 
-        ticker = st.session_state["analyze_active_ticker"]
-        focus_strategy = st.selectbox("Strategy focus", ["Auto", "CC & CSP", "Credit Spread", "LEAPS", "Buy-Write"], index=0, width="stretch")
-        scores = scorecard_for_ticker(ticker)
-        best_fit = recommendation(scores, focus_strategy)
-        facts = TICKER_FACTS.get(ticker, {
-            "Sector": "Unknown",
-            "Headline": "Use this page as the clean quick-read zone.",
-        })
-        signal_read = 'Constructive' if max(scores.values()) >= 75 else 'Mixed'
+    _cleaned = _entered.upper().strip()
+    if (_analyze_clicked or _cleaned) and _cleaned and _cleaned != st.session_state["analyze_active_ticker"]:
+        st.session_state["analyze_active_ticker"] = _cleaned
+        st.session_state["analyze_ticker_nonce"] += 1
+        st.rerun()
+
+    ticker  = st.session_state["analyze_active_ticker"]
+    facts   = TICKER_FACTS.get(ticker, {"Sector": "—", "Headline": "No fundamentals on file for this ticker yet."})
+    scores  = scorecard_for_ticker(ticker)
+    best_fit = recommendation(scores, "Auto")
+    _top_score = max(scores.values()) if scores else 0
+    _verdict_read  = "Constructive" if _top_score >= 80 else "Mixed" if _top_score >= 65 else "Cautious"
+    _verdict_color = "#6DC040" if _top_score >= 80 else "#f0c040" if _top_score >= 65 else "#ff6b6b"
+
+    # ── Company header bar ────────────────────────────────────────────────
+    render_html(
+        f"<div style='display:flex;align-items:center;gap:1rem;padding:0.65rem 1rem;"
+        f"background:rgba(13,25,48,0.65);border-radius:10px;"
+        f"border:1px solid rgba(208,226,246,0.1);margin-bottom:0.6rem;'>"
+        f"<div style='font-size:2.1rem;font-weight:900;color:#6DC040;letter-spacing:0.06em;min-width:90px;'>{ticker}</div>"
+        f"<div style='flex:1;'>"
+        f"  <div style='font-size:0.62rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.09em;'>Company Analysis</div>"
+        f"  <div style='font-size:0.86rem;color:#d0e2f6;font-weight:700;margin-top:0.1rem;'>{facts.get('Sector','—')} &middot; Best fit: <span style=\"color:#6DC040\">{best_fit}</span></div>"
+        f"  <div style='font-size:0.68rem;color:var(--muted);margin-top:0.08rem;font-style:italic;'>{facts.get('Headline','')}</div>"
+        f"</div>"
+        f"<div style='text-align:right;min-width:80px;'>"
+        f"  <div style='font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;'>Signal</div>"
+        f"  <div style='font-size:1.6rem;font-weight:900;color:{_verdict_color};line-height:1;'>{_top_score}</div>"
+        f"  <div style='font-size:0.68rem;color:{_verdict_color};font-weight:700;'>{_verdict_read}</div>"
+        f"</div>"
+        f"</div>"
+    )
+
+    # ── TradingView chart ─────────────────────────────────────────────────
+    render_html(
+        "<div style='font-size:0.60rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
+        f"letter-spacing:0.1em;margin-bottom:0.3rem;'>Live Chart &middot; {ticker} &middot; Daily</div>"
+    )
+    render_tradingview_chart(ticker, height=430)
+    st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
+
+    # ── Two-column analysis ───────────────────────────────────────────────
+    _fund_col, _tech_col = st.columns(2, gap="large")
+
+    # ── LEFT: Fundamental Analysis ────────────────────────────────────────
+    with _fund_col:
         render_html(
-            "<div class='mc-analyze-note'>"
-            f"You are currently analyzing <strong>{ticker}</strong>. Every score on this page should be read as <strong>{ticker}</strong> evaluated against each strategy, not as a comparison against a different company."
-            "</div>"
-        )
-        render_html(
-            f"<div class='mc-metric-grid' style='grid-template-columns: repeat(2, minmax(0, 1fr)); gap:0.85rem;'>"
-            f"<div class='mc-metric'>{metric_label_with_info('Best fit', 'Best fit means the strategy with the highest current score for the ticker you typed in.')}"
-            f"<div class='mc-metric-value' style='font-size:1.06rem; line-height:1.2;'>{best_fit}</div><div class='mc-metric-note'>{ticker} current strategy leader</div></div>"
-            f"<div class='mc-metric'>{metric_label_with_info('Sector', 'Sector is only context. It is not the final reason a ticker passes or fails a strategy.')}"
-            f"<div class='mc-metric-value' style='font-size:1.02rem; line-height:1.2;'>{facts['Sector']}</div><div class='mc-metric-note'>{ticker} business context</div></div>"
-            f"<div class='mc-metric'>{metric_label_with_info('Signal', 'Signal is the current top strategy-fit score for the ticker you entered.')}"
-            f"<div class='mc-metric-value' style='font-size:1.06rem; line-height:1.2;'>{max(scores.values())}</div><div class='mc-metric-note'>{ticker} overall score strength</div></div>"
-            f"<div class='mc-metric'>{metric_label_with_info('Read', 'Read is the fast plain-English verdict on the ticker based on the current score structure.')}"
-            f"<div class='mc-metric-value' style='font-size:1.02rem; line-height:1.2;'>{signal_read}</div><div class='mc-metric-note'>{ticker} fast verdict</div></div>"
-            f"</div>"
+            "<div style='font-size:0.62rem;color:#6DC040;font-weight:700;text-transform:uppercase;"
+            "letter-spacing:0.1em;margin-bottom:0.5rem;padding-bottom:0.3rem;"
+            "border-bottom:1px solid rgba(108,192,64,0.3);'>Fundamental Analysis — PII 7 Principles</div>"
         )
         live_data_enabled = alpha_vantage_configured()
-        status_cols = st.columns([1.15, 0.85], gap="small")
-        with status_cols[0]:
-            if live_data_enabled:
-                market_status_label = summarize_alpha_vantage_market_status(fetch_alpha_vantage_market_status())
-                render_html(
-                    f"<div class='mc-shell-note'><strong>Alpha Vantage:</strong> live data connected."
-                    f"{' ' + market_status_label if market_status_label else ''}</div>"
-                )
+        _live_ov_raw  = fetch_alpha_vantage_overview(ticker) if live_data_enabled else {}
+        _live_ov      = parse_alpha_vantage_overview(_live_ov_raw) if live_data_enabled else None
+
+        # ── PII 7 Fundamental Principles (placeholders until Mike confirms) ──
+        _principles = [
+            ("Revenue & Growth Trend",    "Is the company growing revenue consistently year-over-year?"),
+            ("Earnings Quality & Trend",   "Are earnings real, growing, and repeatable — not one-time?"),
+            ("Profit Margins",             "Does the company keep a meaningful share of every dollar earned?"),
+            ("Valuation vs. Peers",        "Is the stock reasonably priced relative to earnings and growth?"),
+            ("Balance Sheet Strength",     "Is debt manageable? Is the company financially durable?"),
+            ("Cash Flow & Capital Return", "Does the company generate real cash and return value to shareholders?"),
+            ("Competitive Moat",           "Does the company have a durable edge that protects its business?"),
+        ]
+
+        _fund_results = []
+        for i, (pname, pdesc) in enumerate(_principles, 1):
+            # Score against live data when available
+            if _live_ov:
+                if i == 1:  # Revenue proxy: analyst target vs price
+                    _at = _live_ov.get("analyst_target")
+                    _px = _live_ov.get("price") or 1
+                    _read = f"Target {format_price(_at)}" if _at else "No target data"
+                    _pass = (_at / _px) > 1.05 if _at and _px else None
+                elif i == 2:  # EPS
+                    _eps = _live_ov.get("eps")
+                    _read = f"EPS ${_eps:.2f}" if _eps is not None else "No EPS data"
+                    _pass = _eps > 0 if _eps is not None else None
+                elif i == 3:  # Profit margin
+                    _pm = _live_ov.get("profit_margin")
+                    _pct = (_pm * 100 if _pm and _pm <= 1 else _pm) if _pm else None
+                    _read = f"{_pct:.1f}% net margin" if _pct else "No margin data"
+                    _pass = _pct > 15 if _pct else None
+                elif i == 4:  # P/E valuation
+                    _pe = _live_ov.get("pe_ratio")
+                    _read = f"P/E {_pe:.1f}" if _pe else "No P/E data"
+                    _pass = _pe < 40 if _pe else None
+                elif i == 5:  # Beta as health proxy
+                    _beta = _live_ov.get("beta")
+                    _read = f"Beta {_beta:.2f}" if _beta else "No beta data"
+                    _pass = _beta < 2.5 if _beta else None
+                elif i == 6:  # Dividend yield
+                    _dy = _live_ov.get("dividend_yield")
+                    _pct = (_dy * 100 if _dy and _dy <= 1 else _dy) if _dy else None
+                    _read = f"{_pct:.2f}% yield" if _pct else "No dividend data"
+                    _pass = True  # informational
+                elif i == 7:  # Moat — static per TICKER_FACTS for now
+                    _read = facts.get("Sector", "—")
+                    _pass = None  # can't auto-score moat yet
             else:
-                render_html("<div class='mc-shell-note'><strong>Alpha Vantage:</strong> not loaded yet. Add the key below to turn on real-data panels.</div>")
-        with status_cols[1]:
-            if st.button("Refresh live data", use_container_width=True):
-                st.cache_data.clear()
-                st.rerun()
-        if not live_data_enabled:
-            render_alpha_vantage_setup_help()
-        close_panel()
+                _read = "Enable live data for scores"
+                _pass = None
 
-    with row[1]:
-        open_panel("Strategy Fit Scorecard", "Quick read", facts["Headline"])
-        render_html(
-            "<div class='mc-analyze-note'>"
-            f"These are <strong>{ticker}</strong> strategy-fit scores. A label like <strong>CC & CSP 92</strong> means <strong>{ticker}</strong> currently scores 92 for CC & CSP under this shell model."
-            "</div>"
-        )
-        cards = st.columns(4)
-        for col, (name, val) in zip(cards, scores.items()):
-            with col:
-                label = f"{ticker} leader" if name == best_fit else f"{ticker} secondary fit"
-                render_html(
-                    f"<div class='mc-metric'>{metric_label_with_info(name, 'This score estimates how well the selected ticker fits this specific strategy right now.')}"
-                    f"<div class='mc-metric-value'>{val}</div><div class='mc-metric-note'>{label}</div></div>"
-                )
-        close_panel()
-
-    live_data_enabled = alpha_vantage_configured()
-    live_quote_raw = fetch_alpha_vantage_quote(ticker) if live_data_enabled else {}
-    live_overview_raw = fetch_alpha_vantage_overview(ticker) if live_data_enabled else {}
-    live_intraday_raw = fetch_alpha_vantage_intraday(ticker) if live_data_enabled else {}
-    live_quote = parse_alpha_vantage_quote(live_quote_raw) if live_data_enabled else None
-    live_overview = parse_alpha_vantage_overview(live_overview_raw) if live_data_enabled else None
-    live_intraday = parse_alpha_vantage_intraday(live_intraday_raw) if live_data_enabled else pd.DataFrame()
-
-    live_row = st.columns([1.15, 1.05], gap="large")
-    with live_row[0]:
-        open_panel("Live Market Snapshot", "Alpha Vantage data", "This section is the first real-data lane: quote, daily change, volume, and an intraday price view for the ticker you entered.")
-        if live_data_enabled and live_quote:
-            quote_cols = st.columns(4, gap="medium")
-            quote_metrics = [
-                ("Last price", format_price(live_quote.get("price")), live_quote.get("symbol") or ticker),
-                ("Daily change", format_signed_change(live_quote.get("change"), live_quote.get("change_percent")), live_quote.get("latest_trading_day") or "Latest session"),
-                ("Previous close", format_price(live_quote.get("previous_close")), "Comparison anchor"),
-                ("Volume", f"{live_quote.get('volume', 0):,}" if live_quote.get("volume") is not None else "—", "Reported share volume"),
-            ]
-            for col, (label, value, note) in zip(quote_cols, quote_metrics):
-                with col:
-                    render_metric(label, value, note)
-            if not live_intraday.empty:
-                st.markdown("<div style='height:0.45rem;'></div>", unsafe_allow_html=True)
-                st.plotly_chart(build_intraday_chart(ticker, live_intraday), use_container_width=True, config={"displayModeBar": False})
-            else:
-                st.info("Intraday series was not returned for this symbol or access level yet, but the live quote connection is in place.")
-        elif live_data_enabled:
-            quote_error = alpha_vantage_error_text(live_quote_raw)
-            st.warning(
-                "The live quote request did not return usable data for this ticker yet."
-                + (f" Alpha Vantage said: {quote_error}" if quote_error else " Try Refresh live data, or test another symbol.")
-            )
-        else:
-            render_alpha_vantage_setup_help()
-        close_panel()
-
-    with live_row[1]:
-        open_panel("Live Fundamental Snapshot", "Alpha Vantage overview", "This panel brings in a real company overview so Analyze starts blending shell scoring with outside data.")
-        if live_data_enabled and live_overview:
-            overview_cols = st.columns(2, gap="medium")
-            with overview_cols[0]:
-                render_metric("Company", live_overview.get("name") or ticker, live_overview.get("industry") or "—")
-            with overview_cols[1]:
-                render_metric("Sector", live_overview.get("sector") or "—", f"{ticker} live company classification")
-            metric_rows = st.columns(2, gap="medium")
-            with metric_rows[0]:
-                render_metric("Market cap", format_compact_currency(live_overview.get("market_cap")), "Reported capitalization")
-            with metric_rows[1]:
-                render_metric("P/E ratio", "—" if live_overview.get("pe_ratio") is None else f"{live_overview.get('pe_ratio'):.2f}", "Trailing valuation read")
-            metric_rows_2 = st.columns(2, gap="medium")
-            with metric_rows_2[0]:
-                render_metric("EPS", "—" if live_overview.get("eps") is None else f"{live_overview.get('eps'):.2f}", "Reported earnings per share")
-            with metric_rows_2[1]:
-                render_metric("Analyst target", format_price(live_overview.get("analyst_target")), "Alpha Vantage overview field")
-            render_html("<div style='height:0.15rem;'></div>")
+            _status   = ("✓" if _pass else ("⚠" if _pass is False else "○"))
+            _s_color  = ("#6DC040" if _pass else ("#f0c040" if _pass is False else "#555"))
+            _fund_results.append(_pass)
             render_html(
-                f"<div class='mc-filter-tip'><strong>52-week range:</strong> {format_week_range(live_overview.get('week_low'), live_overview.get('week_high'))}<br>"
-                f"<strong>Beta:</strong> {'—' if live_overview.get('beta') is None else '{:.2f}'.format(live_overview.get('beta'))}<br>"
-                f"<strong>Profit margin:</strong> {format_percent_value((live_overview.get('profit_margin') or 0) * 100 if live_overview.get('profit_margin') is not None and live_overview.get('profit_margin') <= 1 else live_overview.get('profit_margin'))}<br>"
-                f"<strong>Dividend yield:</strong> {format_percent_value(live_overview.get('dividend_yield'))}</div>"
+                f"<div style='display:flex;align-items:flex-start;gap:0.6rem;padding:0.38rem 0.65rem;"
+                f"background:rgba(255,255,255,0.03);border-radius:7px;margin-bottom:0.28rem;"
+                f"border:1px solid rgba(208,226,246,0.08);'>"
+                f"<div style='font-size:0.95rem;color:{_s_color};font-weight:900;min-width:18px;padding-top:0.05rem;'>{_status}</div>"
+                f"<div style='flex:1;'>"
+                f"  <div style='font-size:0.76rem;color:#d0e2f6;font-weight:700;'>{i}. {pname}</div>"
+                f"  <div style='font-size:0.63rem;color:var(--muted);'>{_read}</div>"
+                f"</div>"
+                f"</div>"
             )
-        elif live_data_enabled:
-            overview_error = alpha_vantage_error_text(live_overview_raw)
-            st.warning(
-                "The company overview request did not return usable fields for this symbol yet."
-                + (f" Alpha Vantage said: {overview_error}" if overview_error else " This usually means the symbol coverage is limited, the response was partial, or you hit a rate/entitlement limit.")
-            )
-        else:
-            render_alpha_vantage_setup_help()
-        close_panel()
 
-    lower = st.columns([1.2, 1.05], gap="large")
-    with lower[0]:
-        open_panel("Indicator Read", "Why this ticker fits or fails", "This is the kind of area that can later map to MACD, RSI, Bollinger Bands, multiple timeframes, liquidity, and premium quality with live data.")
-        matrix = analyze_matrix(ticker)
-        render_table(matrix)
-        close_panel()
-
-    with lower[1]:
-        open_panel("Verdict", "Strategy-specific read", None)
-        top_score = max(scores.values())
-        verdict_bias = "Bullish" if best_fit in {"CC & CSP", "Credit Spread", "LEAPS"} else "Neutral"
+        _fund_pass = sum(1 for r in _fund_results if r is True)
+        _fund_total = len(_principles)
+        _fund_score_disp = f"{int(_fund_pass / _fund_total * 100)}" if any(r is not None for r in _fund_results) else "—"
         render_html(
-            f"""
-            <div class='mc-highlight-card'>
-                <div class='mc-panel-kicker'>Current decision</div>
-                <div class='mc-highlight-big'>{ticker} fits {best_fit} best right now</div>
-                <div class='mc-mini-note' style='margin-bottom:0.55rem;'>
-                    Strategy bias: {color_word(verdict_bias)} • Signal strength: <span class='mc-colored-blue'>{top_score}</span>
-                </div>
-                <ul class='mc-list'>
-                    <li>Scanner answers: what candidates are worth looking at?</li>
-                    <li>Analyze answers: is this ticker good for this strategy right now?</li>
-                    <li>Live multi-timeframe checks later should make this decision sharper.</li>
-                    <li>Use this page as the fast read on whether the ticker fits the strategy you care about.</li>
-                </ul>
-            </div>
-            """
+            f"<div style='margin-top:0.45rem;padding:0.4rem 0.8rem;"
+            f"background:rgba(108,192,64,0.08);border:1px solid rgba(108,192,64,0.2);border-radius:8px;"
+            f"display:flex;justify-content:space-between;align-items:center;'>"
+            f"<div style='font-size:0.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;'>Fundamental Score</div>"
+            f"<div style='font-size:1.15rem;font-weight:900;color:#6DC040;'>{_fund_score_disp}</div>"
+            f"</div>"
+        )
+        if not live_data_enabled:
+            render_html("<div style='font-size:0.62rem;color:var(--muted);margin-top:0.3rem;font-style:italic;'>Live fundamental scores require an Alpha Vantage key. Principles reflect PII methodology — scores will populate automatically once connected.</div>")
+
+    # ── RIGHT: Technical Analysis ─────────────────────────────────────────
+    with _tech_col:
+        render_html(
+            "<div style='font-size:0.62rem;color:#4db8ff;font-weight:700;text-transform:uppercase;"
+            "letter-spacing:0.1em;margin-bottom:0.5rem;padding-bottom:0.3rem;"
+            "border-bottom:1px solid rgba(77,184,255,0.3);'>Technical Analysis</div>"
+        )
+        _shell   = TECHNICAL_SHELL.get(ticker, {})
+        _sc_rows = [r for r in SCANNER_ROWS if r["Ticker"] == ticker]
+        _best_sc = max(_sc_rows, key=lambda r: r["Score"]) if _sc_rows else {}
+
+        _technicals = [
+            ("RSI State",     _shell.get("RSI State",    _best_sc.get("RSI State", "—")),    "Overbought >70 · Oversold <30 · Neutral in between"),
+            ("Bollinger Band",_shell.get("Bollinger",    _best_sc.get("Bollinger", "—")),    "Upper Band = extended · Lower Band = pulled back · Mid = ranging"),
+            ("MACD Timeframe",_shell.get("MACD Timeframe","Daily"),                           "Primary timeframe where MACD signal is aligned"),
+            ("MACD vs Zero",  _shell.get("MACD Zero",    "—"),                               "Above zero = bullish momentum · Below zero = bearish momentum"),
+            ("Trend",         _best_sc.get("Trend", "—"),                                    "Overall price trend direction based on moving averages"),
+            ("IV Rank",       f"{int(_best_sc['IV Rank'])}%" if _best_sc.get("IV Rank") else "—",  "Higher IV Rank = richer option premiums available"),
+            ("Liquidity",     _best_sc.get("Liquidity", "—"),                               "Option chain bid/ask spread quality"),
+            ("Confluence",    f"{int(_best_sc['Confluence'])}/10" if _best_sc.get("Confluence") else "—", "How many technical factors are aligned right now"),
+        ]
+
+        for tname, tval, tdesc in _technicals:
+            _pos = tval in ("Bullish","Upper Band","Upper Half","Overbought","Above","Excellent","Good","Daily")
+            _neg = tval in ("Bearish","Lower Band","Oversold","Below","Poor")
+            _t_col = "#6DC040" if _pos else ("#ff6b6b" if _neg else "#d0e2f6")
+            render_html(
+                f"<div style='display:flex;align-items:center;justify-content:space-between;"
+                f"padding:0.38rem 0.65rem;background:rgba(255,255,255,0.03);border-radius:7px;"
+                f"margin-bottom:0.28rem;border:1px solid rgba(208,226,246,0.08);'>"
+                f"<div style='flex:1;'>"
+                f"  <div style='font-size:0.76rem;color:#d0e2f6;font-weight:700;'>{tname}</div>"
+                f"  <div style='font-size:0.63rem;color:var(--muted);'>{tdesc}</div>"
+                f"</div>"
+                f"<div style='font-size:0.86rem;font-weight:800;color:{_t_col};white-space:nowrap;margin-left:0.5rem;'>{tval}</div>"
+                f"</div>"
+            )
+
+        render_html(
+            f"<div style='margin-top:0.45rem;padding:0.4rem 0.8rem;"
+            f"background:rgba(77,184,255,0.08);border:1px solid rgba(77,184,255,0.2);border-radius:8px;"
+            f"display:flex;justify-content:space-between;align-items:center;'>"
+            f"<div style='font-size:0.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;'>Technical Score</div>"
+            f"<div style='font-size:1.15rem;font-weight:900;color:#4db8ff;'>{_top_score}</div>"
+            f"</div>"
         )
 
-        close_panel()
+    # ── Strategy Recommendations ──────────────────────────────────────────
+    render_html("<hr style='border:none;border-top:1px solid rgba(208,226,246,0.1);margin:0.75rem 0 0.6rem 0;'>")
+    render_html(
+        "<div style='font-size:0.62rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
+        "letter-spacing:0.1em;margin-bottom:0.5rem;'>Strategy Fit — Top Picks for " + ticker + "</div>"
+    )
+    _sorted_sc = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:3]
+    _rec_cols  = st.columns(len(_sorted_sc), gap="medium")
+    _rec_meta  = [
+        ("#1 Best Fit",  "rgba(108,192,64,0.12)", "rgba(108,192,64,0.4)"),
+        ("#2 Strong Fit","rgba(77,184,255,0.08)",  "rgba(77,184,255,0.25)"),
+        ("#3 Consider",  "rgba(240,192,64,0.07)",  "rgba(240,192,64,0.2)"),
+    ]
+    for col, (sname, sval), (slbl, sbg, sbdr) in zip(_rec_cols, _sorted_sc, _rec_meta):
+        with col:
+            _s_cv  = conviction_label(sval)
+            _s_col = {"Elite":"#6DC040","Strong":"#4db8ff","Solid":"#f0c040","Moderate":"#aaa","Developing":"#777"}.get(_s_cv,"#aaa")
+            render_html(
+                f"<div style='padding:0.7rem 0.9rem;background:{sbg};border:1px solid {sbdr};"
+                f"border-radius:10px;text-align:center;'>"
+                f"<div style='font-size:0.58rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;'>{slbl}</div>"
+                f"<div style='font-size:1.0rem;font-weight:900;color:#d0e2f6;margin:0.3rem 0 0.1rem;'>{sname}</div>"
+                f"<div style='font-size:1.4rem;font-weight:900;color:{_s_col};line-height:1;'>{sval}</div>"
+                f"<div style='font-size:0.72rem;color:{_s_col};margin-top:0.1rem;'>{_s_cv}</div>"
+                f"</div>"
+            )
+
+    # ── Overall Verdict ───────────────────────────────────────────────────
+    st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
+    _top_strat = _sorted_sc[0][0] if _sorted_sc else "—"
+    _strat_note = {
+        "Covered Call":     "The setup favors covered call writing — premium-selling conditions are elevated.",
+        "Cash-Secured Put": "A cash-secured put at support levels offers strong premium with controlled risk.",
+        "Credit Spread":    "A defined-risk credit spread suits traders who want controlled directional exposure.",
+        "LEAPS":            "LEAPS offer a longer-duration bullish bet with defined max loss and low daily theta decay.",
+        "Buy-Write":        "A buy-write (buy shares + sell call) captures premium while building a position.",
+        "Buy Call":         "Long calls offer leveraged upside with defined risk — bullish directional play.",
+        "Buy Put":          "Long puts provide downside protection or a bearish directional position.",
+        "Stock":            "Outright share ownership — straightforward equity exposure to this company.",
+    }.get(_top_strat, "Review the strategy scorecard for the full picture.")
+    render_html(
+        f"<div style='padding:0.75rem 1.1rem;background:rgba(13,25,48,0.7);"
+        f"border:1px solid rgba(208,226,246,0.12);border-radius:10px;"
+        f"border-left:3px solid {_verdict_color};'>"
+        f"<div style='font-size:0.62rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
+        f"letter-spacing:0.09em;margin-bottom:0.35rem;'>Overall Verdict &middot; {ticker}</div>"
+        f"<div style='font-size:0.86rem;color:#d0e2f6;line-height:1.65;'>"
+        f"The current technical setup gives <strong>{ticker}</strong> a signal score of "
+        f"<strong style='color:{_verdict_color}'>{_top_score} ({_verdict_read})</strong>. "
+        f"The strongest strategy fit is <strong>{_top_strat}</strong>. {_strat_note} "
+        f"Once your 7 fundamental principles are scored against this company, the verdict will reflect "
+        f"both sides — fundamental conviction plus technical timing — for a complete picture."
+        f"</div>"
+        f"</div>"
+    )
+
 
 elif nav == "Learn":
     top = st.columns([0.85, 1.55], gap="large")
