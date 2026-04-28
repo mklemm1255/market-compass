@@ -676,6 +676,38 @@ def inject_styles() -> None:
             --blue-deep: #214d7d;
             --yellow: #f7cc66;
         }
+        /* ── Global tooltip override ─────────────────────────────────────────── */
+        /* Make help/tooltip icon bright white */
+        button[data-testid="tooltipHoverTarget"] svg,
+        [data-testid="tooltipHoverTarget"] svg {
+            color: #ffffff !important;
+            fill: #ffffff !important;
+            opacity: 1 !important;
+        }
+        button[data-testid="tooltipHoverTarget"] {
+            opacity: 1 !important;
+            color: #ffffff !important;
+        }
+        /* Tooltip popup: white background, black text */
+        div[data-testid="tooltip"],
+        .stTooltipContent,
+        div[role="tooltip"],
+        [data-baseweb="tooltip"],
+        [data-testid="stTooltipContent"] {
+            background: #ffffff !important;
+            color: #111111 !important;
+            border: 1px solid #ddd !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18) !important;
+        }
+        div[data-testid="tooltip"] *,
+        .stTooltipContent *,
+        div[role="tooltip"] *,
+        [data-baseweb="tooltip"] *,
+        [data-testid="stTooltipContent"] * {
+            color: #111111 !important;
+        }
+        
         .stApp {
             background:
                 radial-gradient(circle at 18% 12%, rgba(106,167,255,0.12), transparent 18%),
@@ -13404,16 +13436,15 @@ def render_delta_v49_module() -> None:
 
     # ── DELTA header ──────────────────────────────────────────────────────
     render_html(
-        "<div style='display:flex;align-items:center;gap:1rem;padding:0.6rem 1rem;"
+        "<div style='padding:0.7rem 1.1rem;"
         "background:rgba(13,25,48,0.65);border-radius:10px;"
         "border:1px solid rgba(76,195,255,0.15);margin-bottom:0.75rem;'>"
-        "<div style='flex:1;'>"
-        "  <div style='font-size:1.6rem;font-weight:900;color:#4db8ff;letter-spacing:0.08em;'>DELTA</div>"
-        "  <div style='font-size:0.78rem;color:#d0e2f6;margin-top:0.1rem;'>"
-        "  Model any options strategy before you place the trade — see your max profit, max loss, and breakeven visually.</div>"
+        "<div style='display:flex;align-items:baseline;gap:0.75rem;margin-bottom:0.2rem;'>"
+        "  <div style='font-size:2.4rem;font-weight:900;color:#4db8ff;letter-spacing:0.08em;line-height:1;'>DELTA</div>"
+        "  <div style='font-size:1.05rem;font-weight:700;color:rgba(208,226,246,0.7);letter-spacing:0.03em;'>Options Strategy Calculator</div>"
         "</div>"
-        "<div style='font-size:0.65rem;color:rgba(76,195,255,0.6);font-weight:700;text-align:right;'>"
-        "  Options Strategy<br>Calculator</div>"
+        "<div style='font-size:0.82rem;color:var(--muted);'>"
+        "Model any options strategy before you place the trade — see your max profit, max loss, and breakeven visually.</div>"
         "</div>"
     )
 
