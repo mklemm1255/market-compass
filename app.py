@@ -13716,7 +13716,7 @@ def render_radar_v3_module() -> None:
         _questions_left = _RADAR_QUESTION_LIMIT - _questions_used
 
         # Show usage meter
-        if get_anthropic_api_key():
+        if get_gemini_api_key():
             _meter_color = "#6DC040" if _questions_left > 2 else ("#f0c040" if _questions_left > 0 else "#ff6b6b")
             st.markdown(
                 f"<div style='font-size:0.65rem;color:{_meter_color};font-weight:700;margin-bottom:0.3rem;'>"
@@ -13734,7 +13734,7 @@ def render_radar_v3_module() -> None:
                     "Full access to RADAR is coming with the PII membership tier. "
                     "Refresh the page to start a new session."
                 )
-            elif get_anthropic_api_key():
+            elif get_gemini_api_key():
                 ticker = st.session_state["radar_v3_context_ticker"]
                 focus  = st.session_state["radar_v3_focus"]
                 scope  = st.session_state["radar_v3_scope"]
