@@ -14519,6 +14519,96 @@ elif nav == "Learn":
 elif nav == "DELTA":
     render_delta_v49_module()
 
+elif nav == "radar":
+    render_radar_v3_module()
+
+elif nav == "indicators":
+    # ── PII TradingView Indicators ────────────────────────────────────────
+    render_html(
+        "<div style='font-size:0.62rem;color:#6DC040;font-weight:700;text-transform:uppercase;"
+        "letter-spacing:0.1em;margin-bottom:0.6rem;padding-bottom:0.3rem;"
+        "border-bottom:1px solid rgba(108,192,64,0.3);'>PII TradingView Indicators</div>"
+    )
+
+    _ind_cols = st.columns(2, gap="large")
+
+    # ── Indicator 1 ───────────────────────────────────────────────────────
+    with _ind_cols[0]:
+        render_html(
+            "<div style='padding:1rem 1.1rem;background:rgba(13,25,48,0.65);"
+            "border:1px solid rgba(108,192,64,0.25);border-radius:12px;height:100%;'>"
+            "<div style='font-size:0.58rem;color:#6DC040;font-weight:700;text-transform:uppercase;"
+            "letter-spacing:0.1em;margin-bottom:0.35rem;'>Indicator 01 &middot; Managed Access</div>"
+            "<div style='font-size:1.05rem;font-weight:900;color:#d0e2f6;margin-bottom:0.4rem;'>PII Income Signal</div>"
+            "<div style='font-size:0.78rem;color:var(--muted);line-height:1.6;margin-bottom:0.7rem;'>"
+            "A proprietary TradingView indicator built around the Practical Income Investing methodology. "
+            "Designed to surface high-probability premium-selling setups using the same confluence signals "
+            "that power the Market Compass scanner."
+            "</div>"
+            "<div style='display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem;'>"
+            "<span style='padding:0.15rem 0.55rem;background:rgba(108,192,64,0.12);"
+            "border:1px solid rgba(108,192,64,0.3);border-radius:5px;"
+            "font-size:0.65rem;font-weight:700;color:#6DC040;'>Covered Calls</span>"
+            "<span style='padding:0.15rem 0.55rem;background:rgba(108,192,64,0.12);"
+            "border:1px solid rgba(108,192,64,0.3);border-radius:5px;"
+            "font-size:0.65rem;font-weight:700;color:#6DC040;'>Cash-Secured Puts</span>"
+            "<span style='padding:0.15rem 0.55rem;background:rgba(77,184,255,0.1);"
+            "border:1px solid rgba(77,184,255,0.25);border-radius:5px;"
+            "font-size:0.65rem;font-weight:700;color:#4db8ff;'>Managed Access</span>"
+            "</div>"
+            "<div style='font-size:0.68rem;color:var(--muted);font-style:italic;'>"
+            "Access is granted on request. Click below to ask Mike for access."
+            "</div>"
+            "</div>"
+        )
+        st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
+        st.link_button(
+            "🔗 Request Access on TradingView",
+            "https://www.tradingview.com",
+            use_container_width=True,
+        )
+
+    # ── Indicator 2 (coming soon) ─────────────────────────────────────────
+    with _ind_cols[1]:
+        render_html(
+            "<div style='padding:1rem 1.1rem;background:rgba(13,25,48,0.4);"
+            "border:1px dashed rgba(208,226,246,0.15);border-radius:12px;height:100%;'>"
+            "<div style='font-size:0.58rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
+            "letter-spacing:0.1em;margin-bottom:0.35rem;'>Indicator 02 &middot; Coming Soon</div>"
+            "<div style='font-size:1.05rem;font-weight:900;color:rgba(208,226,246,0.4);margin-bottom:0.4rem;'>PII Indicator #2</div>"
+            "<div style='font-size:0.78rem;color:var(--muted);line-height:1.6;margin-bottom:0.7rem;'>"
+            "A second proprietary indicator is in development. Details coming soon."
+            "</div>"
+            "<div style='font-size:0.68rem;color:var(--muted);font-style:italic;'>"
+            "Stay tuned — this will be available to PII members."
+            "</div>"
+            "</div>"
+        )
+
+    # ── How it works explainer ────────────────────────────────────────────
+    st.markdown("<div style='height:1rem'></div>", unsafe_allow_html=True)
+    render_html("<hr style='border:none;border-top:1px solid rgba(208,226,246,0.1);margin-bottom:0.75rem;'>")
+    render_html(
+        "<div style='font-size:0.62rem;color:var(--muted);font-weight:700;text-transform:uppercase;"
+        "letter-spacing:0.1em;margin-bottom:0.5rem;'>How TradingView Access Works</div>"
+    )
+    _how_cols = st.columns(3, gap="medium")
+    _steps = [
+        ("1", "Request Access", "Click the request button above. Mike will add you to the indicator's access list on TradingView."),
+        ("2", "Open TradingView", "Log into your TradingView account (free or paid). Search for the indicator by name in the Indicators library under 'Invite-Only Scripts'."),
+        ("3", "Add to Chart", "Click 'Add to chart' and the indicator loads instantly on any ticker. Works on any timeframe."),
+    ]
+    for col, (num, title, desc) in zip(_how_cols, _steps):
+        with col:
+            render_html(
+                f"<div style='padding:0.75rem 0.9rem;background:rgba(255,255,255,0.03);"
+                f"border:1px solid rgba(208,226,246,0.08);border-radius:10px;'>"
+                f"<div style='font-size:1.4rem;font-weight:900;color:rgba(108,192,64,0.4);line-height:1;margin-bottom:0.35rem;'>{num}</div>"
+                f"<div style='font-size:0.8rem;font-weight:800;color:#d0e2f6;margin-bottom:0.3rem;'>{title}</div>"
+                f"<div style='font-size:0.74rem;color:var(--muted);line-height:1.55;'>{desc}</div>"
+                f"</div>"
+            )
+
 else:
     render_radar_v3_module()
 
