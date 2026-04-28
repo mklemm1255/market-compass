@@ -769,7 +769,9 @@ def inject_styles() -> None:
             --yellow: #f7cc66;
         }
         /* ── Global tooltip override ─────────────────────────────────────────── */
-        /* Help icon — force bright white */
+        /* Help icon — force bright white via max specificity */
+        :root:root button[data-testid="tooltipHoverTarget"],
+        :root:root [data-testid="tooltipHoverTarget"],
         button[data-testid="tooltipHoverTarget"],
         [data-testid="tooltipHoverTarget"],
         button[data-testid="tooltipHoverTarget"]:hover {
@@ -784,7 +786,9 @@ def inject_styles() -> None:
             fill: #ffffff !important;
             stroke: #ffffff !important;
         }
-        /* Tooltip popup — white background, BLACK text, all children */
+        /* Tooltip popup — white background, BLACK text */
+        :root:root div[data-baseweb="tooltip"],
+        :root:root div[data-baseweb="popover"] > div,
         div[data-baseweb="tooltip"],
         div[data-baseweb="tooltip"] > div,
         div[data-baseweb="popover"],
@@ -13458,6 +13462,24 @@ def inject_delta_styles() -> None:
             font-size: 0.93rem;
             line-height: 1.45;
         }
+        /* Slider endpoint labels — readable dark style */
+        .stSlider [data-testid="stTickBarMin"],
+        .stSlider [data-testid="stTickBarMax"],
+        div[data-testid="stSlider"] span {
+            color: #d0e2f6 !important;
+            font-weight: 700 !important;
+            font-size: 0.78rem !important;
+            background: rgba(13,25,48,0.7) !important;
+            padding: 0.1rem 0.35rem !important;
+            border-radius: 4px !important;
+        }
+        /* Slider thumb value bubble */
+        .stSlider [data-testid="stSliderThumbValue"] {
+            background: #6DC040 !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            border-radius: 6px !important;
+        }
         .delta-footnote {
             color: #90acd3;
             font-size: 0.84rem;
@@ -13577,11 +13599,18 @@ def render_delta_v49_module() -> None:
     with row1[1]:
         ticker = st.text_input("Ticker Symbol", value="AAPL", help="Enter the stock ticker you want to trade options on.")
     with row1[2]:
-        dte = st.selectbox(
-            "Days to Expiration (DTE)",
-            [7, 14, 21, 30, 45, 60, 90, 120, 180, 270, 365, 540, 730], index=3,
-            help="How many days until the option expires. Shorter DTE = faster time decay."
+        _exp_list   = get_options_expirations(num_weeks=6, num_months=12)
+        _exp_labels = [e["label"] for e in _exp_list]
+        _exp_dtes   = {e["label"]: e["dte"] for e in _exp_list}
+        # Default to ~30 DTE
+        _default_exp = next((e["label"] for e in _exp_list if e["dte"] >= 28), _exp_labels[-1])
+        _sel_exp = st.selectbox(
+            "Expiration Date",
+            _exp_labels,
+            index=_exp_labels.index(_default_exp),
+            help="Select the actual options expiration date. Weeklies expire every Friday; monthlies expire on the 3rd Friday of each month."
         )
+        dte = _exp_dtes[_sel_exp]
     with row1[3]:
         contracts = st.selectbox(
             "Contracts",
