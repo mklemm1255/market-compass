@@ -55,25 +55,26 @@ TICKER_FACTS = {
 }
 
 STRATEGY_VIDEO_SEEDS = {
-    "CC & CSP": [
-        {"title": "CC & CSP — Selling Puts for Income", "watch_url": "https://youtu.be/WEKwRYlgkyE"},
-        {"title": "CC & CSP — Entry Timing & Confirmation", "watch_url": "https://youtube.com/shorts/N-Z55kgWtOA"},
+    "Covered Calls & Cash-Secured Puts": [
+        {"title": "This Trade Annualizes at 111% — Live CSP Walkthrough", "watch_url": "https://youtu.be/C-WfV1xAZSQ"},
+        {"title": "This Covered Call Generated a 179% Annualized Yield", "watch_url": "https://youtu.be/H8CdiQIhQ9U"},
+        {"title": "Managing Cash-Secured Puts: When to Take Assignment or Roll", "watch_url": "https://youtu.be/7qaQj1XbV0Q"},
+        {"title": "Covered Call ETFs vs. Dividend ETFs", "watch_url": "https://youtu.be/qwYLmFxmikk"},
     ],
     "Credit Spread": [
-        {"title": "Credit Spreads — Defined Risk Income", "watch_url": "https://youtu.be/rxjeAcaINvo"},
+        {"title": "More videos coming soon — visit our YouTube channel", "watch_url": "https://www.youtube.com/@PracticalIncomeInvestingYT"},
     ],
     "LEAPS": [
-        {"title": "LEAPS Educational Video 1", "watch_url": "https://youtu.be/oY7jLgcnVsI"},
-        {"title": "LEAPS Educational Video 2", "watch_url": "https://youtu.be/9rxXh3CFZTY"},
+        {"title": "More videos coming soon — visit our YouTube channel", "watch_url": "https://www.youtube.com/@PracticalIncomeInvestingYT"},
     ],
     "Buy-Write": [
-        {"title": "Buy-Write Educational Video 1", "watch_url": "https://youtu.be/I4_fww7bBqg"},
+        {"title": "2x ETF Buy-Write: Live Trade from Chart to Execution", "watch_url": "https://youtu.be/zzCo_8tMIOc"},
     ],
 }
 
 PLAYBOOKS = {
-    "CC & CSP": {
-        "title": "CC & CSP Playbook",
+    "Covered Calls & Cash-Secured Puts": {
+        "title": "Covered Calls & Cash-Secured Puts Playbook",
         "summary": "One-page overview of Cash-Secured Puts and Covered Calls — when to use them, what must line up, and what can disqualify the setup.",
         "bullets": [
             "Use only when you would actually want shares at the strike.",
@@ -115,7 +116,7 @@ PLAYBOOKS = {
 }
 
 EDUCATION_OVERVIEWS = {
-    "CC & CSP": {
+    "Covered Calls & Cash-Secured Puts": {
         "summary": "Cash-Secured Puts and Covered Calls focus on short-to-medium duration premium income when price action, support, and confluence line up cleanly.",
         "when": "Use when you want a tactical bullish income setup with strong intraday confirmation and a real willingness to own shares if assigned.",
         "watch_for": "Liquidity, confirmation candle quality, weekly/daily trend context, and premium that actually justifies the risk.",
@@ -777,8 +778,8 @@ def render_masthead() -> None:
         b64 = base64.b64encode(lb).decode("utf-8")
         logo_html = f"<img src='data:image/png;base64,{b64}' alt='Market Compass'>"
 
-    # PII logo — embedded at build time (no external file needed)
-    pii_logo_html = f"<img src='data:image/png;base64,{_PII_EMBLEM_B64}' alt='Practical Income Investing' style='height:36px; width:auto; opacity:0.9; filter:drop-shadow(0 0 4px rgba(109,192,64,0.4));'>"
+    # PII branding — clean text badge (logo PNGs lack transparency; text looks sharper)
+    pii_logo_html = ""  # unused; badge is rendered directly below
 
     render_html(
         f"""
@@ -787,15 +788,15 @@ def render_masthead() -> None:
                 <div class='mc-brand-left'>
                     <div class='mc-logo-wrap'>{logo_html}</div>
                     <div>
-                        <div style='display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:0.25rem;'>
+                        <div style='display:flex; align-items:center; gap:0.85rem; flex-wrap:wrap; margin-bottom:0.35rem;'>
                             <div class='mc-title' style='margin:0;'>Market Compass</div>
-                            <div style='display:flex; align-items:center; gap:0.4rem; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.14); border-radius:999px; padding:0.2rem 0.65rem;'>
-                                <span style='font-size:0.65rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; font-weight:700;'>by</span>
-                                {pii_logo_html if pii_logo_html else "<span style='font-size:0.75rem; font-weight:800; color:#6DC040; letter-spacing:0.06em;'>PRACTICAL INCOME INVESTING</span>"}
+                            <div style='display:flex; align-items:center; gap:0.5rem; background:rgba(109,192,64,0.08); border:1px solid rgba(109,192,64,0.35); border-radius:999px; padding:0.4rem 1.1rem;'>
+                                <span style='font-size:0.58rem; color:rgba(255,255,255,0.4); letter-spacing:0.14em; text-transform:uppercase; font-weight:700;'>by</span>
+                                <span style='font-size:0.82rem; font-weight:900; color:#6DC040; letter-spacing:0.07em; text-transform:uppercase; font-family:sans-serif;'>Practical Income Investing</span>
                             </div>
                         </div>
                         <div class='mc-subtitle'>
-                            Income investing tools for serious traders — scanner, analysis, strategy education, and AI-powered research. A Practical Income Investing platform.
+                            Income investing tools for serious traders — scanner, analysis, strategy education, and AI-powered research. A Practical Income Investing platform. · v2.0
                         </div>
                     </div>
                 </div>
@@ -13390,8 +13391,8 @@ elif nav == "Analyze":
 elif nav == "Learn":
     top = st.columns([0.85, 1.55], gap="large")
     with top[0]:
-        open_panel("Learning Portal", "Strategy-first education", "This page should feel simpler than the old resource center, but stronger. Click a strategy and get that strategy's videos, summary, and printable playbook.")
-        strategy_pick = st.selectbox("Learning path", ["CC & CSP", "Credit Spread", "LEAPS", "Buy-Write"], index=0)
+        open_panel("Learning Portal", "Strategy-first education", "Strategy-first education for income investors.")
+        strategy_pick = st.selectbox("Learning path", ["Covered Calls & Cash-Secured Puts", "Credit Spread", "LEAPS", "Buy-Write"], index=0)
         overview = EDUCATION_OVERVIEWS[strategy_pick]
         st.write(f"**Overview:** {overview['summary']}")
         st.write(f"**When to use:** {overview['when']}")
@@ -13402,7 +13403,7 @@ elif nav == "Learn":
         videos = STRATEGY_VIDEO_SEEDS[strategy_pick]
         selected_video = st.selectbox(f"{strategy_pick} videos", [v["title"] for v in videos])
         selected = next(v for v in videos if v["title"] == selected_video)
-        open_panel(f"{strategy_pick} Educational Videos", "Video + playbook", "The playbook should be front and center, and the videos should match the strategy the user selected.")
+        open_panel(f"{strategy_pick} Educational Videos", "Video + playbook", "Playbook reference and video walkthrough.")
         vcols = st.columns([1.0, 1.3], gap="large")
         with vcols[0]:
             playbook = PLAYBOOKS[strategy_pick]
@@ -13440,4 +13441,4 @@ elif nav == "DELTA":
 else:
     render_radar_v3_module()
 
-render_html("<div class='mc-footer-note'>Market Compass • Alpha Vantage live quote, overview, and intraday hooks added to Analyze while Scanner, DELTA, and Ask RADAR remain stable.</div>")
+                                                                                                  
