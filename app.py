@@ -13611,11 +13611,37 @@ if nav == "scanner":
 
         # Table
         _show = _sc_df.copy()
-        def _cv_chip(s):
-            _lbl = conviction_label(int(s))
-            _col = {"Elite":"green","Strong":"blue","Solid":"yellow","Moderate":"gray","Developing":"gray"}.get(_lbl,"gray")
-            return chip(_lbl, _col)
-        _show["Conviction"] = _show["Score"].apply(_cv_chip)
+
+        # Per-row score breakdown tooltip
+        def _build_score_cell(r):
+            _cv  = conviction_label(int(r["Score"]))
+            _tip = (
+                f"Score: {int(r['Score'])} · {_cv} | "
+                f"Confluence: {int(r['Confluence'])}/10 factors aligned | "
+                f"Bollinger: {r['Bollinger']} | "
+                f"RSI: {r['RSI State']} | "
+                f"IV Rank: {int(r['IV Rank'])}% | "
+                f"Trend: {r['Trend']} | "
+                f"Liquidity: {r['Liquidity']}"
+            ).replace('"', '&quot;').replace("'", '&#39;')
+            _badge = badge_for_score(int(r["Score"]))
+            return f"<span class='mc-tip' data-tip='{_tip}' style='cursor:help'>{_badge}</span>"
+
+        def _build_conv_cell(r):
+            _cv  = conviction_label(int(r["Score"]))
+            _tip = (
+                f"Score: {int(r['Score'])} · {_cv} | "
+                f"Confluence: {int(r['Confluence'])}/10 | "
+                f"Bollinger: {r['Bollinger']} | "
+                f"RSI: {r['RSI State']} | "
+                f"IV Rank: {int(r['IV Rank'])}%"
+            ).replace('"', '&quot;').replace("'", '&#39;')
+            _col  = {"Elite":"green","Strong":"blue","Solid":"yellow","Moderate":"gray","Developing":"gray"}.get(_cv,"gray")
+            _chip = chip(_cv, _col)
+            return f"<span class='mc-tip' data-tip='{_tip}' style='cursor:help'>{_chip}</span>"
+
+        _show["Score"]      = _show.apply(_build_score_cell, axis=1)
+        _show["Conviction"] = _show.apply(_build_conv_cell, axis=1)
         _show["Price"]      = _show["Price"].map(format_price)
         _show["IV Rank"]    = _show["IV Rank"].apply(lambda v: f"{int(v)}%")
         _show["Est. Prem"]  = _show["Premium"].apply(lambda v: format_price(float(v)) if float(v)>0 else "—")
@@ -13623,7 +13649,7 @@ if nav == "scanner":
         _show["DTE"]        = _show["DTE"].apply(lambda v: str(int(v)) if int(v)>0 else "—")
         _show["Conf."]      = _show["Confluence"]
         _show["Setup"]      = _show["Bollinger"] + " / " + _show["RSI State"]
-        _sc_cols = ["Ticker","Price","IV Rank","Setup","Est. Prem","Δ","DTE","Conf.","Score","Conviction"]
+        _sc_cols = ["Ticker","Price","Strike","IV Rank","Setup","Est. Prem","Δ","DTE","Conf.","Score","Conviction"]
         _table_html = render_table(_show[_sc_cols], return_html=True)
         _row_count = len(_sc_df)
         _scroll_note = f"Showing {_row_count} candidate{'s' if _row_count!=1 else ''}" if _row_count <= 20 else f"Showing top 20 of {_row_count} candidates"
