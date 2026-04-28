@@ -13281,36 +13281,32 @@ _NAV_ITEMS = [
 if "mc_nav" not in st.session_state:
     st.session_state["mc_nav"] = "scanner"
 
-# Render nav bar
-_nav_html = "<div class='mc-nav-wrap'>"
-for _key, _icon, _label, _sub, _tip in _NAV_ITEMS:
-    _active_cls = "active" if st.session_state["mc_nav"] == _key else ""
-    _safe_tip = _tip.replace('"', '&quot;').replace("'", '&#39;')
-    _nav_html += (
-        f"<div class='mc-nav-btn {_active_cls} mc-tip' data-tip='{_safe_tip}'>"
-        f"<span class='mc-nav-icon'>{_icon}</span>"
-        f"<div class='mc-nav-label'>{_label}</div>"
-        f"<div class='mc-nav-sub'>{_sub}</div>"
-        f"</div>"
-    )
-_nav_html += "</div>"
-render_html(_nav_html)
-
-# Invisible radio drives actual tab switching (buttons are visual only)
-_nav_labels = [n[2] for n in _NAV_ITEMS]
-_nav_keys   = [n[0] for n in _NAV_ITEMS]
+# ── Navigation buttons (5 big prominent tabs) ───────────────────────────
 _nav_cols = st.columns(5, gap="small")
 for _ci, (_col, (_key, _icon, _label, _sub, _tip)) in enumerate(zip(_nav_cols, _NAV_ITEMS)):
     with _col:
+        _is_active = st.session_state["mc_nav"] == _key
+        _safe_tip  = _tip.replace('"', '&quot;').replace("'", '&#39;')
+        # Render a styled card above the button that shows icon + subtitle + tooltip
+        render_html(
+            f"<div class='mc-nav-card{" mc-nav-card-active" if _is_active else ""}' style='"
+            f"padding:0.6rem 0.4rem 0.35rem;border-radius:10px 10px 0 0;"
+            f"background:{"rgba(108,192,64,0.12)" if _is_active else "rgba(15,25,45,0.4)"};"
+            f"border:1px solid {"rgba(108,192,64,0.5)" if _is_active else "rgba(208,226,246,0.12)"};"
+            f"border-bottom:none;text-align:center;margin-bottom:-1px;'>"
+            f"<div style='font-size:1.35rem;line-height:1;'>{_icon}</div>"
+            f"<div style='font-size:0.62rem;color:var(--muted);margin-top:0.2rem;"
+            f"font-weight:500;letter-spacing:0.02em;'>{_sub}</div>"
+            f"</div>"
+        )
         if st.button(_label, key=f"_navbtn_{_key}", use_container_width=True,
-                     type="primary" if st.session_state["mc_nav"] == _key else "secondary"):
+                     type="primary" if _is_active else "secondary"):
             st.session_state["mc_nav"] = _key
             st.rerun()
 
 nav = st.session_state["mc_nav"]
 
-# Divider
-render_html("<hr style='border:none;border-top:1px solid rgba(208,226,246,0.1);margin:0.2rem 0 0.8rem 0;'>")
+render_html("<div style='height:0.8rem;'></div>")
 
 if nav == "scanner":
     # ── Strategy defaults (auto-populate filters) ─────────────────────────
