@@ -13322,11 +13322,14 @@ for _ci, (_col, (_key, _icon, _label, _sub, _tip)) in enumerate(zip(_nav_cols, _
         _is_active = st.session_state["mc_nav"] == _key
         _safe_tip  = _tip.replace('"', '&quot;').replace("'", '&#39;')
         # Render a styled card above the button that shows icon + subtitle + tooltip
+        _active_cls  = " mc-nav-card-active" if _is_active else ""
+        _active_bg   = "rgba(108,192,64,0.12)" if _is_active else "rgba(15,25,45,0.4)"
+        _active_bdr  = "rgba(108,192,64,0.5)"  if _is_active else "rgba(208,226,246,0.12)"
         render_html(
-            f"<div class='mc-nav-card{" mc-nav-card-active" if _is_active else ""}' style='"
+            f"<div class='mc-nav-card{_active_cls}' style='"
             f"padding:0.6rem 0.4rem 0.35rem;border-radius:10px 10px 0 0;"
-            f"background:{"rgba(108,192,64,0.12)" if _is_active else "rgba(15,25,45,0.4)"};"
-            f"border:1px solid {"rgba(108,192,64,0.5)" if _is_active else "rgba(208,226,246,0.12)"};"
+            f"background:{_active_bg};"
+            f"border:1px solid {_active_bdr};"
             f"border-bottom:none;text-align:center;margin-bottom:-1px;'>"
             f"<div style='font-size:1.35rem;line-height:1;'>{_icon}</div>"
             f"<div style='font-size:0.62rem;color:var(--muted);margin-top:0.2rem;"
