@@ -677,11 +677,20 @@ def inject_styles() -> None:
             --yellow: #f7cc66;
         }
         /* ── Global tooltip override ─────────────────────────────────────────── */
-        /* Help icon — force bright regardless of Streamlit version */
+        /* Help icon — force bright white */
         button[data-testid="tooltipHoverTarget"],
-        [data-testid="tooltipHoverTarget"] {
+        [data-testid="tooltipHoverTarget"],
+        button[data-testid="tooltipHoverTarget"]:hover {
             opacity: 1 !important;
             filter: brightness(0) invert(1) !important;
+            color: #ffffff !important;
+        }
+        button[data-testid="tooltipHoverTarget"] *,
+        [data-testid="tooltipHoverTarget"] * {
+            filter: brightness(0) invert(1) !important;
+            color: #ffffff !important;
+            fill: #ffffff !important;
+            stroke: #ffffff !important;
         }
         /* Tooltip popup — white background, BLACK text, all children */
         div[data-baseweb="tooltip"],
