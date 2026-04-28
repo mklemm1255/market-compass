@@ -13513,7 +13513,7 @@ if nav == "scanner":
             f"Trend: {_b['Trend']}\n"
             f"Liquidity: {_b['Liquidity']}\n"
             f"Strategy fit: {sc_strat}"
-        ).replace('"', '&quot;')
+        .replace('"', '&quot;').replace("'", '&#39;')
 
         render_html(
             f"<div class='mc-pick-card'>"
