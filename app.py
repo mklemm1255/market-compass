@@ -728,6 +728,28 @@ def inject_styles() -> None:
         .sc-conv-moderate { color:#aaa;    font-weight:600; font-size:0.75rem; letter-spacing:0.04em; }
         .sc-conv-developing{color:#777;   font-weight:500; font-size:0.75rem; letter-spacing:0.04em; }
         .sc-table-wrap { max-height:390px; overflow-y:auto; border-radius:6px; }
+        /* ── Result cards ───────────────────────────────────────────────── */
+        .sc-cards-wrap { max-height:560px; overflow-y:auto; padding-right:4px; }
+        .sc-cards-wrap::-webkit-scrollbar { width:4px; }
+        .sc-cards-wrap::-webkit-scrollbar-track { background:rgba(255,255,255,0.02); }
+        .sc-cards-wrap::-webkit-scrollbar-thumb { background:rgba(108,192,64,0.45); border-radius:3px; }
+        .sc-result-card {
+            display:flex; align-items:center; gap:0.7rem;
+            padding:0.55rem 0.85rem; margin-bottom:0.4rem;
+            background:rgba(13,25,48,0.65);
+            border:1px solid rgba(208,226,246,0.1);
+            border-radius:10px; cursor:help;
+            transition:border-color 0.15s, background 0.15s;
+        }
+        .sc-result-card:hover { border-color:rgba(108,192,64,0.4); background:rgba(13,25,48,0.85); }
+        .sc-card-id { min-width:56px; }
+        .sc-card-ticker { font-size:1.05rem; font-weight:900; color:#d0e2f6; letter-spacing:0.04em; }
+        .sc-card-price  { font-size:0.67rem; color:var(--muted); margin-top:0.05rem; }
+        .sc-card-stats  { display:flex; flex:1; gap:0.35rem 1.1rem; flex-wrap:wrap; align-items:center; }
+        .sc-stat        { display:flex; flex-direction:column; }
+        .sc-stat-lbl    { font-size:0.54rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.07em; }
+        .sc-stat-val    { font-size:0.8rem; color:#d0e2f6; font-weight:700; margin-top:0.05rem; }
+        .sc-card-badge  { display:flex; align-items:center; }
         .sc-table-wrap::-webkit-scrollbar { width:4px; }
         .sc-table-wrap::-webkit-scrollbar-track { background:rgba(255,255,255,0.02); }
         .sc-table-wrap::-webkit-scrollbar-thumb { background:rgba(108,192,64,0.45); border-radius:3px; }
@@ -13353,7 +13375,7 @@ for _ci, (_col, (_key, _icon, _label, _sub, _tip)) in enumerate(zip(_nav_cols, _
         _lbl_color   = "#6DC040" if _is_active else "#d0e2f6"
         render_html(
             f"<div class='mc-nav-card{_active_cls} mc-tip' data-tip='{_safe_tip}' style='"
-            f"padding:0.6rem 0.4rem 0.4rem;border-radius:10px 10px 0 0;"
+            f"width:100%;box-sizing:border-box;padding:0.6rem 0.4rem 0.4rem;border-radius:10px 10px 0 0;"
             f"background:{_active_bg};"
             f"border:1px solid {_active_bdr};"
             f"border-bottom:none;text-align:center;margin-bottom:-1px;cursor:help;'>"
@@ -13661,62 +13683,102 @@ if nav == "scanner":
             f"</div>"
         )
 
-        # Table
-        _show = _sc_df.copy()
-
-        # Per-row score breakdown tooltip
-        def _build_score_cell(r):
-            _cv  = conviction_label(int(r["Score"]))
-            _tip = (
-                f"Score: {int(r['Score'])} · {_cv} | "
-                f"Confluence: {int(r['Confluence'])}/10 factors aligned | "
-                f"Bollinger: {r['Bollinger']} | "
-                f"RSI: {r['RSI State']} | "
-                f"IV Rank: {int(r['IV Rank'])}% | "
-                f"Trend: {r['Trend']} | "
-                f"Liquidity: {r['Liquidity']}"
-            ).replace('"', '&quot;').replace("'", '&#39;')
-            _badge = badge_for_score(int(r["Score"]))
-            return f"<span class='mc-tip' data-tip='{_tip}' style='cursor:help'>{_badge}</span>"
-
-        def _build_conv_cell(r):
-            _cv  = conviction_label(int(r["Score"]))
-            _tip = (
-                f"Score: {int(r['Score'])} · {_cv} | "
-                f"Confluence: {int(r['Confluence'])}/10 | "
-                f"Bollinger: {r['Bollinger']} | "
-                f"RSI: {r['RSI State']} | "
-                f"IV Rank: {int(r['IV Rank'])}%"
-            ).replace('"', '&quot;').replace("'", '&#39;')
-            _col  = {"Elite":"green","Strong":"blue","Solid":"yellow","Moderate":"gray","Developing":"gray"}.get(_cv,"gray")
-            _chip = chip(_cv, _col)
-            return f"<span class='mc-tip' data-tip='{_tip}' style='cursor:help'>{_chip}</span>"
-
-        # Build conviction FIRST (while Score is still numeric), then overwrite Score with HTML
-        _show["Conviction"] = _show.apply(_build_conv_cell, axis=1)
-        _show["Score"]      = _show.apply(_build_score_cell, axis=1)
-        _show["Price"]      = _show["Price"].map(format_price)
-        _show["IV Rank"]    = _show["IV Rank"].apply(lambda v: f"{int(v)}%")
-        _show["Est. Prem"]  = _show["Premium"].apply(lambda v: format_price(float(v)) if float(v)>0 else "—")
-        _show["Δ"]          = _show["Delta"].apply(lambda v: f"{float(v):.2f}" if float(v)<1.0 else "—")
-        _show["DTE"]        = _show["DTE"].apply(lambda v: str(int(v)) if int(v)>0 else "—")
-        _show["Conf."]      = _show["Confluence"]
-        _show["Setup"]      = _show["Bollinger"] + " / " + _show["RSI State"]
-        _sc_cols = ["Ticker","Price","Strike","IV Rank","Setup","Est. Prem","Δ","DTE","Conf.","Score","Conviction"]
-        _table_html = render_table(_show[_sc_cols], return_html=True)
+        # ── Result cards ──────────────────────────────────────────────
+        _cv_colors = {"Elite":"#6DC040","Strong":"#4db8ff","Solid":"#f0c040","Moderate":"#aaa","Developing":"#777"}
+        _cv_chip_c = {"Elite":"green","Strong":"blue","Solid":"yellow","Moderate":"gray","Developing":"gray"}
         _row_count = len(_sc_df)
-        _scroll_note = f"Showing {_row_count} candidate{'s' if _row_count!=1 else ''}" if _row_count <= 20 else f"Showing top 20 of {_row_count} candidates"
+        _scroll_note = (f"Showing {_row_count} candidate{'s' if _row_count!=1 else ''}"
+                        if _row_count <= 20 else f"Showing top 20 of {_row_count} candidates")
         render_html(
-            f"<div style='font-size:0.65rem;color:var(--muted);margin-bottom:0.25rem;'>"
-            f"{_scroll_note} · Scroll for more</div>"
-            f"<div class='sc-table-wrap'>{_table_html}</div>"
+            f"<div style='font-size:0.65rem;color:var(--muted);margin-bottom:0.35rem;'>"
+            f"{_scroll_note} · Hover any card for score breakdown</div>"
         )
+
+        _cards_html = ""
+        for _, _r in _sc_df.iterrows():
+            _r_cv     = conviction_label(int(_r["Score"]))
+            _r_col    = _cv_colors.get(_r_cv, "#aaa")
+            _r_prem_f = float(_r.get("Premium", 0))
+            _r_price_f= float(_r.get("Price", 0))
+            _r_delta_f= float(_r.get("Delta", 0.25))
+            _r_dte_i  = max(int(_r.get("DTE", 14)), 1)
+            _r_prem   = format_price(_r_prem_f) if _r_prem_f > 0 else "—"
+            _r_delt   = f"{_r_delta_f:.2f}" if _r_delta_f < 1.0 else "—"
+            _r_strike = str(_r.get("Strike", "—"))
+            _r_ann    = f"{(_r_prem_f/_r_price_f)*(365/_r_dte_i)*100:.1f}%" if _r_price_f>0 and _r_prem_f>0 else "—"
+            _r_pop    = f"{(1-_r_delta_f)*100:.0f}%" if _r_delta_f<1.0 else "—"
+            try:
+                _r_sk_n = float(_r_strike.replace("$","").replace(",",""))
+                if sc_strat in ("Covered Call","Buy-Write"):
+                    _r_be = format_price(_r_price_f - _r_prem_f)
+                elif sc_strat == "Cash-Secured Put":
+                    _r_be = format_price(_r_sk_n - _r_prem_f)
+                elif sc_strat in ("Buy Call","LEAPS"):
+                    _r_be = format_price(_r_sk_n + _r_prem_f)
+                elif sc_strat == "Buy Put":
+                    _r_be = format_price(_r_sk_n - _r_prem_f)
+                else:
+                    _r_be = "—"
+                if sc_strat in ("Covered Call","Buy-Write","Buy Call","LEAPS"):
+                    _r_dist = f"+{(_r_sk_n-_r_price_f)/_r_price_f*100:.1f}%"
+                else:
+                    _r_dist = f"-{abs((_r_price_f-_r_sk_n)/_r_price_f*100):.1f}%"
+            except Exception:
+                _r_be   = "—"
+                _r_dist = "—"
+            _r_tip = (
+                f"Score: {int(_r['Score'])} · {_r_cv} | "
+                f"Confluence: {int(_r['Confluence'])}/10 aligned | "
+                f"Bollinger: {_r['Bollinger']} | "
+                f"RSI: {_r['RSI State']} | "
+                f"IV Rank: {int(_r['IV Rank'])}% | "
+                f"Trend: {_r['Trend']} | "
+                f"Liquidity: {_r['Liquidity']}"
+            ).replace('"','&quot;').replace("'","&#39;")
+            _r_chip_c = _cv_chip_c.get(_r_cv, "gray")
+            _r_chip   = chip(_r_cv, _r_chip_c)
+
+            _cards_html += (
+                f"<div class='sc-result-card mc-tip' data-tip='{_r_tip}'>"
+                f"<div class='sc-card-id'>"
+                f"  <div class='sc-card-ticker'>{_r['Ticker']}</div>"
+                f"  <div class='sc-card-price'>{format_price(float(_r['Price']))}</div>"
+                f"</div>"
+                f"<div class='sc-card-stats'>"
+                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Score</div>"
+                f"    <div class='sc-stat-val' style='color:{_r_col}'>{int(_r['Score'])} · {_r_cv}</div></div>"
+                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Setup</div>"
+                f"    <div class='sc-stat-val'>{_r['Bollinger']}</div></div>"
+                f"  <div class='sc-stat'><div class='sc-stat-lbl'>RSI</div>"
+                f"    <div class='sc-stat-val'>{_r['RSI State']}</div></div>"
+                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Strike / Prem</div>"
+                f"    <div class='sc-stat-val'>{_r_strike} &middot; {_r_prem}</div></div>"
+                f"  <div class='sc-stat'><div class='sc-stat-lbl'>&Delta; &middot; DTE</div>"
+                f"    <div class='sc-stat-val'>{_r_delt} &middot; {_r_dte_i}d</div></div>"
+                f"  <div class='sc-stat'><div class='sc-stat-lbl'>IV Rank</div>"
+                f"    <div class='sc-stat-val'>{int(_r['IV Rank'])}%</div></div>"
+                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Ann. Yield</div>"
+                f"    <div class='sc-stat-val' style='color:#6DC040'>{_r_ann}</div></div>"
+                f"  <div class='sc-stat'><div class='sc-stat-lbl'>POP</div>"
+                f"    <div class='sc-stat-val'>{_r_pop}</div></div>"
+                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Breakeven</div>"
+                f"    <div class='sc-stat-val'>{_r_be}</div></div>"
+                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Dist. OTM</div>"
+                f"    <div class='sc-stat-val'>{_r_dist}</div></div>"
+                f"  <div class='sc-stat'><div class='sc-stat-lbl'>Conf.</div>"
+                f"    <div class='sc-stat-val'>{int(_r['Confluence'])}/10</div></div>"
+                f"</div>"
+                f"<div class='sc-card-badge'>{_r_chip}</div>"
+                f"</div>"
+            )
+
+        render_html(f"<div class='sc-cards-wrap'>{_cards_html}</div>")
 
         render_html(
             "<div class='mc-shell-note' style='margin-top:0.5rem;'>"
-            f"Showing {len(_sc_df)} candidate{'s' if len(_sc_df)!=1 else ''} for <strong>{sc_strat}</strong>. "
+            f"Showing {_row_count} candidate{'s' if _row_count!=1 else ''} for <strong>{sc_strat}</strong>. "
             "Est. Premium is a model placeholder — not a live quote. "
-            "Hover the top-pick ticker or score to see the full scoring breakdown. "
+            "Hover any card for the full score breakdown. "
             "Use <strong>Ticker Analysis</strong> to pressure-test any name."
             "</div>"
         )
