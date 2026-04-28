@@ -119,7 +119,7 @@ nav {
   white-space: nowrap;
 }
 .nav-links a:hover { color: var(--green); }
-.nav-cta { margin-left: 12px; }
+.nav-cta { margin-left: 12px; white-space: nowrap; }
 
 /* ── HERO LOGO BANNER ── */
 .hero-logo-banner {
