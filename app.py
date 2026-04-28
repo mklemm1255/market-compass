@@ -744,8 +744,8 @@ def inject_styles() -> None:
         .sc-cards-wrap::-webkit-scrollbar-track { background:rgba(255,255,255,0.02); }
         .sc-cards-wrap::-webkit-scrollbar-thumb { background:rgba(108,192,64,0.45); border-radius:3px; }
         .sc-result-card {
-            display:flex; align-items:center; gap:0.7rem;
-            padding:0.55rem 0.85rem; margin-bottom:0.4rem;
+            display:flex; align-items:center; gap:0.9rem;
+            padding:0.7rem 1rem; margin-bottom:0.45rem;
             background:rgba(13,25,48,0.65);
             border:1px solid rgba(208,226,246,0.1);
             border-radius:10px; cursor:help;
