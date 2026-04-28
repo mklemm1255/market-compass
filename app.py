@@ -1539,6 +1539,68 @@ def radar_response(prompt: str, active_ticker: str, focus: str) -> str:
         return f"In plain English: {active_ticker.upper()} looks best for {focus} if the chart, premium, and comfort level all agree. The score is not the trade. The score is only a fast filter."
     return "RADAR reads this platform as scanner first, scorecard second, and education right beside it. Use Scanner to surface names, Analyze to test a ticker, Learn to understand the why, and DELTA to map the payoff."
 
+# ── Anthropic API key helper ──────────────────────────────────────────────
+_ANTHROPIC_KEY_FALLBACK = ""  # Set key in Streamlit Secrets: ANTHROPIC_API_KEY
+
+def get_anthropic_api_key() -> str | None:
+    if _ANTHROPIC_KEY_FALLBACK:
+        return _ANTHROPIC_KEY_FALLBACK
+    for name in ("ANTHROPIC_API_KEY",):
+        try:
+            val = st.secrets.get(name)
+            if val:
+                return val
+        except Exception:
+            pass
+        val = os.environ.get(name)
+        if val:
+            return val
+    return None
+
+def live_radar_response(prompt: str, ticker: str, focus: str, scope: str) -> str:
+    """Call Anthropic Messages API directly via urllib — no SDK needed."""
+    api_key = get_anthropic_api_key()
+    if not api_key:
+        return "RADAR is not connected yet. Add your Anthropic API key to Streamlit Secrets to enable live responses."
+
+    system_msg = (
+        "You are RADAR — Research, Analysis, Decision, and Reasoning — the AI assistant "
+        "inside Market Compass, a platform built by Practical Income Investing (PII). "
+        "You specialize in income-focused options trading: covered calls, cash-secured puts, "
+        "credit spreads, LEAPS, and buy-writes. You know PII's 7 Fundamental Principles: "
+        "Growth, Moat, Management, Margins, Cash Flow, Risk, and Timing. "
+        "You are concise, practical, and plain-spoken. No fluff. "
+        "If asked about a specific ticker, give actionable commentary. "
+        "If a question is outside trading/investing, politely redirect. "
+        f"Current focus: {focus}. Scope: {scope}. Active ticker context: {ticker.upper() if ticker else 'None'}."
+    )
+
+    payload = json.dumps({
+        "model": "claude-haiku-4-5-20251001",
+        "max_tokens": 400,
+        "system": system_msg,
+        "messages": [{"role": "user", "content": prompt}],
+    }).encode("utf-8")
+
+    req = Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "x-api-key": api_key,
+            "anthropic-version": "2023-06-01",
+            "content-type": "application/json",
+        },
+        method="POST",
+    )
+    try:
+        with urlopen(req, timeout=20) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            return data["content"][0]["text"].strip()
+    except HTTPError as e:
+        return f"RADAR API error ({e.code}). Please try again."
+    except Exception as e:
+        return f"RADAR could not connect. Please try again. ({e})"
+
 def breakeven(strategy: str, stock_price: float, strike: float, premium: float) -> float | None:
     if strategy == "Cash-Secured Put":
         return strike - premium
@@ -13571,6 +13633,8 @@ def render_radar_v3_module() -> None:
         st.session_state["radar_v3_context_ticker"] = "NVDA"
     if "radar_v3_response" not in st.session_state:
         st.session_state["radar_v3_response"] = "RADAR is ready. Type a question, then click Ask RADAR."
+    if "radar_v3_questions_used" not in st.session_state:
+        st.session_state["radar_v3_questions_used"] = 0
 
     render_html("""
     <style>
