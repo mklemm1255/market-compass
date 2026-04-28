@@ -13285,7 +13285,7 @@ if "mc_nav" not in st.session_state:
 _nav_html = "<div class='mc-nav-wrap'>"
 for _key, _icon, _label, _sub, _tip in _NAV_ITEMS:
     _active_cls = "active" if st.session_state["mc_nav"] == _key else ""
-    _safe_tip = _tip.replace('"', '&quot;')
+    _safe_tip = _tip.replace('"', '&quot;').replace("'", '&#39;')
     _nav_html += (
         f"<div class='mc-nav-btn {_active_cls} mc-tip' data-tip='{_safe_tip}'>"
         f"<span class='mc-nav-icon'>{_icon}</span>"
@@ -13364,7 +13364,7 @@ if nav == "scanner":
 
     # ── Strategy tooltip strip (shows tip for active strategy) ────────────
     _tip_text = _strat_tips.get(sc_strat, "")
-    _safe_tip = _tip_text.replace('"', '&quot;')
+    _safe_tip = _tip_text.replace('"', '&quot;').replace("'", '&#39;')
     render_html(
         f"<div style='font-size:0.75rem;color:var(--muted);background:rgba(108,192,64,0.06);"
         f"border-left:2px solid rgba(108,192,64,0.4);padding:0.35rem 0.65rem;border-radius:0 5px 5px 0;"
