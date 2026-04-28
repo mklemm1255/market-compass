@@ -13566,46 +13566,98 @@ if nav == "scanner":
         _cv  = conviction_label(int(_b["Score"]))
         _cv_cls = {"Elite":"cv-elite","Strong":"cv-strong","Solid":"cv-solid",
                    "Moderate":"cv-moderate","Developing":"cv-developing"}.get(_cv,"cv-developing")
-        _prem  = format_price(float(_b["Premium"])) if float(_b.get("Premium",0)) > 0 else "—"
-        _delt  = f"{float(_b['Delta']):.2f}"        if float(_b.get("Delta",1)) < 1.0  else "—"
-        _dte_d = str(int(_b["DTE"]))               if int(_b.get("DTE",0)) > 0        else "—"
-        _note  = _b.get("Note","")
+        _price_f  = float(_b["Price"])
+        _prem_f   = float(_b.get("Premium", 0))
+        _delta_f  = float(_b.get("Delta", 0.25))
+        _dte_i    = max(int(_b.get("DTE", 14)), 1)
+        _prem     = format_price(_prem_f) if _prem_f > 0 else "—"
+        _delt     = f"{_delta_f:.2f}" if _delta_f < 1.0 else "—"
+        _dte_d    = str(_dte_i) if _dte_i > 0 else "—"
+        _note     = _b.get("Note", "")
+        _strike_disp = str(_b.get("Strike", "—"))
 
-        # Score breakdown tip
+        # Derived metrics
+        _ann_yield_s = f"{(_prem_f / _price_f) * (365 / _dte_i) * 100:.1f}%" if _price_f > 0 and _prem_f > 0 else "—"
+        _pop_s       = f"{(1 - _delta_f) * 100:.0f}%" if _delta_f < 1.0 else "—"
+
+        # Breakeven (strategy-specific)
+        try:
+            _sk_num = float(_strike_disp.replace("$","").replace(",",""))
+        except Exception:
+            _sk_num = None
+        if sc_strat in ("Covered Call", "Buy-Write"):
+            _be_s    = format_price(_price_f - _prem_f)
+            _be_note = "stock can drop to"
+        elif sc_strat == "Cash-Secured Put":
+            _be_s    = format_price(_sk_num - _prem_f) if _sk_num else "—"
+            _be_note = "strike − premium"
+        elif sc_strat in ("Buy Call", "LEAPS"):
+            _be_s    = format_price(_sk_num + _prem_f) if _sk_num else "—"
+            _be_note = "strike + cost"
+        elif sc_strat == "Buy Put":
+            _be_s    = format_price(_sk_num - _prem_f) if _sk_num else "—"
+            _be_note = "strike − cost"
+        elif sc_strat == "Credit Spread":
+            _be_s    = format_price(_sk_num - _prem_f) if _sk_num else "—"
+            _be_note = "short strike − net credit"
+        else:
+            _be_s    = "—"
+            _be_note = ""
+
+        # Distance OTM %
+        if _sk_num and _price_f > 0:
+            if sc_strat in ("Covered Call", "Buy-Write", "Buy Call", "LEAPS"):
+                _d_otm  = (_sk_num - _price_f) / _price_f * 100
+                _dist_s = f"+{_d_otm:.1f}%"
+            else:
+                _d_otm  = (_price_f - _sk_num) / _price_f * 100
+                _dist_s = f"-{abs(_d_otm):.1f}%"
+        else:
+            _dist_s = "—"
+
+        # Score breakdown tooltip
         _score_breakdown = (
-            f"Score: {int(_b['Score'])} · {_cv}\n"
-            f"Confluence: {int(_b['Confluence'])}/10 factors aligned\n"
-            f"Bollinger: {_b['Bollinger']}\n"
-            f"RSI: {_b['RSI State']}\n"
-            f"IV Rank: {int(_b['IV Rank'])}%\n"
-            f"Trend: {_b['Trend']}\n"
-            f"Liquidity: {_b['Liquidity']}\n"
+            f"Score: {int(_b['Score'])} · {_cv} | "
+            f"Confluence: {int(_b['Confluence'])}/10 factors aligned | "
+            f"Bollinger: {_b['Bollinger']} | "
+            f"RSI: {_b['RSI State']} | "
+            f"IV Rank: {int(_b['IV Rank'])}% | "
+            f"Trend: {_b['Trend']} | "
+            f"Liquidity: {_b['Liquidity']} | "
             f"Strategy fit: {sc_strat}"
         ).replace('"', '&quot;').replace("'", '&#39;')
 
+        _sm = "font-size:0.68rem;color:var(--muted);margin-top:0.1rem;"
         render_html(
-            f"<div class='mc-pick-card'>"
-            f"  <div class='mc-pick-ticker mc-tip' data-tip='{_score_breakdown}' style='cursor:help'>{_b['Ticker']}</div>"
-            f"  <div class='mc-pick-cell'>"
-            f"    <div class='mc-pick-lbl'>Score</div>"
-            f"    <div class='mc-pick-val mc-tip {_cv_cls}' data-tip='{_score_breakdown}' style='cursor:help'>{int(_b['Score'])} · {_cv}</div>"
-            f"  </div>"
-            f"  <div class='mc-pick-cell'>"
-            f"    <div class='mc-pick-lbl'>Setup</div>"
+            f"<div class='mc-pick-card' style='grid-template-columns:auto 1fr 1fr 1fr 1fr;"
+            f"grid-template-rows:auto auto;gap:0.45rem 1rem;'>"
+            f"  <div class='mc-pick-ticker mc-tip' data-tip='{_score_breakdown}'"
+            f"    style='grid-row:span 2;cursor:help;align-self:center;'>{_b['Ticker']}</div>"
+            f"  <div class='mc-pick-cell'><div class='mc-pick-lbl'>Score</div>"
+            f"    <div class='mc-pick-val mc-tip {_cv_cls}' data-tip='{_score_breakdown}'"
+            f"    style='cursor:help'>{int(_b['Score'])} · {_cv}</div></div>"
+            f"  <div class='mc-pick-cell'><div class='mc-pick-lbl'>Setup</div>"
             f"    <div class='mc-pick-val'>{_b['Bollinger']}</div>"
-            f"    <div style='font-size:0.7rem;color:var(--muted)'>RSI {_b['RSI State']}</div>"
-            f"  </div>"
-            f"  <div class='mc-pick-cell'>"
-            f"    <div class='mc-pick-lbl'>Est. Premium</div>"
-            f"    <div class='mc-pick-val'>{_prem}</div>"
-            f"    <div style='font-size:0.7rem;color:var(--muted)'>Δ {_delt} · DTE {_dte_d}</div>"
-            f"  </div>"
-            f"  <div class='mc-pick-cell'>"
-            f"    <div class='mc-pick-lbl'>IV Rank</div>"
+            f"    <div style='{_sm}'>RSI {_b['RSI State']}</div></div>"
+            f"  <div class='mc-pick-cell'><div class='mc-pick-lbl'>Strike / Prem</div>"
+            f"    <div class='mc-pick-val'>{_strike_disp} &middot; {_prem}</div>"
+            f"    <div style='{_sm}'>Δ {_delt} &middot; {_dte_d} DTE</div></div>"
+            f"  <div class='mc-pick-cell'><div class='mc-pick-lbl'>IV Rank</div>"
             f"    <div class='mc-pick-val'>{int(_b['IV Rank'])}%</div>"
-            f"    <div style='font-size:0.7rem;color:var(--muted)'>{_b['Liquidity']} liquidity</div>"
-            f"  </div>"
-            f"  <div class='mc-pick-note'>{_note}</div>"
+            f"    <div style='{_sm}'>{_b['Liquidity']} liquidity</div></div>"
+            f"  <div class='mc-pick-cell'><div class='mc-pick-lbl'>Ann. Yield</div>"
+            f"    <div class='mc-pick-val' style='color:var(--accent)'>{_ann_yield_s}</div>"
+            f"    <div style='{_sm}'>est. annualized</div></div>"
+            f"  <div class='mc-pick-cell'><div class='mc-pick-lbl'>Prob. Profit</div>"
+            f"    <div class='mc-pick-val'>{_pop_s}</div>"
+            f"    <div style='{_sm}'>1 − delta approx</div></div>"
+            f"  <div class='mc-pick-cell'><div class='mc-pick-lbl'>Breakeven</div>"
+            f"    <div class='mc-pick-val'>{_be_s}</div>"
+            f"    <div style='{_sm}'>{_be_note}</div></div>"
+            f"  <div class='mc-pick-cell'><div class='mc-pick-lbl'>Dist. OTM</div>"
+            f"    <div class='mc-pick-val'>{_dist_s}</div>"
+            f"    <div style='{_sm}'>vs current price</div></div>"
+            f"  <div class='mc-pick-note' style='grid-column:span 5;'>{_note}</div>"
             f"</div>"
         )
 
@@ -13910,11 +13962,4 @@ elif nav == "Learn":
     for col, (title, desc) in zip(bottom, cards):
         with col:
             open_panel(title, "Learning structure", desc)
-            close_panel()
-
-elif nav == "DELTA":
-    render_delta_v49_module()
-
-else:
-    render_radar_v3_module()
-
+            close_p
