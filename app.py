@@ -13765,7 +13765,7 @@ elif nav == "analyze":
             render_html("<div style='height:0.15rem;'></div>")
             render_html(
                 f"<div class='mc-filter-tip'><strong>52-week range:</strong> {format_week_range(live_overview.get('week_low'), live_overview.get('week_high'))}<br>"
-                f"<strong>Beta:</strong> {'—' if live_overview.get('beta') is None else f'{live_overview.get('beta'):.2f}'}<br>"
+                f"<strong>Beta:</strong> {'—' if live_overview.get('beta') is None else '{:.2f}'.format(live_overview.get('beta'))}<br>"
                 f"<strong>Profit margin:</strong> {format_percent_value((live_overview.get('profit_margin') or 0) * 100 if live_overview.get('profit_margin') is not None and live_overview.get('profit_margin') <= 1 else live_overview.get('profit_margin'))}<br>"
                 f"<strong>Dividend yield:</strong> {format_percent_value(live_overview.get('dividend_yield'))}</div>"
             )
