@@ -14232,7 +14232,7 @@ elif nav == "analyze":
     # ── Two-column analysis ───────────────────────────────────────────────
     _fund_col, _tech_col = st.columns(2, gap="large")
 
-    # ── LEFT: Fundamental Analysis ────────────────────────────────────────
+    # ── LEFT: Fundamental Analysis — PII 7 Principles Engine ───────────────
     with _fund_col:
         render_html(
             "<div style='font-size:0.62rem;color:#6DC040;font-weight:700;text-transform:uppercase;"
@@ -14243,83 +14243,110 @@ elif nav == "analyze":
         _live_ov_raw  = fetch_alpha_vantage_overview(ticker) if live_data_enabled else {}
         _live_ov      = parse_alpha_vantage_overview(_live_ov_raw) if live_data_enabled else None
 
-        # ── PII 7 Fundamental Principles (placeholders until Mike confirms) ──
-        _principles = [
-            ("Revenue & Growth Trend",    "Is the company growing revenue consistently year-over-year?"),
-            ("Earnings Quality & Trend",   "Are earnings real, growing, and repeatable — not one-time?"),
-            ("Profit Margins",             "Does the company keep a meaningful share of every dollar earned?"),
-            ("Valuation vs. Peers",        "Is the stock reasonably priced relative to earnings and growth?"),
-            ("Balance Sheet Strength",     "Is debt manageable? Is the company financially durable?"),
-            ("Cash Flow & Capital Return", "Does the company generate real cash and return value to shareholders?"),
-            ("Competitive Moat",           "Does the company have a durable edge that protects its business?"),
-        ]
+        # ── Build tech_data dict for the engine ──────────────────────────
+        _sc_rows_f = [r for r in SCANNER_ROWS if r["Ticker"] == ticker]
+        _bsc_f     = max(_sc_rows_f, key=lambda r: r["Score"]) if _sc_rows_f else {}
+        _shell_f   = TECHNICAL_SHELL.get(ticker, {})
+        _tech_data_f = {
+            "rsi_state": _shell_f.get("RSI State", _bsc_f.get("RSI State", "—")),
+            "bollinger":  _shell_f.get("Bollinger", _bsc_f.get("Bollinger", "—")),
+            "trend":      _bsc_f.get("Trend", "—"),
+            "confluence": _bsc_f.get("Confluence", 0),
+            "iv_rank":    _bsc_f.get("IV Rank", 0),
+        }
 
-        _fund_results = []
-        for i, (pname, pdesc) in enumerate(_principles, 1):
-            # Score against live data when available
-            if _live_ov:
-                if i == 1:  # Revenue proxy: analyst target vs price
-                    _at = _live_ov.get("analyst_target")
-                    _px = _live_ov.get("price") or 1
-                    _read = f"Target {format_price(_at)}" if _at else "No target data"
-                    _pass = (_at / _px) > 1.05 if _at and _px else None
-                elif i == 2:  # EPS
-                    _eps = _live_ov.get("eps")
-                    _read = f"EPS ${_eps:.2f}" if _eps is not None else "No EPS data"
-                    _pass = _eps > 0 if _eps is not None else None
-                elif i == 3:  # Profit margin
-                    _pm = _live_ov.get("profit_margin")
-                    _pct = (_pm * 100 if _pm and _pm <= 1 else _pm) if _pm else None
-                    _read = f"{_pct:.1f}% net margin" if _pct else "No margin data"
-                    _pass = _pct > 15 if _pct else None
-                elif i == 4:  # P/E valuation
-                    _pe = _live_ov.get("pe_ratio")
-                    _read = f"P/E {_pe:.1f}" if _pe else "No P/E data"
-                    _pass = _pe < 40 if _pe else None
-                elif i == 5:  # Beta as health proxy
-                    _beta = _live_ov.get("beta")
-                    _read = f"Beta {_beta:.2f}" if _beta else "No beta data"
-                    _pass = _beta < 2.5 if _beta else None
-                elif i == 6:  # Dividend yield
-                    _dy = _live_ov.get("dividend_yield")
-                    _pct = (_dy * 100 if _dy and _dy <= 1 else _dy) if _dy else None
-                    _read = f"{_pct:.2f}% yield" if _pct else "No dividend data"
-                    _pass = True  # informational
-                elif i == 7:  # Moat — static per TICKER_FACTS for now
-                    _read = facts.get("Sector", "—")
-                    _pass = None  # can't auto-score moat yet
-            else:
-                _read = "Enable live data for scores"
-                _pass = None
+        # ── Run 7-Principles engine ───────────────────────────────────────
+        _eng = score_7_fundamental_principles(ticker, _live_ov, _tech_data_f)
+        _total    = _eng["total_score"]
+        _verdict  = _eng["overall_verdict"]
+        _comfort  = _eng["assignment_comfort"]
+        _action   = _eng["action_label"]
+        _conf     = _eng["confidence"]
+        _hfail    = _eng["hard_fail"]
+        _hfails   = _eng["hard_fail_reasons"]
+        _pdata    = _eng["principles"]   # dict keyed by principle slug
 
-            _status   = ("✓" if _pass else ("⚠" if _pass is False else "○"))
-            _s_color  = ("#6DC040" if _pass else ("#f0c040" if _pass is False else "#555"))
-            _fund_results.append(_pass)
+        # ── Overall score bar ─────────────────────────────────────────────
+        _v_color = "#6DC040" if _total >= 75 else ("#f0c040" if _total >= 55 else "#ff6b6b")
+        _c_color = {"High":"#6DC040","Moderate":"#f0c040","Low":"#ff6b6b","Avoid":"#ff4444"}.get(_comfort,"#aaa")
+        render_html(
+            f"<div style='display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.8rem;"
+            f"background:rgba(13,25,48,0.6);border:1px solid rgba(208,226,246,0.1);border-radius:9px;"
+            f"margin-bottom:0.55rem;'>"
+            f"<div style='flex:1;'>"
+            f"  <div style='font-size:0.6rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;'>"
+            f"    Fundamental Score &middot; {_conf} Confidence</div>"
+            f"  <div style='margin-top:0.3rem;height:7px;background:rgba(255,255,255,0.08);border-radius:4px;'>"
+            f"    <div style='height:100%;width:{_total}%;background:{_v_color};border-radius:4px;transition:width 0.4s;'></div>"
+            f"  </div>"
+            f"  <div style='font-size:0.66rem;color:var(--muted);margin-top:0.2rem;font-style:italic;'>{_verdict}</div>"
+            f"</div>"
+            f"<div style='text-align:right;min-width:52px;'>"
+            f"  <div style='font-size:1.6rem;font-weight:900;color:{_v_color};line-height:1;'>{_total}</div>"
+            f"  <div style='font-size:0.6rem;color:var(--muted);'>/100</div>"
+            f"</div>"
+            f"</div>"
+        )
+
+        # ── Hard-fail warnings ────────────────────────────────────────────
+        if _hfail:
+            for _hf in _hfails:
+                render_html(
+                    f"<div style='padding:0.32rem 0.7rem;background:rgba(255,60,60,0.1);"
+                    f"border:1px solid rgba(255,60,60,0.35);border-radius:7px;"
+                    f"margin-bottom:0.28rem;font-size:0.68rem;color:#ff7070;"
+                    f"font-weight:700;'>&#9888; {_hf}</div>"
+                )
+
+        # ── 7 Principle cards ─────────────────────────────────────────────
+        _SLUG_ORDER = ["growth","moat","management","margins","cashflow","risk","timing"]
+        for _slug in _SLUG_ORDER:
+            _p = _pdata.get(_slug)
+            if not _p:
+                continue
+            _pv  = _p["verdict"]   # Pass / Watch / Fail
+            _ps  = _p["score"]
+            _pm  = _p["max"]
+            _pn  = _p["name"]
+            _pe  = _p["explanation"]
+            _pdb = _p["dashboard"]
+            _pw  = _p["weight"]
+            _pct_fill = int(_ps / _pm * 100) if _pm else 0
+            _badge_bg  = {"Pass":"rgba(108,192,64,0.18)","Watch":"rgba(240,192,64,0.15)","Fail":"rgba(255,107,107,0.15)"}.get(_pv,"rgba(255,255,255,0.06)")
+            _badge_bdr = {"Pass":"rgba(108,192,64,0.45)","Watch":"rgba(240,192,64,0.4)","Fail":"rgba(255,107,107,0.4)"}.get(_pv,"rgba(208,226,246,0.12)")
+            _badge_txt = {"Pass":"#6DC040","Watch":"#f0c040","Fail":"#ff6b6b"}.get(_pv,"#888")
+            _bar_color = _badge_txt
             render_html(
-                f"<div style='display:flex;align-items:flex-start;gap:0.6rem;padding:0.38rem 0.65rem;"
-                f"background:rgba(255,255,255,0.03);border-radius:7px;margin-bottom:0.28rem;"
-                f"border:1px solid rgba(208,226,246,0.08);'>"
-                f"<div style='font-size:0.95rem;color:{_s_color};font-weight:900;min-width:18px;padding-top:0.05rem;'>{_status}</div>"
-                f"<div style='flex:1;'>"
-                f"  <div style='font-size:0.76rem;color:#d0e2f6;font-weight:700;'>{i}. {pname}</div>"
-                f"  <div style='font-size:0.63rem;color:var(--muted);'>{_read}</div>"
+                f"<div style='padding:0.42rem 0.65rem;background:rgba(255,255,255,0.03);"
+                f"border:1px solid rgba(208,226,246,0.08);border-radius:8px;margin-bottom:0.28rem;'>"
+                f"<div style='display:flex;align-items:center;gap:0.5rem;margin-bottom:0.22rem;'>"
+                f"  <div style='flex:1;font-size:0.76rem;color:#d0e2f6;font-weight:700;'>{_pn}</div>"
+                f"  <div style='font-size:0.64rem;font-weight:800;color:{_badge_txt};'>{_ps}/{_pm}</div>"
+                f"  <div style='padding:0.08rem 0.45rem;background:{_badge_bg};border:1px solid {_badge_bdr};"
+                f"    border-radius:5px;font-size:0.6rem;font-weight:800;color:{_badge_txt};'>{_pv}</div>"
                 f"</div>"
+                f"<div style='height:5px;background:rgba(255,255,255,0.07);border-radius:3px;margin-bottom:0.22rem;'>"
+                f"  <div style='height:100%;width:{_pct_fill}%;background:{_bar_color};border-radius:3px;'></div>"
+                f"</div>"
+                f"<div style='font-size:0.62rem;color:var(--muted);line-height:1.45;'>{_pe}</div>"
                 f"</div>"
             )
 
-        _fund_pass = sum(1 for r in _fund_results if r is True)
-        _fund_total = len(_principles)
-        _fund_score_disp = f"{int(_fund_pass / _fund_total * 100)}" if any(r is not None for r in _fund_results) else "—"
+        # ── Assignment Comfort + Action label ─────────────────────────────
         render_html(
-            f"<div style='margin-top:0.45rem;padding:0.4rem 0.8rem;"
-            f"background:rgba(108,192,64,0.08);border:1px solid rgba(108,192,64,0.2);border-radius:8px;"
-            f"display:flex;justify-content:space-between;align-items:center;'>"
-            f"<div style='font-size:0.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;'>Fundamental Score</div>"
-            f"<div style='font-size:1.15rem;font-weight:900;color:#6DC040;'>{_fund_score_disp}</div>"
+            f"<div style='display:flex;align-items:center;gap:0.6rem;margin-top:0.45rem;"
+            f"padding:0.4rem 0.8rem;background:rgba(13,25,48,0.55);"
+            f"border:1px solid rgba(208,226,246,0.1);border-radius:8px;'>"
+            f"<div style='flex:1;'>"
+            f"  <div style='font-size:0.58rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;'>Assignment Comfort</div>"
+            f"  <div style='font-size:0.8rem;font-weight:900;color:{_c_color};margin-top:0.08rem;'>{_comfort}</div>"
+            f"</div>"
+            f"<div style='text-align:right;'>"
+            f"  <div style='font-size:0.58rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;'>PII Action</div>"
+            f"  <div style='font-size:0.72rem;font-weight:800;color:#d0e2f6;margin-top:0.08rem;'>{_action}</div>"
+            f"</div>"
             f"</div>"
         )
-        if not live_data_enabled:
-            render_html("<div style='font-size:0.62rem;color:var(--muted);margin-top:0.3rem;font-style:italic;'>Live fundamental scores require an Alpha Vantage key. Principles reflect PII methodology — scores will populate automatically once connected.</div>")
 
     # ── RIGHT: Technical Analysis ─────────────────────────────────────────
     with _tech_col:
