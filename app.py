@@ -32,7 +32,7 @@ st.set_page_config(page_title="Market Compass", page_icon="🧭", layout="wide")
 # ---------------------------
 
 
-_AV_KEY_FALLBACK = "5GGNXGYV9D1ILEME"  # Alpha Vantage API key
+_AV_KEY_FALLBACK = ""  # Set key in Streamlit Secrets: ALPHAVANTAGE_API_KEY
 
 def render_tradingview_chart(ticker: str, height: int = 430) -> None:
     """Embed a live TradingView chart using the dark theme."""
