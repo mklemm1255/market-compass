@@ -13422,7 +13422,7 @@ if nav == "scanner":
         _rsi_val  = st.selectbox("RSI",_rsi_opts,index=_si(_rsi_opts,st.session_state.get("sc_rsi","Any")),label_visibility="collapsed")
     with _fr1[3]:
         render_html(_tip_lbl("IV Rank ≥","IV Rank ≥"))
-        _iv_lb  = st.selectbox("IV Rank",_iv_lbs,index=_si(_iv_vals,st.session_state.get("sc_iv_min",0)),label_visibility="collapsed")
+        _iv_lb  = st.selectbox("IV Rank",_iv_lbs,index=_si(_iv_opts,st.session_state.get("sc_iv_min",0)),label_visibility="collapsed")
         _iv_val = _iv_opts[_iv_lbs.index(_iv_lb)]
 
     render_html("<div style='font-size:0.68rem;color:var(--muted);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin:0.5rem 0 0.3rem 0;'>Option Filters</div>")
