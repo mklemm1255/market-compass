@@ -14048,6 +14048,7 @@ for _ci, (_col, (_key, _icon, _label, _sub, _tip)) in enumerate(zip(_nav_cols, _
             st.rerun()
 
 nav = st.session_state["mc_nav"]
+inject_tooltip_styles()
 
 render_html("<div style='height:0.8rem;'></div>")
 
