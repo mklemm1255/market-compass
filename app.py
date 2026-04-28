@@ -765,13 +765,22 @@ RESOURCE_CENTER_CONFIG = {
 
 def scorecard_for_ticker(ticker: str) -> Dict[str, int]:
     ticker = ticker.upper().strip()
-    row = next((r for r in SCANNER_ROWS if r["Ticker"] == ticker), None)
-    if row:
+    rows = [r for r in SCANNER_ROWS if r["Ticker"] == ticker]
+    # Build a quick strategy→score lookup for this ticker
+    strat_scores = {r["Strategy"]: r["Score"] for r in rows}
+    # CC & CSP score = best of Covered Call or Cash-Secured Put rows
+    cc_score = strat_scores.get("Covered Call", None)
+    csp_score = strat_scores.get("Cash-Secured Put", None)
+    best_cc_csp = max(s for s in [cc_score, csp_score] if s is not None) if (cc_score or csp_score) else None
+    # Fallback: any row for this ticker gives us a base
+    any_row = rows[0] if rows else None
+    if any_row:
+        base_score = any_row["Score"]
         base = {
-            "CC & CSP": max(50, row["Score"] if row["Strategy"] == "CC & CSP" else row["Score"] - 8),
-            "Credit Spread": max(45, row["Score"] if row["Strategy"] == "Credit Spread" else row["Score"] - 6),
-            "LEAPS": max(40, row["Score"] if row["Strategy"] == "LEAPS" else row["Score"] - 10),
-            "Buy-Write": max(42, row["Score"] if row["Strategy"] == "Buy-Write" else row["Score"] - 7),
+            "CC & CSP": max(50, best_cc_csp if best_cc_csp else base_score - 8),
+            "Credit Spread": max(45, strat_scores.get("Credit Spread", base_score - 6)),
+            "LEAPS": max(40, strat_scores.get("LEAPS", base_score - 10)),
+            "Buy-Write": max(42, strat_scores.get("Buy-Write", base_score - 7)),
         }
     else:
         seed = sum(ord(c) for c in ticker)
