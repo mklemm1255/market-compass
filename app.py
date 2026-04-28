@@ -71,6 +71,323 @@ def render_tradingview_chart(ticker: str, height: int = 430) -> None:
     """
     components.html(tv_html, height=height + 10)
 
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  PII — 7 FUNDAMENTAL PRINCIPLES SCORING ENGINE
+# ═══════════════════════════════════════════════════════════════════════════
+
+_MOAT_SCORES: dict = {
+    "NVDA": {"score":14,"label":"Wide Moat","explanation":"Dominant CUDA ecosystem creates deep developer lock-in. AI chip leadership, cuDNN/TensorRT software stack, and data center relationships form a durable moat."},
+    "AAPL": {"score":15,"label":"Wide Moat","explanation":"Unmatched ecosystem lock-in across hardware, software, and services. App Store network effects and the services flywheel compound over time."},
+    "META": {"score":13,"label":"Wide Moat","explanation":"3B+ user network effects create powerful advertising data advantages. Moat faces regulatory and demographic headwinds but remains strong."},
+    "MSFT": {"score":15,"label":"Wide Moat","explanation":"Azure cloud, Office 365 enterprise lock-in, GitHub, and Teams ecosystem give Microsoft one of the widest moats in tech."},
+    "AMZN": {"score":14,"label":"Wide Moat","explanation":"AWS cloud leadership, Prime loyalty, logistics infrastructure, and a growing advertising business create multiple overlapping moats."},
+    "GOOGL": {"score":14,"label":"Wide Moat","explanation":"Search dominance with 90%+ market share, YouTube scale, Android OS, and an unmatched advertising data flywheel."},
+    "TSLA": {"score":10,"label":"Moderate Moat","explanation":"EV brand leader with a strong Supercharger network, but traditional automakers and Chinese competition are closing the gap. Software/FSD is the most durable advantage."},
+    "PLTR": {"score":11,"label":"Moderate Moat","explanation":"Government and enterprise data analytics platform with high customer switching costs. Ontology software creates stickiness, but market size is debated."},
+    "COIN": {"score": 8,"label":"Narrow Moat","explanation":"Largest regulated US crypto exchange with brand trust, but the business is highly cycle-sensitive and faces intense competition."},
+    "HOOD": {"score": 6,"label":"Narrow Moat","explanation":"Retail brokerage brand recognition among younger investors, but brokerage is commoditized. PFOF revenue model is a regulatory risk."},
+    "SMCI": {"score": 8,"label":"Narrow Moat","explanation":"Speed-to-market advantage in AI server configuration and strong AI-cycle relationships, but no durable technology moat."},
+    "MARA": {"score": 4,"label":"No Clear Moat","explanation":"Bitcoin mining is a commodity business with no pricing power. Electricity cost determines profitability — no competitive differentiation."},
+    "SOFI": {"score": 8,"label":"Narrow Moat","explanation":"Digital-first financial brand with a bank charter, but competing against entrenched banks and dozens of well-funded fintechs."},
+    "UBER": {"score":11,"label":"Moderate Moat","explanation":"Network effects in ride-sharing and delivery create meaningful scale advantages. Global logistics infrastructure is hard to replicate."},
+    "AMD":  {"score":12,"label":"Moderate Moat","explanation":"x86 CPU duopoly with Intel, growing GPU data center share. CDNA and ROCm ecosystem building — moat growing but still chasing NVIDIA in AI."},
+    "ORCL": {"score":13,"label":"Wide Moat","explanation":"Enterprise database lock-in creates extremely high switching costs. Oracle Cloud transition underway with a solid ERP/HCM installed base."},
+    "NFLX": {"score":12,"label":"Moderate Moat","explanation":"Content brand, global streaming scale, and recommendation algorithm are durable advantages. Ad-supported tier improved unit economics."},
+    "QQQ":  {"score":12,"label":"Index Proxy","explanation":"Nasdaq-100 ETF — diversified mega-cap tech exposure. Not a single-company moat analysis."},
+    "SPY":  {"score":13,"label":"Index Proxy","explanation":"S&P 500 ETF — broadest US equity exposure. Not a single-company analysis."},
+    "XLF":  {"score":10,"label":"Sector ETF","explanation":"Financial sector ETF — diversified across banks, insurance, capital markets. Rate-sensitive."},
+    "GLD":  {"score":11,"label":"Commodity Proxy","explanation":"Gold ETF — inflation hedge and store of value. No earnings moat. Value is macro-driven, not business-quality driven."},
+}
+
+_MGMT_SCORES: dict = {
+    "NVDA": {"score":11,"label":"High-Quality Management","explanation":"Jensen Huang has led NVIDIA's transformation into an AI infrastructure company with remarkable consistency. Disciplined R&D, strong buyback program, minimal dilution."},
+    "AAPL": {"score":12,"label":"High-Quality Management","explanation":"Exceptional capital allocation — world-class buyback program, disciplined M&A history, consistent execution, and shareholder-friendly culture under Tim Cook."},
+    "META": {"score":10,"label":"Competent — Watch Closely","explanation":"Zuckerberg's Year of Efficiency pivot showed real discipline. Metaverse spending is a concern. Generally shareholder-friendly since the 2023 restructuring."},
+    "MSFT": {"score":12,"label":"High-Quality Management","explanation":"Satya Nadella's Azure pivot is one of the best corporate turnarounds in tech history. Disciplined M&A integration and cloud execution."},
+    "AMZN": {"score":11,"label":"High-Quality Management","explanation":"Jassy continuing Bezos-era reinvestment discipline. AWS margin expansion and cost-cutting since 2022 show financial maturity."},
+    "GOOGL": {"score":10,"label":"Competent — Watch Closely","explanation":"Strong engineering culture and dominant franchise, but regulatory risk is rising and execution outside core search has been inconsistent."},
+    "TSLA": {"score": 7,"label":"Mixed Execution","explanation":"Musk's dual-role distraction is a genuine governance risk. Manufacturing execution is world-class, but strategic focus across multiple companies creates uncertainty."},
+    "PLTR": {"score": 7,"label":"Mixed Execution","explanation":"Karp is visionary but unconventional. Share-based compensation dilution has been meaningful. Government customer concentration creates revenue risk."},
+    "COIN": {"score": 7,"label":"Mixed Execution","explanation":"Brian Armstrong is a credible founder but the business is regulatory-dependent. Equity compensation dilution has been notable."},
+    "HOOD": {"score": 6,"label":"Mixed Execution","explanation":"Young management team, ongoing regulatory scrutiny, and a mixed track record since IPO. Business model depends on PFOF."},
+    "SMCI": {"score": 5,"label":"Management Concern","explanation":"Accounting restatement history raises real trust concerns. AI server cycle execution is strong, but governance is a meaningful risk to underwrite."},
+    "MARA": {"score": 5,"label":"Management Concern","explanation":"Heavy dilution history and capital decisions driven by Bitcoin price rather than operational control. Conservative investors should apply scrutiny."},
+    "SOFI": {"score": 7,"label":"Mixed Execution","explanation":"Noto is credible and execution has improved, but the timeline to consistent profitability has shifted. Monitoring required."},
+    "UBER": {"score": 9,"label":"Competent — Watch Closely","explanation":"Khosrowshahi significantly improved Uber's operational discipline and profitability path. Driver classification risk remains a long-term overhang."},
+    "AMD":  {"score":10,"label":"Competent — Watch Closely","explanation":"Lisa Su has led one of the best semiconductor turnarounds in history. Capital allocation is improving and investor trust is high."},
+    "ORCL": {"score": 9,"label":"Competent — Watch Closely","explanation":"Ellison's cloud transition has succeeded operationally. Acquisition-related debt is elevated but manageable given cash flow."},
+    "NFLX": {"score":10,"label":"Competent — Watch Closely","explanation":"Peters and Sarandos stabilized Netflix after the 2022 crisis. Password crackdown and ad-supported tier were well-executed pivots."},
+}
+
+def _pct(val, threshold):
+    """Return val*100 if val looks like a decimal, else return val."""
+    if val is None: return None
+    return val * 100 if abs(val) <= 1.5 else val
+
+def score_7_fundamental_principles(
+    ticker: str,
+    overview: "dict | None",
+    tech_data: dict,
+) -> dict:
+    """
+    Score a ticker against PII's 7 Fundamental Principles.
+    overview: parsed Alpha Vantage overview dict (or None)
+    tech_data: dict with keys rsi_state, bollinger, trend, confluence, iv_rank
+    Returns full scoring dict.
+    """
+    ov        = overview or {}
+    eps       = ov.get("eps")
+    pe        = ov.get("pe_ratio")
+    pm        = _pct(ov.get("profit_margin"), 1)  # net margin %
+    beta      = ov.get("beta")
+    dy        = _pct(ov.get("dividend_yield"), 1)  # dividend yield %
+    mktcap    = ov.get("market_cap")  # raw number
+    at        = ov.get("analyst_target")
+    price_now = ov.get("price")
+    wk_lo     = ov.get("week_low")
+    wk_hi     = ov.get("week_high")
+
+    rsi_state  = tech_data.get("rsi_state", "—")
+    bollinger  = tech_data.get("bollinger", "—")
+    trend      = tech_data.get("trend", "—")
+    confluence = tech_data.get("confluence", 0)
+    iv_rank    = tech_data.get("iv_rank", 0)
+
+    has_live = bool(ov)
+    principles = {}
+    hard_fails = []
+    total = 0
+
+    # ── 1. GROWTH — 15 pts ────────────────────────────────────────────────
+    g = 0; g_notes = []
+    if eps is not None:
+        if eps > 5:   g += 6; g_notes.append(f"Strong EPS ${eps:.2f}")
+        elif eps > 2: g += 5; g_notes.append(f"Solid EPS ${eps:.2f}")
+        elif eps > 0: g += 3; g_notes.append(f"Positive EPS ${eps:.2f}")
+        else:         g += 0; g_notes.append(f"Negative EPS ${eps:.2f} — earnings concern")
+    if at and price_now and price_now > 0:
+        upside = (at / price_now - 1) * 100
+        if upside > 25:   g += 6; g_notes.append(f"Analyst consensus: {upside:.0f}% upside")
+        elif upside > 15: g += 5; g_notes.append(f"Analyst consensus: {upside:.0f}% upside")
+        elif upside > 5:  g += 3; g_notes.append(f"Analyst consensus: {upside:.0f}% upside")
+        elif upside > 0:  g += 1; g_notes.append(f"Analyst consensus: {upside:.0f}% upside")
+        else:             g += 0; g_notes.append(f"Analyst target below current price ({upside:.0f}%)")
+    if pe is not None and pe > 0:
+        if pe < 20:    g += 3; g_notes.append(f"P/E {pe:.1f} — reasonable for growth")
+        elif pe < 35:  g += 2; g_notes.append(f"P/E {pe:.1f} — moderate valuation")
+        else:          g += 1; g_notes.append(f"P/E {pe:.1f} — elevated, growth priced in")
+    if not has_live:
+        g = 9; g_notes = ["Live data not connected — scored at neutral. Add API key for full growth analysis."]
+    g = min(g, 15)
+    g_v = "Pass" if g/15 >= 0.75 else ("Watch" if g/15 >= 0.50 else "Fail")
+    if eps is not None and eps < 0 and (at is None or (price_now and at < price_now)):
+        hard_fails.append("Negative earnings with no analyst upside signal")
+    principles["growth"] = {"name":"Growth","score":g,"max":15,"verdict":g_v,
+        "explanation":" · ".join(g_notes) or "Insufficient data for full growth analysis.",
+        "weight":"15 pts","dashboard":("Strong growth engine" if g>=12 else "Stable but slowing" if g>=9 else "Mixed growth" if g>=6 else "Weak growth")}
+
+    # ── 2. MOAT — 15 pts ─────────────────────────────────────────────────
+    moat = _MOAT_SCORES.get(ticker)
+    if moat:
+        m = moat["score"]; m_lbl = moat["label"]; m_exp = moat["explanation"]
+    else:
+        # Proxy: market cap (larger = more likely moat)
+        if mktcap:
+            if mktcap > 500e9:   m=12; m_lbl="Wide Moat (scale proxy)"
+            elif mktcap > 100e9: m=9;  m_lbl="Moderate Moat (scale proxy)"
+            elif mktcap > 10e9:  m=7;  m_lbl="Narrow Moat (scale proxy)"
+            else:                m=5;  m_lbl="Moat unclear (small cap)"
+        else:
+            m=7; m_lbl="Insufficient data"
+        m_exp = "Moat evaluated by market cap proxy — add ticker to static qualitative data for a precise read."
+    m_v = "Pass" if m/15 >= 0.75 else ("Watch" if m/15 >= 0.50 else "Fail")
+    if m < 6:
+        hard_fails.append("No clear competitive moat — commodity-like business risk")
+    principles["moat"] = {"name":"Moat / Competitive Advantage","score":m,"max":15,"verdict":m_v,
+        "explanation":m_exp,"weight":"15 pts","dashboard":m_lbl}
+
+    # ── 3. MANAGEMENT — 12 pts ───────────────────────────────────────────
+    mgmt = _MGMT_SCORES.get(ticker)
+    if mgmt:
+        mg = mgmt["score"]; mg_lbl = mgmt["label"]; mg_exp = mgmt["explanation"]
+    else:
+        mg = 7; mg_lbl = "Insufficient data"
+        mg_exp = "Management not yet rated for this ticker — add to static qualitative data for a precise read."
+    mg_v = "Pass" if mg/12 >= 0.75 else ("Watch" if mg/12 >= 0.50 else "Fail")
+    if mg < 4:
+        hard_fails.append("Serious management or governance concern")
+    principles["management"] = {"name":"Management / Capital Allocation","score":mg,"max":12,"verdict":mg_v,
+        "explanation":mg_exp,"weight":"12 pts","dashboard":mg_lbl}
+
+    # ── 4. MARGINS — 14 pts ──────────────────────────────────────────────
+    mr = 0; mr_notes = []
+    if pm is not None:
+        if pm > 25:    mr=13; mr_notes.append(f"Net margin {pm:.1f}% — exceptional profitability")
+        elif pm > 15:  mr=11; mr_notes.append(f"Net margin {pm:.1f}% — strong margins")
+        elif pm > 8:   mr=8;  mr_notes.append(f"Net margin {pm:.1f}% — average margins")
+        elif pm > 0:   mr=5;  mr_notes.append(f"Net margin {pm:.1f}% — thin margins")
+        else:          mr=1;  mr_notes.append(f"Negative net margin {pm:.1f}% — unprofitable")
+    if eps is not None and eps > 0 and pm is None:
+        mr = 7; mr_notes.append("EPS positive — margins estimated positive but exact data unavailable")
+    if not has_live and not mr_notes:
+        mr = 8; mr_notes = ["Live data not connected — scored at neutral."]
+    mr = min(mr, 14)
+    mr_v = "Pass" if mr/14 >= 0.75 else ("Watch" if mr/14 >= 0.50 else "Fail")
+    if pm is not None and pm < 0:
+        hard_fails.append(f"Negative net margin ({pm:.1f}%) — no clear profitability path")
+    principles["margins"] = {"name":"Margins / Profitability","score":mr,"max":14,"verdict":mr_v,
+        "explanation":" · ".join(mr_notes) or "Insufficient margin data.",
+        "weight":"14 pts","dashboard":("Strong profitability" if mr>=11 else "Improving margins" if mr>=8 else "Margin pressure" if mr>=5 else "Unprofitable")}
+
+    # ── 5. CASH FLOW / BALANCE SHEET — 16 pts ────────────────────────────
+    cf = 0; cf_notes = []
+    # Best proxies from overview: eps sign, dividend sustainability, beta (vol = risk)
+    if eps is not None:
+        if eps > 3:    cf += 5; cf_notes.append("Positive earnings suggest real cash generation")
+        elif eps > 0:  cf += 3; cf_notes.append("Marginally profitable — cash generation unclear")
+        else:          cf += 0; cf_notes.append("Negative earnings — cash burn risk")
+    if dy is not None:
+        if dy > 0:
+            cf += 3; cf_notes.append(f"Dividend yield {dy:.2f}% — suggests positive FCF")
+    if beta is not None:
+        if beta < 1.0:   cf += 4; cf_notes.append(f"Beta {beta:.2f} — low volatility, stable business")
+        elif beta < 1.5: cf += 3; cf_notes.append(f"Beta {beta:.2f} — moderate stability")
+        elif beta < 2.0: cf += 2; cf_notes.append(f"Beta {beta:.2f} — elevated volatility")
+        else:            cf += 0; cf_notes.append(f"Beta {beta:.2f} — high volatility, financial risk possible")
+    if mktcap and mktcap > 50e9:
+        cf += 3; cf_notes.append("Large cap — typically indicates financial durability")
+    elif mktcap and mktcap > 5e9:
+        cf += 2; cf_notes.append("Mid cap — financial durability varies")
+    if not has_live and not cf_notes:
+        cf = 9; cf_notes = ["Live data not connected — scored at neutral. Full balance sheet analysis requires API connection."]
+    cf = min(cf, 16)
+    cf_v = "Pass" if cf/16 >= 0.75 else ("Watch" if cf/16 >= 0.50 else "Fail")
+    if eps is not None and eps < -2 and (dy is None or dy == 0):
+        hard_fails.append("Significant cash burn with no dividend — balance sheet risk")
+    cf_note_final = " · ".join(cf_notes) or "Insufficient data — balance sheet analysis requires income statement and cash flow statement via API."
+    principles["cash_flow"] = {"name":"Cash Flow / Balance Sheet","score":cf,"max":16,"verdict":cf_v,
+        "explanation":cf_note_final,"weight":"16 pts",
+        "dashboard":("Strong financial foundation" if cf>=13 else "Healthy — monitor debt" if cf>=10 else "Cash flow concern" if cf>=7 else "Balance sheet risk")}
+
+    # ── 6. RISK — 16 pts ─────────────────────────────────────────────────
+    rk = 0; rk_notes = []
+    if beta is not None:
+        if beta < 0.8:   rk += 5; rk_notes.append(f"Beta {beta:.2f} — very controlled risk")
+        elif beta < 1.2: rk += 4; rk_notes.append(f"Beta {beta:.2f} — market-level risk")
+        elif beta < 1.7: rk += 3; rk_notes.append(f"Beta {beta:.2f} — moderately elevated risk")
+        elif beta < 2.5: rk += 1; rk_notes.append(f"Beta {beta:.2f} — high volatility risk")
+        else:            rk += 0; rk_notes.append(f"Beta {beta:.2f} — very high risk profile")
+    if pe is not None:
+        if pe > 0:
+            if pe < 20:   rk += 4; rk_notes.append(f"P/E {pe:.1f} — not overvalued")
+            elif pe < 35: rk += 3; rk_notes.append(f"P/E {pe:.1f} — moderate valuation risk")
+            elif pe < 60: rk += 2; rk_notes.append(f"P/E {pe:.1f} — elevated valuation risk")
+            elif pe < 100:rk += 1; rk_notes.append(f"P/E {pe:.1f} — high valuation risk")
+            else:         rk += 0; rk_notes.append(f"P/E {pe:.1f} — extreme valuation risk")
+        else:
+            rk_notes.append("Negative P/E — earnings risk")
+    if iv_rank:
+        if iv_rank < 30:   rk += 4; rk_notes.append(f"IV Rank {iv_rank}% — low vol environment")
+        elif iv_rank < 60: rk += 3; rk_notes.append(f"IV Rank {iv_rank}% — moderate vol")
+        elif iv_rank < 80: rk += 2; rk_notes.append(f"IV Rank {iv_rank}% — elevated vol")
+        else:              rk += 1; rk_notes.append(f"IV Rank {iv_rank}% — high vol — premium rich but risky")
+    if not has_live and not rk_notes:
+        rk = 10; rk_notes = ["Live risk data not connected — scored at moderate. Beta and valuation data require API connection."]
+    rk = min(rk, 16)
+    rk_v = "Pass" if rk/16 >= 0.75 else ("Watch" if rk/16 >= 0.50 else "Fail")
+    if beta is not None and beta > 2.5:
+        hard_fails.append(f"Extreme beta ({beta:.2f}) — high permanent-capital-loss risk")
+    principles["risk"] = {"name":"Risk / Downside Protection","score":rk,"max":16,"verdict":rk_v,
+        "explanation":" · ".join(rk_notes) or "Insufficient risk data.",
+        "weight":"16 pts",
+        "dashboard":("Manageable risk" if rk>=13 else "Moderate risk" if rk>=10 else "High risk" if rk>=6 else "Avoid / red flags")}
+
+    # ── 7. TIMING / VALUATION / TECHNICAL — 12 pts ───────────────────────
+    tm = 0; tm_notes = []
+    if pe is not None and pe > 0:
+        if pe < 18:   tm += 4; tm_notes.append(f"P/E {pe:.1f} — attractive valuation")
+        elif pe < 30: tm += 3; tm_notes.append(f"P/E {pe:.1f} — reasonable valuation")
+        elif pe < 50: tm += 2; tm_notes.append(f"P/E {pe:.1f} — fairly valued / watch")
+        elif pe < 80: tm += 1; tm_notes.append(f"P/E {pe:.1f} — overvalued / timing risk")
+        else:         tm += 0; tm_notes.append(f"P/E {pe:.1f} — very overvalued")
+    boll_score = {"Lower Band":4,"Lower Half":4,"Mid Band":3,"Upper Half":2,"Upper Band":1}.get(bollinger,2)
+    rsi_score  = {"Oversold":4,"Neutral":3,"Overbought":1}.get(rsi_state,2)
+    tech_timing = min((boll_score + rsi_score) // 2 + 1, 5)
+    tm += tech_timing
+    if bollinger != "—": tm_notes.append(f"Bollinger: {bollinger}")
+    if rsi_state  != "—": tm_notes.append(f"RSI: {rsi_state}")
+    if trend in ("Bullish",): tm += 2; tm_notes.append("Trend: Bullish")
+    elif trend == "Bearish":  tm += 0; tm_notes.append("Trend: Bearish")
+    else:                     tm += 1; tm_notes.append("Trend: Neutral")
+    if at and price_now and price_now > 0:
+        up = (at/price_now - 1)*100
+        if up > 15: tm += 1; tm_notes.append(f"Analyst target {up:.0f}% above current")
+    if not has_live and bollinger == "—":
+        tm = 7; tm_notes = ["Live and technical data limited — scored at neutral."]
+    tm = min(tm, 12)
+    tm_v = "Pass" if tm/12 >= 0.75 else ("Watch" if tm/12 >= 0.50 else "Fail")
+    principles["timing"] = {"name":"Timing / Valuation / Technical","score":tm,"max":12,"verdict":tm_v,
+        "explanation":" · ".join(tm_notes) or "Insufficient timing data.",
+        "weight":"12 pts",
+        "dashboard":("Attractive setup" if tm>=10 else "Reasonable entry" if tm>=7 else "Watchlist only" if tm>=5 else "Bad timing")}
+
+    # ── Total + verdict ───────────────────────────────────────────────────
+    total = g + m + mg + mr + cf + rk + tm
+    has_hard_fail = bool(hard_fails)
+
+    if total >= 85:   overall = "Elite Candidate"
+    elif total >= 75: overall = "Strong Candidate"
+    elif total >= 65: overall = "Watchlist Candidate"
+    elif total >= 50: overall = "Speculative / Caution"
+    else:             overall = "Reject / Avoid"
+
+    # Hard-fail overrides
+    if has_hard_fail:
+        if any("balance sheet" in h.lower() or "cash burn" in h.lower() for h in hard_fails):
+            if overall in ("Elite Candidate","Strong Candidate"):
+                overall = "Watchlist / Caution"
+        if any("risk" in h.lower() or "beta" in h.lower() for h in hard_fails):
+            overall = "Avoid / High Risk"
+        if any("management" in h.lower() or "governance" in h.lower() for h in hard_fails):
+            overall = "Avoid / Speculative"
+
+    # Assignment comfort
+    assign_drivers = [g/15, m/15, cf/16, rk/16, (pe or 30)/50]
+    assign_avg = sum(min(d,1) for d in assign_drivers) / len(assign_drivers)
+    if assign_avg >= 0.80 and not has_hard_fail: assign = "High"
+    elif assign_avg >= 0.65 and not has_hard_fail: assign = "Moderate"
+    elif assign_avg >= 0.50: assign = "Low"
+    else: assign = "Avoid"
+
+    # Action label
+    if has_hard_fail:
+        action = "Avoid" if rk_v == "Fail" else "Watchlist Only — Review Red Flags"
+    elif tm_v in ("Fail","Watch") and total >= 75:
+        action = "Fundamentally Strong — Wait for Better Entry"
+    elif total >= 85: action = "Strong Buy Candidate"
+    elif total >= 75: action = "Buy on Pullback"
+    elif total >= 65: action = "Watchlist Only"
+    elif total >= 50: action = "Trade Only — Not Assignment Quality"
+    else:             action = "Avoid"
+
+    conf_items = sum([
+        has_live,
+        ticker in _MOAT_SCORES,
+        ticker in _MGMT_SCORES,
+        eps is not None,
+        pm is not None,
+    ])
+    confidence = "High" if conf_items >= 4 else ("Medium" if conf_items >= 2 else "Low")
+
+    return {
+        "ticker": ticker, "total_score": total, "overall_verdict": overall,
+        "assignment_comfort": assign, "hard_fail": has_hard_fail,
+        "hard_fail_reasons": hard_fails, "principles": principles,
+        "action_label": action, "confidence": confidence,
+    }
+
+
 SCANNER_ROWS = [
     # ── Covered Call ────────────────────────────────────────────────────────
     {"Ticker":"NVDA",  "Strategy":"Covered Call","Bias":"Bullish","Price":878,  "Premium":9.10, "Delta":0.27,"DTE":14, "IV Rank":63,"Liquidity":"Excellent","Confluence":9,"Trend":"Bullish","Bollinger":"Upper Band", "RSI State":"Overbought","Score":93,"Note":"Extended into upper band on strong trend — ideal covered call timing."},
