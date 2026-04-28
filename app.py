@@ -13640,8 +13640,9 @@ if nav == "scanner":
             _chip = chip(_cv, _col)
             return f"<span class='mc-tip' data-tip='{_tip}' style='cursor:help'>{_chip}</span>"
 
-        _show["Score"]      = _show.apply(_build_score_cell, axis=1)
+        # Build conviction FIRST (while Score is still numeric), then overwrite Score with HTML
         _show["Conviction"] = _show.apply(_build_conv_cell, axis=1)
+        _show["Score"]      = _show.apply(_build_score_cell, axis=1)
         _show["Price"]      = _show["Price"].map(format_price)
         _show["IV Rank"]    = _show["IV Rank"].apply(lambda v: f"{int(v)}%")
         _show["Est. Prem"]  = _show["Premium"].apply(lambda v: format_price(float(v)) if float(v)>0 else "—")
