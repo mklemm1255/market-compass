@@ -1031,16 +1031,21 @@ def inject_styles() -> None:
             margin-top: auto !important;
         }
         .stSelectbox div[data-baseweb="select"], .stMultiSelect div[data-baseweb="select"] {
-            background: rgba(255,255,255,0.96) !important;
-            border: 1px solid rgba(208,226,246,0.24) !important;
+            background: rgba(15,30,58,0.85) !important;
+            border: 1px solid rgba(208,226,246,0.25) !important;
             border-radius: 14px !important;
-            color: #10233a !important;
+            color: #d0e2f6 !important;
             min-height: 42px !important;
             width: 100% !important;
             margin-top: auto !important;
         }
-        .stSelectbox div[data-baseweb="select"] * , .stMultiSelect div[data-baseweb="select"] * {
-            color: #10233a !important;
+        .stSelectbox div[data-baseweb="select"] *,
+        .stMultiSelect div[data-baseweb="select"] *,
+        .stSelectbox [data-testid="stWidgetLabel"] *,
+        div[data-baseweb="select"] [data-testid="stMarkdownContainer"] p,
+        div[data-baseweb="select"] span,
+        div[data-baseweb="select"] div {
+            color: #d0e2f6 !important;
         }
         .stSelectbox, .stMultiSelect {
             width: 100% !important;
