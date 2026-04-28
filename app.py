@@ -677,35 +677,43 @@ def inject_styles() -> None:
             --yellow: #f7cc66;
         }
         /* ── Global tooltip override ─────────────────────────────────────────── */
-        /* Make help/tooltip icon bright white */
+        /* Help icon: bright white and clearly visible */
+        button[data-testid="tooltipHoverTarget"],
+        [data-testid="tooltipHoverTarget"] {
+            opacity: 1 !important;
+            color: #ffffff !important;
+        }
         button[data-testid="tooltipHoverTarget"] svg,
-        [data-testid="tooltipHoverTarget"] svg {
+        [data-testid="tooltipHoverTarget"] svg,
+        button[data-testid="tooltipHoverTarget"] path,
+        [data-testid="tooltipHoverTarget"] path {
             color: #ffffff !important;
             fill: #ffffff !important;
+            stroke: #ffffff !important;
             opacity: 1 !important;
         }
-        button[data-testid="tooltipHoverTarget"] {
-            opacity: 1 !important;
-            color: #ffffff !important;
-        }
-        /* Tooltip popup: white background, black text */
-        div[data-testid="tooltip"],
+        /* Tooltip popup: white bg, black text, readable */
+        div[data-baseweb="tooltip"] > div,
+        div[data-baseweb="popover"] > div,
         .stTooltipContent,
-        div[role="tooltip"],
-        [data-baseweb="tooltip"],
-        [data-testid="stTooltipContent"] {
-            background: #ffffff !important;
+        [data-testid="stTooltipContent"],
+        div[role="tooltip"] {
+            background-color: #ffffff !important;
             color: #111111 !important;
-            border: 1px solid #ddd !important;
+            border: 1px solid #cccccc !important;
             border-radius: 8px !important;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.18) !important;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.22) !important;
+            font-size: 0.82rem !important;
+            padding: 0.5rem 0.75rem !important;
+            max-width: 280px !important;
         }
-        div[data-testid="tooltip"] *,
+        div[data-baseweb="tooltip"] > div *,
+        div[data-baseweb="popover"] > div *,
         .stTooltipContent *,
-        div[role="tooltip"] *,
-        [data-baseweb="tooltip"] *,
-        [data-testid="stTooltipContent"] * {
+        [data-testid="stTooltipContent"] *,
+        div[role="tooltip"] * {
             color: #111111 !important;
+            background: transparent !important;
         }
         
         .stApp {
