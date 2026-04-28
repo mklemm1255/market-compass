@@ -769,22 +769,19 @@ def inject_styles() -> None:
             --yellow: #f7cc66;
         }
         /* ── Global tooltip override ─────────────────────────────────────────── */
-        /* Help icon — force bright white via max specificity */
-        :root:root button[data-testid="tooltipHoverTarget"],
-        :root:root [data-testid="tooltipHoverTarget"],
-        button[data-testid="tooltipHoverTarget"],
-        [data-testid="tooltipHoverTarget"],
-        button[data-testid="tooltipHoverTarget"]:hover {
+        /* Help icon — white circle background so dark icon is always visible */
+        button[data-testid="tooltipHoverTarget"] {
+            background-color: rgba(255,255,255,0.85) !important;
+            border-radius: 50% !important;
+            width: 18px !important;
+            height: 18px !important;
+            min-width: 18px !important;
+            padding: 2px !important;
             opacity: 1 !important;
-            filter: brightness(0) invert(1) !important;
-            color: #ffffff !important;
+            border: none !important;
         }
-        button[data-testid="tooltipHoverTarget"] *,
-        [data-testid="tooltipHoverTarget"] * {
-            filter: brightness(0) invert(1) !important;
-            color: #ffffff !important;
-            fill: #ffffff !important;
-            stroke: #ffffff !important;
+        button[data-testid="tooltipHoverTarget"]:hover {
+            background-color: rgba(255,255,255,1) !important;
         }
         /* Tooltip popup — white background, BLACK text */
         :root:root div[data-baseweb="tooltip"],
@@ -13461,24 +13458,6 @@ def inject_delta_styles() -> None:
             color: #d7e6ff;
             font-size: 0.93rem;
             line-height: 1.45;
-        }
-        /* Slider endpoint labels — readable dark style */
-        .stSlider [data-testid="stTickBarMin"],
-        .stSlider [data-testid="stTickBarMax"],
-        div[data-testid="stSlider"] span {
-            color: #d0e2f6 !important;
-            font-weight: 700 !important;
-            font-size: 0.78rem !important;
-            background: rgba(13,25,48,0.7) !important;
-            padding: 0.1rem 0.35rem !important;
-            border-radius: 4px !important;
-        }
-        /* Slider thumb value bubble */
-        .stSlider [data-testid="stSliderThumbValue"] {
-            background: #6DC040 !important;
-            color: #ffffff !important;
-            font-weight: 800 !important;
-            border-radius: 6px !important;
         }
         .delta-footnote {
             color: #90acd3;
