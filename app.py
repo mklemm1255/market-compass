@@ -419,6 +419,67 @@ def score_7_fundamental_principles(
     }
 
 
+# ── Options expiration date generator ────────────────────────────────────────
+import calendar as _calendar
+from datetime import date as _date, timedelta as _timedelta
+
+def get_options_expirations(num_weeks: int = 6, num_months: int = 12) -> list[dict]:
+    """
+    Generate real standard options expiration dates:
+    - Weekly: next N Fridays
+    - Monthly: 3rd Friday of each of the next N months
+    Returns list of dicts with 'label', 'date', 'dte' keys.
+    """
+    today = _date.today()
+    expirations = []
+    seen = set()
+
+    # Weekly expirations — next num_weeks Fridays
+    d = today
+    weeks_found = 0
+    while weeks_found < num_weeks:
+        d += _timedelta(days=1)
+        if d.weekday() == 4:  # Friday
+            dte = (d - today).days
+            label = f"{d.strftime('%b %d')} ({dte}d)"
+            if d not in seen:
+                seen.add(d)
+                expirations.append({"label": label, "date": d, "dte": dte})
+            weeks_found += 1
+
+    # Monthly expirations — 3rd Friday of each month
+    year, month = today.year, today.month
+    for _ in range(num_months + 2):
+        # Find 3rd Friday
+        first_day = _date(year, month, 1)
+        first_friday = first_day + _timedelta(days=(4 - first_day.weekday()) % 7)
+        third_friday = first_friday + _timedelta(weeks=2)
+        if third_friday > today and third_friday not in seen:
+            dte = (third_friday - today).days
+            label = f"{third_friday.strftime('%b %d, %Y')} ({dte}d)"
+            seen.add(third_friday)
+            expirations.append({"label": label, "date": third_friday, "dte": dte})
+        month += 1
+        if month > 12:
+            month = 1
+            year += 1
+
+    # LEAPS — Jan expirations 1-2 years out
+    for yr_offset in [1, 2]:
+        leaps_year = today.year + yr_offset
+        first_jan = _date(leaps_year, 1, 1)
+        first_fri = first_jan + _timedelta(days=(4 - first_jan.weekday()) % 7)
+        third_fri = first_fri + _timedelta(weeks=2)
+        if third_fri not in seen and third_fri > today:
+            dte = (third_fri - today).days
+            label = f"LEAPS {third_fri.strftime('%b %d, %Y')} ({dte}d)"
+            seen.add(third_fri)
+            expirations.append({"label": label, "date": third_fri, "dte": dte})
+
+    expirations.sort(key=lambda x: x["date"])
+    return expirations
+
+
 SCANNER_ROWS = [
     # ── Covered Call ────────────────────────────────────────────────────────
     {"Ticker":"NVDA",  "Strategy":"Covered Call","Bias":"Bullish","Price":878,  "Premium":9.10, "Delta":0.27,"DTE":14, "IV Rank":63,"Liquidity":"Excellent","Confluence":9,"Trend":"Bullish","Bollinger":"Upper Band", "RSI State":"Overbought","Score":93,"Note":"Extended into upper band on strong trend — ideal covered call timing."},
