@@ -14560,7 +14560,7 @@ elif nav == "analyze":
     )
 
 
-elif nav == "Learn":
+elif nav == "learn":
     top = st.columns([0.85, 1.55], gap="large")
     with top[0]:
         open_panel("Learning Portal", "Strategy-first education", "Strategy-first education for income investors.")
@@ -14607,7 +14607,7 @@ elif nav == "Learn":
             open_panel(title, "Learning structure", desc)
             close_panel()
 
-elif nav == "DELTA":
+elif nav == "delta":
     render_delta_v49_module()
 
 elif nav == "radar":
