@@ -13719,18 +13719,45 @@ def render_radar_v3_module() -> None:
             st.session_state["radar_v3_input"] = ""
             st.session_state["radar_v3_response"] = "RADAR is ready. Type a question, then click Ask RADAR."
 
-        if ask_clicked:
-            ticker = st.session_state["radar_v3_context_ticker"]
-            focus = st.session_state["radar_v3_focus"]
-            base = radar_response(st.session_state["radar_v3_input"], ticker, focus)
-            scope = st.session_state["radar_v3_scope"]
-            mode = st.session_state["radar_v3_mode"]
-            include = st.session_state["radar_v3_include_context"]
-            grounding = (
-                "Grounding: Dashboard-only context." if scope == "Dashboard Grounded"
-                else ("Grounding: Open Research plus current dashboard context." if include else "Grounding: Open Research without dashboard context.")
+        _RADAR_QUESTION_LIMIT = 5
+        _questions_used = st.session_state.get("radar_v3_questions_used", 0)
+        _questions_left = _RADAR_QUESTION_LIMIT - _questions_used
+
+        # Show usage meter
+        if get_anthropic_api_key():
+            _meter_color = "#6DC040" if _questions_left > 2 else ("#f0c040" if _questions_left > 0 else "#ff6b6b")
+            st.markdown(
+                f"<div style='font-size:0.65rem;color:{_meter_color};font-weight:700;margin-bottom:0.3rem;'>"
+                f"Preview: {_questions_left} of {_RADAR_QUESTION_LIMIT} questions remaining this session</div>",
+                unsafe_allow_html=True,
             )
-            st.session_state["radar_v3_response"] = f"{base}\n\n{grounding}\nMode: {mode}"
+
+        if ask_clicked:
+            _q_input = st.session_state.get("radar_v3_input", "").strip()
+            if not _q_input:
+                st.session_state["radar_v3_response"] = "Please type a question first."
+            elif _questions_used >= _RADAR_QUESTION_LIMIT:
+                st.session_state["radar_v3_response"] = (
+                    "You've used all 5 preview questions for this session. "
+                    "Full access to RADAR is coming with the PII membership tier. "
+                    "Refresh the page to start a new session."
+                )
+            elif get_anthropic_api_key():
+                ticker = st.session_state["radar_v3_context_ticker"]
+                focus  = st.session_state["radar_v3_focus"]
+                scope  = st.session_state["radar_v3_scope"]
+                with st.spinner("RADAR is thinking..."):
+                    _live = live_radar_response(_q_input, ticker, focus, scope)
+                st.session_state["radar_v3_response"] = _live
+                st.session_state["radar_v3_questions_used"] = _questions_used + 1
+                st.session_state["radar_v3_input"] = ""
+            else:
+                # Fallback to canned response if no API key
+                ticker = st.session_state["radar_v3_context_ticker"]
+                focus  = st.session_state["radar_v3_focus"]
+                base   = radar_response(_q_input, ticker, focus)
+                st.session_state["radar_v3_response"] = base + "\n\n[Preview mode — connect API key for live AI responses]"
+                st.session_state["radar_v3_questions_used"] = _questions_used + 1
 
         st.markdown("<div class='section-label'>RADAR Response</div>", unsafe_allow_html=True)
         st.markdown("<div class='radar-v3-title'>RADAR Response</div>", unsafe_allow_html=True)
