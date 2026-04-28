@@ -760,7 +760,7 @@ def fit_class(status: str) -> Tuple[str, str]:
         return "gray", "Neutral"
     return "red", "Bearish / weak"
 
-def render_table(df: pd.DataFrame, mode: str = "default") -> None:
+def render_table(df: pd.DataFrame, mode: str = "default", return_html: bool = False) -> None:
     head = "".join(f"<th>{col}</th>" for col in df.columns)
     rows = []
     for _, row in df.iterrows():
@@ -781,7 +781,10 @@ def render_table(df: pd.DataFrame, mode: str = "default") -> None:
                 cell = chip(str(val), klass if klass != "gray" else "gray")
             cells.append(f"<td>{cell}</td>")
         rows.append("<tr>" + "".join(cells) + "</tr>")
-    render_html(f"<table class='mc-table'><thead><tr>{head}</tr></thead><tbody>{''.join(rows)}</tbody></table>")
+    table_html = f"<table class='mc-table'><thead><tr>{head}</tr></thead><tbody>{''.join(rows)}</tbody></table>"
+    if return_html:
+        return table_html
+    render_html(table_html)
 
 
 def metric_label_with_info(label: str, help_text: str) -> str:
@@ -13311,14 +13314,16 @@ render_html("<div style='height:0.8rem;'></div>")
 if nav == "scanner":
     # ── Strategy defaults (auto-populate filters) ─────────────────────────
     _SC_DEFAULTS = {
-        "Covered Call":     {"bias":"Bullish","bollinger":"Upper Band", "rsi":"Overbought","max_dte":21,  "max_delta":0.30,"liq":"Excellent","iv_min":45,"mkt":"Any","price":"Any","min_score":75,"min_conf":7},
-        "Cash-Secured Put": {"bias":"Bullish","bollinger":"Lower Band", "rsi":"Oversold",  "max_dte":30,  "max_delta":0.25,"liq":"Excellent","iv_min":40,"mkt":"Any","price":"Any","min_score":75,"min_conf":7},
-        "Credit Spread":    {"bias":"Bullish","bollinger":"Mid Band",   "rsi":"Neutral",   "max_dte":45,  "max_delta":0.20,"liq":"Excellent","iv_min":30,"mkt":"Any","price":"Any","min_score":70,"min_conf":6},
-        "LEAPS":            {"bias":"Bullish","bollinger":"Any",        "rsi":"Any",       "max_dte":9999,"max_delta":0.65,"liq":"Any",      "iv_min":0, "mkt":"Any","price":"Any","min_score":70,"min_conf":5},
-        "Buy-Write":        {"bias":"Neutral","bollinger":"Mid Band",   "rsi":"Neutral",   "max_dte":30,  "max_delta":0.30,"liq":"Excellent","iv_min":20,"mkt":"Any","price":"Any","min_score":70,"min_conf":5},
-        "Buy Call":         {"bias":"Bullish","bollinger":"Lower Band", "rsi":"Oversold",  "max_dte":45,  "max_delta":0.55,"liq":"Any",      "iv_min":0, "mkt":"Any","price":"Any","min_score":68,"min_conf":5},
-        "Buy Put":          {"bias":"Bearish","bollinger":"Upper Band", "rsi":"Overbought","max_dte":30,  "max_delta":0.45,"liq":"Any",      "iv_min":0, "mkt":"Any","price":"Any","min_score":65,"min_conf":4},
-        "Stock":            {"bias":"Bullish","bollinger":"Lower Band", "rsi":"Oversold",  "max_dte":9999,"max_delta":1.00,"liq":"Any",      "iv_min":0, "mkt":"Any","price":"Any","min_score":70,"min_conf":6},
+        # Bollinger/RSI/Liquidity default to "Any" so all strategy tickers show on load.
+        # Users can tighten these filters to find only ideal setups.
+        "Covered Call":     {"bias":"Bullish","bollinger":"Any","rsi":"Any","max_dte":21,  "max_delta":0.30,"liq":"Any","iv_min":0,"mkt":"Any","price":"Any","min_score":70,"min_conf":6},
+        "Cash-Secured Put": {"bias":"Bullish","bollinger":"Any","rsi":"Any","max_dte":30,  "max_delta":0.25,"liq":"Any","iv_min":0,"mkt":"Any","price":"Any","min_score":70,"min_conf":6},
+        "Credit Spread":    {"bias":"Bullish","bollinger":"Any","rsi":"Any","max_dte":45,  "max_delta":0.20,"liq":"Any","iv_min":0,"mkt":"Any","price":"Any","min_score":65,"min_conf":5},
+        "LEAPS":            {"bias":"Bullish","bollinger":"Any","rsi":"Any","max_dte":9999,"max_delta":0.65,"liq":"Any","iv_min":0,"mkt":"Any","price":"Any","min_score":65,"min_conf":5},
+        "Buy-Write":        {"bias":"Neutral","bollinger":"Any","rsi":"Any","max_dte":30,  "max_delta":0.30,"liq":"Any","iv_min":0,"mkt":"Any","price":"Any","min_score":65,"min_conf":5},
+        "Buy Call":         {"bias":"Bullish","bollinger":"Any","rsi":"Any","max_dte":45,  "max_delta":0.55,"liq":"Any","iv_min":0,"mkt":"Any","price":"Any","min_score":65,"min_conf":5},
+        "Buy Put":          {"bias":"Bearish","bollinger":"Any","rsi":"Any","max_dte":30,  "max_delta":0.45,"liq":"Any","iv_min":0,"mkt":"Any","price":"Any","min_score":60,"min_conf":4},
+        "Stock":            {"bias":"Bullish","bollinger":"Any","rsi":"Any","max_dte":9999,"max_delta":1.00,"liq":"Any","iv_min":0,"mkt":"Any","price":"Any","min_score":65,"min_conf":5},
     }
     _SC_LIST = list(_SC_DEFAULTS.keys())
 
@@ -13509,7 +13514,7 @@ if nav == "scanner":
             f"Trend: {_b['Trend']}\n"
             f"Liquidity: {_b['Liquidity']}\n"
             f"Strategy fit: {sc_strat}"
-        .replace('"', '&quot;').replace("'", '&#39;')
+        ).replace('"', '&quot;').replace("'", '&#39;')
 
         render_html(
             f"<div class='mc-pick-card'>"
@@ -13552,9 +13557,14 @@ if nav == "scanner":
         _show["Conf."]      = _show["Confluence"]
         _show["Setup"]      = _show["Bollinger"] + " / " + _show["RSI State"]
         _sc_cols = ["Ticker","Price","IV Rank","Setup","Est. Prem","Δ","DTE","Conf.","Score","Conviction"]
-        render_html("<div class='sc-table-wrap'>")
-        render_table(_show[_sc_cols])
-        render_html("</div>")
+        _table_html = render_table(_show[_sc_cols], return_html=True)
+        _row_count = len(_sc_df)
+        _scroll_note = f"Showing {_row_count} candidate{'s' if _row_count!=1 else ''}" if _row_count <= 20 else f"Showing top 20 of {_row_count} candidates"
+        render_html(
+            f"<div style='font-size:0.65rem;color:var(--muted);margin-bottom:0.25rem;'>"
+            f"{_scroll_note} · Scroll for more</div>"
+            f"<div class='sc-table-wrap'>{_table_html}</div>"
+        )
 
         render_html(
             "<div class='mc-shell-note' style='margin-top:0.5rem;'>"
