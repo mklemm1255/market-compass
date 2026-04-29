@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="About Practical Income Investing — Mike's story, 35 years in the market, and why income investing is the smarter path to consistent returns." />
+  <title>About — Practical Income Investing</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .about-hero {
+      padding: 140px 0 80px;
+      background: var(--dark);
+      position: relative; overflow: hidden;
+    }
+    .about-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 55% 55% at 85% 20%, rgba(109,192,64,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 50% at 10% 80%, rgba(212,175,55,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .about-hero-inner {
+      display: grid; grid-template-columns: 340px 1fr;
+      gap: 72px; align-items: start; position: relative; z-index: 1;
+    }
+
+    /* Photo / avatar card */
+    .about-photo-card {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 20px; overflow: hidden;
+      position: sticky; top: 100px;
+    }
+    .about-photo-top {
+      background: linear-gradient(160deg, #0A1A08 0%, #121E10 100%);
+      border-bottom: 1px solid rgba(109,192,64,0.15);
+      padding: 48px 32px; text-align: center;
+    }
+    .about-avatar {
+      width: 110px; height: 110px; border-radius: 50%;
+      background: var(--charcoal);
+      border: 3px solid rgba(109,192,64,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.5rem; margin: 0 auto 16px;
+    }
+    .about-name { font-size: 1.3rem; font-weight: 900; color: var(--white); margin-bottom: 4px; }
+    .about-title { font-size: 0.75rem; color: var(--green); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+    .about-stats {
+      padding: 20px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: var(--dark-border);
+    }
+    .about-stat {
+      background: var(--dark-card);
+      padding: 16px; text-align: center;
+    }
+    .about-stat-num { font-size: 1.4rem; font-weight: 900; color: var(--green); }
+    .about-stat-label { font-size: 0.6rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+    .about-links {
+      padding: 20px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .about-link-btn {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 16px; border-radius: 8px;
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      text-decoration: none; transition: all 0.2s;
+      border: 1px solid var(--dark-border);
+      color: rgba(255,255,255,0.7); background: var(--dark);
+    }
+    .about-link-btn:hover { border-color: var(--green); color: var(--green); transform: translateX(4px); }
+    .about-link-btn.yt { border-color: rgba(255,0,0,0.3); color: rgba(255,255,255,0.7); }
+    .about-link-btn.yt:hover { border-color: #FF0000; color: #FF0000; }
+
+    /* Story content */
+    .about-story { position: relative; z-index: 1; }
+    .about-eyebrow {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--green); margin-bottom: 16px;
+    }
+    .about-story h1 { margin-bottom: 28px; }
+    .about-story p {
+      font-size: 1.02rem; color: rgba(255,255,255,0.7);
+      line-height: 1.85; margin-bottom: 20px;
+    }
+    .about-story p strong { color: var(--white); }
+    .about-story p .green { color: var(--green); }
+    .about-story p .gold { color: var(--gold); }
+
+    .pull-quote {
+      margin: 36px 0;
+      padding: 28px 32px;
+      border-left: 4px solid var(--green);
+      background: rgba(109,192,64,0.06);
+      border-radius: 0 12px 12px 0;
+    }
+    .pull-quote p {
+      font-size: 1.15rem; font-weight: 600; color: var(--white);
+      line-height: 1.65; margin: 0; font-style: italic;
+    }
+
+    /* Philosophy section */
+    .philosophy-section {
+      background: var(--dark-card);
+      padding: 96px 0;
+    }
+    .philosophy-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 52px;
+    }
+    .philosophy-card {
+      background: var(--dark);
+      border: 1px solid var(--dark-border);
+      border-radius: 14px; padding: 28px;
+      border-top: 3px solid var(--green);
+      transition: all 0.25s;
+    }
+    .philosophy-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+    .philosophy-icon { font-size: 2rem; margin-bottom: 14px; }
+    .philosophy-card h3 { font-size: 1rem; margin-bottom: 10px; color: var(--white); }
+    .philosophy-card p { font-size: 0.84rem; color: rgba(255,255,255,0.5); line-height: 1.7; }
+
+    /* Timeline */
+    .timeline-section { background: var(--dark); padding: 96px 0; }
+    .timeline { max-width: 720px; margin: 52px auto 0; position: relative; }
+    .timeline::before {
+      content: ''; position: absolute; left: 20px; top: 0; bottom: 0;
+      width: 2px; background: var(--dark-border);
+    }
+    .timeline-item {
+      display: flex; gap: 28px; margin-bottom: 40px; position: relative;
+    }
+    .timeline-dot {
+      width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+      background: var(--dark-card); border: 2px solid var(--green);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; position: relative; z-index: 1;
+    }
+    .timeline-content {
+      background: var(--dark-card); border: 1px solid var(--dark-border);
+      border-radius: 12px; padding: 20px 24px; flex: 1;
+    }
+    .timeline-year {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--green); margin-bottom: 6px;
+    }
+    .timeline-content h4 { font-size: 0.95rem; color: var(--white); margin-bottom: 6px; }
+    .timeline-content p { font-size: 0.83rem; color: rgba(255,255,255,0.5); line-height: 1.6; margin: 0; }
+
+    /* CTA */
+    .about-cta {
+      background: linear-gradient(135deg, #0A1A0A 0%, #0E1E14 100%);
+      padding: 80px 0; text-align: center;
+      border-top: 1px solid rgba(109,192,64,0.15);
+    }
+
+    @media (max-width: 900px) {
+      .about-hero-inner { grid-template-columns: 1fr; }
+      .about-photo-card { position: static; max-width: 360px; margin: 0 auto; }
+      .philosophy-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="pii-emblem-3d.png" alt="PII" class="nav-emblem" />
+      <span class="nav-logo-text">PRACTICAL <span class="green">INCOME</span> INVESTING</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="strategies.html">Strategies</a></li>
+      <li><a href="journal.html">Trading Journal</a></li>
+      <li><a href="blog.html">Resources</a></li>
+      <li><a href="index.html#market-compass" class="nav-compass">🧭 Market Compass</a></li>
+    </ul>
+    <a href="journal.html" class="btn btn-gold nav-cta">Free Journal</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="about-hero">
+  <div class="container">
+    <div class="about-hero-inner">
+
+      <!-- Left: photo card -->
+      <div class="about-photo-card">
+        <div class="about-photo-top">
+          <div class="about-avatar">👤</div>
+          <div class="about-name">Mike</div>
+          <div class="about-title">Founder · Practical Income Investing</div>
+        </div>
+        <div class="about-stats">
+          <div class="about-stat">
+            <div class="about-stat-num">35+</div>
+            <div class="about-stat-label">Years in Markets</div>
+          </div>
+          <div class="about-stat">
+            <div class="about-stat-num">1,000s</div>
+            <div class="about-stat-label">Trades Executed</div>
+          </div>
+          <div class="about-stat">
+            <div class="about-stat-num">Income</div>
+            <div class="about-stat-label">Primary Focus</div>
+          </div>
+          <div class="about-stat">
+            <div class="about-stat-num">Weekly</div>
+            <div class="about-stat-label">New Content</div>
+          </div>
+        </div>
+        <div class="about-links">
+          <a href="https://www.youtube.com/@practicalincomeinvesting" target="_blank" class="about-link-btn yt">
+            ▶ YouTube Channel
+          </a>
+          <a href="journal.html" class="about-link-btn">
+            📒 Free Trading Journal
+          </a>
+          <a href="index.html#market-compass" class="about-link-btn">
+            🧭 Market Compass Tool
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: story -->
+      <div class="about-story">
+        <div class="about-eyebrow">The Story Behind PII</div>
+        <h1>Trading Doesn't Have to<br><span class="green">Be Complicated.</span></h1>
+
+        <p>I've been investing for over <strong>35 years</strong>. I started the same way most people do — buying mutual funds and checking the newspaper every morning to see if my portfolio went up or down. No computers, no apps, no real-time data. Just the Wall Street Journal and a lot of patience.</p>
+
+        <p>Over the decades I watched the markets evolve, technology change everything, and a whole new world of strategies open up to retail traders like me. About <strong>five or six years ago</strong> I started trading actively — options, dividend ETFs, high-yield funds like YieldMAX and Roundhill. I read constantly, joined communities, and executed thousands and thousands of trades across every kind of strategy you can imagine.</p>
+
+        <p>And then 2024 happened.</p>
+
+        <p>The euphoric run of 2024 was incredible — my portfolio was going crazy, everything was skyrocketing, and it felt like it would never stop. Then <strong>2025 brought the tariff situation</strong>, and just like that, most of those gains were gone. It wasn't just me. It hit everyone chasing yield through leveraged ETFs and high-dividend funds.</p>
+
+        <div class="pull-quote">
+          <p>"That's when I realized: I was paying fees to let someone else make decisions I could make better myself — and I didn't have any real control over the outcome."</p>
+        </div>
+
+        <p>So I made a change. I stopped delegating my income strategy to ETF managers and <strong>started doing it myself</strong> — selling covered calls, running cash-secured puts, building credit spreads, and constructing a dividend portfolio I could layer options income on top of. The result was something I hadn't experienced before: <span class="green">consistent, predictable monthly income</span> that didn't evaporate when the market got choppy.</p>
+
+        <p>That's what Practical Income Investing is about. I built this for <strong>people like me</strong> — investors who are getting closer to retirement, who are done with the volatility of chasing performance, and who want to know that their portfolio is actually working for them every single month.</p>
+
+        <p>Trading isn't hard. It doesn't have to feel like gambling. <span class="green">Do it right, do it safely, stay consistent, and keep your expectations reasonable</span> — and you can build something that genuinely changes your financial picture.</p>
+
+        <p>That's what I'm here to show you.</p>
+
+        <div style="display:flex; gap:14px; flex-wrap:wrap; margin-top:32px;">
+          <a href="strategies.html" class="btn btn-green">Explore the Strategies</a>
+          <a href="journal.html" class="btn btn-outline-green">Get the Free Journal</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PHILOSOPHY ═══════════════════ -->
+<section class="philosophy-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The PII Philosophy</span>
+      <h2>How I Think About <span class="green">Trading</span></h2>
+      <p>These are the principles that guide every trade, every video, and every tool we build here.</p>
+    </div>
+    <div class="philosophy-grid">
+      <div class="philosophy-card">
+        <div class="philosophy-icon">🛡️</div>
+        <h3>Safety First, Always</h3>
+        <p>Every position starts with the question: what's the worst case, and can I live with it? Income strategies like covered calls and cash-secured puts have defined, manageable risk built in. That's not a limitation — it's the point.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-icon">📅</div>
+        <h3>Consistency Beats Big Wins</h3>
+        <p>One massive trade that blows up wipes out months of disciplined income. I'd rather collect steady premium every month than swing for the fences. Compounded modest returns over time are how wealth is actually built.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-icon">🎓</div>
+        <h3>Understand What You Own</h3>
+        <p>Never sell an option you don't understand. Never hold a position you can't explain. The more clearly you understand a trade before you enter it, the better your decisions will be when things get volatile.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-icon">💰</div>
+        <h3>Income You Can Live On</h3>
+        <p>The goal isn't just portfolio growth — it's cash flow. Dividends and option premiums that hit your account every month, whether the market goes up, down, or sideways. That's financial freedom on your terms.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-icon">📊</div>
+        <h3>Track Everything</h3>
+        <p>You can't improve what you don't measure. Every trade gets logged — entry, exit, premium collected, P&L, annualized return. The journal isn't optional. It's how you go from winging it to actually knowing your numbers.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="philosophy-icon">🔄</div>
+        <h3>Keep Evolving</h3>
+        <p>The market changes. Strategies that worked perfectly last year may need adjusting. Stay curious, keep learning, and never stop questioning whether there's a smarter way to do what you're already doing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ TIMELINE ═══════════════════ -->
+<section class="timeline-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The Journey</span>
+      <h2>35+ Years in the <span class="green">Market</span></h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot">📰</div>
+        <div class="timeline-content">
+          <div class="timeline-year">Late 1980s — Early 1990s</div>
+          <h4>Mutual Funds &amp; the Morning Paper</h4>
+          <p>Started investing in mutual funds, tracking performance daily in the Wall Street Journal. No internet, no apps — just discipline and patience. The foundation of a long-term mindset.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot">📈</div>
+        <div class="timeline-content">
+          <div class="timeline-year">5–6 Years Ago</div>
+          <h4>Going Active — Options &amp; High-Yield ETFs</h4>
+          <p>Started active trading in earnest. Explored high-dividend ETFs (YieldMAX, Roundhill, Defiant), options strategies, and executed thousands of trades across every approach imaginable.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot">🚀</div>
+        <div class="timeline-content">
+          <div class="timeline-year">2024</div>
+          <h4>The Euphoric Run</h4>
+          <p>Markets roared. High-yield ETFs and leveraged positions delivered extraordinary returns. Portfolio metrics looked incredible. It felt unstoppable.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot">⚡</div>
+        <div class="timeline-content">
+          <div class="timeline-year">2025</div>
+          <h4>The Tariff Wake-Up Call</h4>
+          <p>The tariff situation hit hard. Most of 2024's gains evaporated. The vulnerability of high-yield ETF strategies became clear — fees, no control, and full exposure to every market swing.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot">🎯</div>
+        <div class="timeline-content">
+          <div class="timeline-year">Mid-2025 — Present</div>
+          <h4>Practical Income Investing</h4>
+          <p>Moved to self-directed income strategies — covered calls, cash-secured puts, credit spreads, and a dividend portfolio with options layered on top. Consistent monthly income, lower fees, full control. Built PII to share what actually works.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ CTA ═══════════════════ -->
+<section class="about-cta">
+  <div class="container" style="max-width:580px;">
+    <span class="section-label">Let's Build This Together</span>
+    <h2 style="margin-bottom:16px;">Start with the <span class="green">Free Trading Journal</span></h2>
+    <p style="margin-bottom:32px; font-size:1.02rem;">The same journal I use to track every position. Log your trades, measure your income, and start seeing your numbers clearly.</p>
+    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+      <a href="journal.html" class="btn btn-gold" style="font-size:0.95rem; padding:15px 36px;">Get the Free Journal</a>
+      <a href="https://www.youtube.com/@practicalincomeinvesting" target="_blank" class="btn btn-outline-green">Watch on YouTube</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="pii-emblem-3d.png" alt="PII" class="footer-emblem" />
+        <span class="footer-brand">PRACTICAL <span>INCOME</span> INVESTING</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="strategies.html">Strategies</a></li>
+        <li><a href="journal.html">Free Journal</a></li>
+        <li><a href="index.html#market-compass">Market Compass</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2025 Practical Income Investing. All rights reserved.</p>
+    <p class="footer-disc">Options trading involves significant risk and is not appropriate for all investors. Past performance is not indicative of future results. This content is for educational purposes only and does not constitute financial advice.</p>
+  </div>
+</footer>
+
+</body>
+</html>
