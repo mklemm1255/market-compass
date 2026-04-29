@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how buy-writes work — buy stock and sell a covered call simultaneously for instant income and a reduced cost basis from day one." />
+  <title>Buy-Writes — Practical Income Investing</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="strategy.css" />
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="pii-emblem-3d.png" alt="PII" class="nav-emblem" />
+      <span class="nav-logo-text">PRACTICAL <span class="green">INCOME</span> INVESTING</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="strategies.html">Strategies</a></li>
+      <li><a href="journal.html">Trading Journal</a></li>
+      <li><a href="blog.html">Resources</a></li>
+      <li><a href="index.html#market-compass" class="nav-compass">🧭 Market Compass</a></li>
+    </ul>
+    <a href="journal.html" class="btn btn-gold nav-cta">Free Journal</a>
+  </div>
+</nav>
+
+<section class="strat-hero">
+  <div class="container">
+    <a href="strategies.html" class="back-link">← All Strategies</a>
+    <div class="strat-hero-inner">
+      <div>
+        <div class="strat-eyebrow">Income Strategy · Combination Trade</div>
+        <h1>Buy-<span class="green">Writes</span></h1>
+        <p class="strat-sub">Buy 100 shares of stock and sell a covered call in one simultaneous transaction. You start generating income from the moment you enter the position — with a built-in discount on your cost basis before the trade even settles.</p>
+        <div class="strat-meta-row">
+          <div class="strat-meta"><span class="strat-meta-label">Risk Level</span><span class="strat-meta-val low">Low</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Income</span><span class="strat-meta-val high">High</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Capital Req.</span><span class="strat-meta-val med">100 Shares − Premium</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Time Frame</span><span class="strat-meta-val">Days–Weeks</span></div>
+        </div>
+      </div>
+      <div class="strat-icon-wrap">✍️</div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section alt">
+  <div class="container strat-2col">
+    <div>
+      <span class="section-label">The Basics</span>
+      <h2>What Is a <span class="green">Buy-Write?</span></h2>
+      <p>A buy-write is simply a covered call — but executed as a single simultaneous order rather than two separate trades. You buy 100 shares and sell a call option at the same time, in one order.</p>
+      <p>The result is identical to a covered call, but the execution is cleaner. You get the combined price in a single transaction, which can mean tighter fills and less slippage than legging into each trade separately.</p>
+      <p>The premium you collect immediately reduces your net cost basis. If you buy stock at $185 and collect $3.40 in premium, your effective entry price is $181.60 before the day is over.</p>
+      <div class="key-point">
+        <div class="kp-icon">💡</div>
+        <div><strong>Covered call vs. buy-write:</strong> Same strategy, different execution. A covered call assumes you already own the shares. A buy-write is when you buy the shares and sell the call simultaneously — often used to enter a new income position cleanly.</div>
+      </div>
+    </div>
+    <div class="terms-box">
+      <div class="terms-title">Key Terms</div>
+      <div class="term-row"><div class="term">Buy-Write</div><div class="term-def">Simultaneous purchase of 100 shares and sale of 1 covered call in a single combination order.</div></div>
+      <div class="term-row"><div class="term">Net Debit</div><div class="term-def">What you actually pay: stock price − call premium. Your effective cost basis from day one.</div></div>
+      <div class="term-row"><div class="term">Static Return</div><div class="term-def">Return if the stock stays flat through expiration. Premium ÷ net debit × annualized.</div></div>
+      <div class="term-row"><div class="term">Called Return</div><div class="term-def">Return if the stock gets called away at the strike. (Strike − stock price + premium) ÷ net debit.</div></div>
+      <div class="term-row"><div class="term">Slippage</div><div class="term-def">The difference between expected and actual fill price. Combo orders reduce slippage vs. legging in.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Walk-Through</span>
+      <h2>A Real <span class="green">Example</span></h2>
+    </div>
+    <div class="example-box">
+      <div class="example-setup">
+        <div class="example-step">
+          <div class="step-num">1</div>
+          <div><strong>You want to start a covered call position on MSFT</strong> at $415/share. Instead of buying shares and then selling a call as separate orders, you enter a <strong>buy-write combo order</strong>.</div>
+        </div>
+        <div class="example-step">
+          <div class="step-num">2</div>
+          <div><strong>You specify:</strong> Buy 100 shares MSFT + Sell 1 call, $425 strike, 30 DTE. The net debit fills at <span class="green-text">$411.50/share</span> ($415 stock − $3.50 call premium). Total outlay: $41,150.</div>
+        </div>
+        <div class="example-step">
+          <div class="step-num">3</div>
+          <div><strong>Your effective breakeven is $411.50.</strong> You're already $3.50 better off than if you'd just bought the stock. Two potential outcomes at expiration:</div>
+        </div>
+      </div>
+      <div class="outcomes" style="grid-template-columns:1fr 1fr;">
+        <div class="outcome win">
+          <div class="outcome-label">✓ MSFT stays below $425</div>
+          <div class="outcome-desc">Call expires worthless. You keep your shares and the $350 premium. Static return: 0.85% in 30 days (~10% annualized). Sell another call.</div>
+          <div class="outcome-pnl">+$350 income</div>
+        </div>
+        <div class="outcome assigned">
+          <div class="outcome-label">⬆ MSFT closes above $425</div>
+          <div class="outcome-desc">Shares called at $425. Profit = ($425 − $411.50) × 100 = $1,350. Called return: 3.28% in 30 days (~39% annualized).</div>
+          <div class="outcome-pnl">+$1,350 total</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section alt">
+  <div class="container strat-2col">
+    <div>
+      <span class="section-label">Strategy</span>
+      <h2>When to <span class="green">Use It</span></h2>
+      <ul class="strat-list">
+        <li>You want to enter a new covered call position in one clean trade</li>
+        <li>You want the best possible price on the combined stock + call</li>
+        <li>Implied volatility is elevated — great time to sell calls</li>
+        <li>You're initiating a position in a volatile stock where legging in is risky</li>
+        <li>You want your cost basis reduced from the moment you buy</li>
+      </ul>
+      <div class="key-point">
+        <div class="kp-icon">💡</div>
+        <div><strong>Pro tip:</strong> Use limit orders for buy-writes. Enter the net debit you're willing to pay. The broker will work both legs simultaneously to get you that combined price.</div>
+      </div>
+    </div>
+    <div>
+      <span class="section-label">Metrics</span>
+      <h2>What to <span class="green">Target</span></h2>
+      <div class="metric-cards">
+        <div class="metric-card">
+          <div class="metric-num">1–3%</div>
+          <div class="metric-label">Static return / month</div>
+          <div class="metric-desc">Return from premium if stock stays flat. Target 12–36% annualized.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">3–5%</div>
+          <div class="metric-label">Called return / month</div>
+          <div class="metric-desc">Return if shares get called away. Should be higher than static return.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">OTM 5–10%</div>
+          <div class="metric-label">Strike distance</div>
+          <div class="metric-desc">Sell calls 5–10% above current price. Enough room for the stock to breathe.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">30–45 DTE</div>
+          <div class="metric-label">Days to expiration</div>
+          <div class="metric-desc">Peak theta decay zone. Roll or take profit at 50% premium captured.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Honest Assessment</span>
+      <h2>Pros <span class="green">&amp;</span> Cons</h2>
+    </div>
+    <div class="pros-cons">
+      <div class="pros">
+        <div class="pc-title">✓ Pros</div>
+        <ul>
+          <li>Cleaner entry — one order, no legging risk</li>
+          <li>Immediate cost basis reduction from day one</li>
+          <li>Can get better combined fill than two separate orders</li>
+          <li>Same income-generating profile as covered calls</li>
+          <li>Simple to repeat month after month</li>
+          <li>Works well in volatile markets where timing matters</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <div class="pc-title">✗ Cons</div>
+        <ul>
+          <li>Still requires full capital to buy 100 shares</li>
+          <li>Caps upside just like a covered call</li>
+          <li>Not all brokerages offer clean combo order entry</li>
+          <li>Same downside exposure as stock ownership</li>
+          <li>Requires choosing strike and expiration upfront</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-cta">
+  <div class="container" style="text-align:center; max-width:580px;">
+    <h2>Log Your Buy-Writes in the <span class="green">Free Journal</span></h2>
+    <p>Track your net debit, static and called returns, and monthly premium collected — all in one place.</p>
+    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:28px;">
+      <a href="journal.html" class="btn btn-gold">Get the Free Trading Journal</a>
+      <a href="strategies.html" class="btn btn-outline-green">← All Strategies</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="pii-emblem-3d.png" alt="PII" class="footer-emblem" />
+        <span class="footer-brand">PRACTICAL <span>INCOME</span> INVESTING</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="strategies.html">Strategies</a></li>
+        <li><a href="journal.html">Free Journal</a></li>
+        <li><a href="index.html#market-compass">Market Compass</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2025 Practical Income Investing. All rights reserved.</p>
+    <p class="footer-disc">Options trading involves significant risk. Educational content only — not financial advice.</p>
+  </div>
+</footer>
+</body>
+</html>

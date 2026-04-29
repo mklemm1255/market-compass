@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how cash-secured puts work — get paid to wait for a stock at a lower price. Real example, P&L diagram, and when to use them." />
+  <title>Cash-Secured Puts — Practical Income Investing</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="strategy.css" />
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="pii-emblem-3d.png" alt="PII" class="nav-emblem" />
+      <span class="nav-logo-text">PRACTICAL <span class="green">INCOME</span> INVESTING</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="strategies.html">Strategies</a></li>
+      <li><a href="journal.html">Trading Journal</a></li>
+      <li><a href="blog.html">Resources</a></li>
+      <li><a href="index.html#market-compass" class="nav-compass">🧭 Market Compass</a></li>
+    </ul>
+    <a href="journal.html" class="btn btn-gold nav-cta">Free Journal</a>
+  </div>
+</nav>
+
+<section class="strat-hero">
+  <div class="container">
+    <a href="strategies.html" class="back-link">← All Strategies</a>
+    <div class="strat-hero-inner">
+      <div>
+        <div class="strat-eyebrow">Income Strategy · Low Risk</div>
+        <h1>Cash-Secured <span class="green">Puts</span></h1>
+        <p class="strat-sub">Get paid to wait for a stock to come to you. Sell a put, collect premium upfront, and either keep the cash when the option expires worthless — or buy the stock at your target price at a discount.</p>
+        <div class="strat-meta-row">
+          <div class="strat-meta"><span class="strat-meta-label">Risk Level</span><span class="strat-meta-val low">Low–Moderate</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Income</span><span class="strat-meta-val high">High</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Capital Req.</span><span class="strat-meta-val med">Cash = Strike × 100</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Time Frame</span><span class="strat-meta-val">Days–Weeks</span></div>
+        </div>
+      </div>
+      <div class="strat-icon-wrap">🛡️</div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section alt">
+  <div class="container strat-2col">
+    <div>
+      <span class="section-label">The Basics</span>
+      <h2>What Is a <span class="green">Cash-Secured Put?</span></h2>
+      <p>When you sell a put option, you're giving someone else the right to sell you 100 shares of a stock at your chosen strike price. "Cash-secured" means you keep enough cash in your account to buy those shares if the option gets exercised.</p>
+      <p>In exchange, the buyer pays you a premium upfront. If the stock stays above your strike by expiration, you keep the premium and move on. If it drops below, you buy the shares at the strike — which is a price you already said you were happy to pay.</p>
+      <div class="key-point">
+        <div class="kp-icon">💡</div>
+        <div><strong>The core idea:</strong> You're being paid to place a limit buy order. Instead of just waiting for a stock to hit your price, you collect income while you wait — and if it never drops, you still profit.</div>
+      </div>
+    </div>
+    <div class="terms-box">
+      <div class="terms-title">Key Terms</div>
+      <div class="term-row"><div class="term">Strike Price</div><div class="term-def">The price at which you agree to buy 100 shares. Should be a price you're genuinely happy to own the stock at.</div></div>
+      <div class="term-row"><div class="term">Cash-Secured</div><div class="term-def">You hold the full cash to purchase the shares (strike × 100) in your account as collateral.</div></div>
+      <div class="term-row"><div class="term">Premium</div><div class="term-def">The cash you receive upfront. Yours to keep regardless of whether you end up buying the stock.</div></div>
+      <div class="term-row"><div class="term">Assignment</div><div class="term-def">If the stock closes below your strike at expiration, you're assigned — you buy 100 shares at the strike price.</div></div>
+      <div class="term-row"><div class="term">Put-Call Parity</div><div class="term-def">CSPs and covered calls have the same risk/reward profile — just expressed differently.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Walk-Through</span>
+      <h2>A Real <span class="green">Example</span></h2>
+    </div>
+    <div class="example-box">
+      <div class="example-setup">
+        <div class="example-step">
+          <div class="step-num">1</div>
+          <div><strong>You like SPY at $470</strong> and wouldn't mind owning it at $465. You set aside <span class="green-text">$46,500 in cash</span> as collateral.</div>
+        </div>
+        <div class="example-step">
+          <div class="step-num">2</div>
+          <div><strong>You sell 1 put</strong> with a $465 strike expiring in 30 days. You collect <span class="green-text">$2.85/share = $285 premium</span> credited to your account immediately.</div>
+        </div>
+        <div class="example-step">
+          <div class="step-num">3</div>
+          <div><strong>Wait for expiration.</strong> Two outcomes:</div>
+        </div>
+      </div>
+      <div class="outcomes" style="grid-template-columns:1fr 1fr;">
+        <div class="outcome win">
+          <div class="outcome-label">✓ SPY stays above $465</div>
+          <div class="outcome-desc">Put expires worthless. You keep the $285 premium and your $46,500 cash. Sell another put next month.</div>
+          <div class="outcome-pnl">+$285 income, ~7.4% annualized</div>
+        </div>
+        <div class="outcome assigned">
+          <div class="outcome-label">⬇ SPY drops below $465</div>
+          <div class="outcome-desc">You buy 100 shares at $465. Your effective cost basis is $465 − $2.85 = <strong>$462.15/share</strong>. Now sell covered calls to generate more income.</div>
+          <div class="outcome-pnl">Own shares at a discount</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Profit & Loss</span>
+      <h2>The P&amp;L <span class="green">Profile</span></h2>
+      <p>Profit is capped at the premium. Risk is owning the stock at the strike price if it falls below.</p>
+    </div>
+    <div class="chart-wrap">
+      <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" class="pnl-chart">
+        <line x1="80" y1="60"  x2="660" y2="60"  stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="120" x2="660" y2="120" stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="180" x2="660" y2="180" stroke="#444455" stroke-width="1.5"/>
+        <line x1="80" y1="240" x2="660" y2="240" stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="300" x2="660" y2="300" stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="40"  x2="80"  y2="310" stroke="#444455" stroke-width="2"/>
+        <line x1="80" y1="310" x2="670" y2="310" stroke="#444455" stroke-width="2"/>
+
+        <!-- Flat premium line left of breakeven: from far left to breakeven -->
+        <!-- Price range 430-500, 70pts, 580px wide = 8.3px/pt -->
+        <!-- Breakeven = 465-2.85 = 462.15 → x = 80+(462.15-430)*8.3 = 80+267 = 347 -->
+        <!-- Strike 465 → x = 80+(465-430)*8.3 = 80+291 = 371 -->
+        <!-- Premium $285 → y = 180-285*0.24 = 180-68 = 112 (using 0.24px/$1) -->
+        <!-- Stock at 430 loss: 430-465+2.85 = -32.15 → y = 180+32.15*2.4 = 180+77 = 257 -->
+
+        <!-- Profit flat line: from x=371 to x=660, y=112 -->
+        <polyline points="371,112 660,112" fill="none" stroke="#6DC040" stroke-width="3" stroke-linecap="round"/>
+        <!-- Slope down from strike to left -->
+        <polyline points="80,257 371,112" fill="none" stroke="#E05252" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- Breakeven marker at ~347 -->
+        <line x1="347" y1="180" x2="347" y2="310" stroke="#aaa" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="371" y1="112" x2="371" y2="310" stroke="#D4AF37" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- Fill zones -->
+        <polygon points="371,112 660,112 660,180 371,180" fill="rgba(109,192,64,0.12)"/>
+        <polygon points="80,257 347,180 80,180" fill="rgba(224,82,82,0.12)"/>
+
+        <!-- Labels -->
+        <text x="88" y="176" fill="#888" font-size="11" font-family="Montserrat,sans-serif">$0</text>
+        <text x="88" y="108" fill="#6DC040" font-size="11" font-family="Montserrat,sans-serif">+$285 max profit</text>
+        <text x="88" y="260" fill="#E05252" font-size="11" font-family="Montserrat,sans-serif">Loss if stock falls</text>
+
+        <text x="72"  y="325" fill="#666" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$430</text>
+        <text x="340" y="325" fill="#aaa" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$462.15</text>
+        <text x="371" y="325" fill="#D4AF37" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$465</text>
+        <text x="660" y="325" fill="#666" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$500</text>
+
+        <text x="347" y="170" fill="#aaa" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">Breakeven</text>
+        <text x="371" y="170" fill="#D4AF37" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">Strike</text>
+        <text x="500" y="100" fill="#6DC040" font-size="11" font-family="Montserrat,sans-serif" font-weight="700">MAX PROFIT (premium only)</text>
+      </svg>
+      <div class="chart-legend">
+        <div class="legend-item"><span class="legend-dot green"></span> Profit zone — stock stays above strike</div>
+        <div class="legend-item"><span class="legend-dot red"></span> Loss zone — stock falls below breakeven</div>
+        <div class="legend-item"><span class="legend-dot gold"></span> Strike — assigned below here, buy at discount</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section">
+  <div class="container strat-2col">
+    <div>
+      <span class="section-label">Strategy</span>
+      <h2>When to <span class="green">Use It</span></h2>
+      <p>Cash-secured puts work best when:</p>
+      <ul class="strat-list">
+        <li>You want to own a stock but think it's slightly overpriced right now</li>
+        <li>You have cash sitting idle and want to generate income on it</li>
+        <li>The stock has elevated implied volatility (more premium)</li>
+        <li>You're bullish or neutral on the underlying</li>
+        <li>You want to pair with covered calls in the "Wheel Strategy"</li>
+      </ul>
+      <div class="key-point warn">
+        <div class="kp-icon">⚠️</div>
+        <div><strong>Only sell puts on stocks you WANT to own.</strong> If the stock gets assigned and craters, you're holding a losing position. Never sell a put on a stock you wouldn't want in your portfolio.</div>
+      </div>
+    </div>
+    <div>
+      <span class="section-label">Metrics</span>
+      <h2>What to <span class="green">Target</span></h2>
+      <div class="metric-cards">
+        <div class="metric-card">
+          <div class="metric-num">0.25–0.35</div>
+          <div class="metric-label">Delta at entry</div>
+          <div class="metric-desc">~25–35% probability of assignment. Good balance of premium vs. risk.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">30–45</div>
+          <div class="metric-label">Days to expiration</div>
+          <div class="metric-desc">Optimal theta decay zone. Close at 50% profit or 21 DTE.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">1–2%</div>
+          <div class="metric-label">Premium / cash secured</div>
+          <div class="metric-desc">Target 1–2% return on the cash held as collateral per month.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">IV Rank &gt;30</div>
+          <div class="metric-label">Implied volatility rank</div>
+          <div class="metric-desc">Sell when IV is elevated — you collect more premium for the same risk.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Honest Assessment</span>
+      <h2>Pros <span class="green">&amp;</span> Cons</h2>
+    </div>
+    <div class="pros-cons">
+      <div class="pros">
+        <div class="pc-title">✓ Pros</div>
+        <ul>
+          <li>Collect premium while waiting to buy a stock at your price</li>
+          <li>Lower effective cost basis if assigned</li>
+          <li>Works great combined with covered calls (the Wheel)</li>
+          <li>More capital-efficient than just holding cash</li>
+          <li>Simple one-leg strategy — easy to manage</li>
+          <li>Can be repeated monthly for consistent income</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <div class="pc-title">✗ Cons</div>
+        <ul>
+          <li>Ties up a large amount of cash as collateral</li>
+          <li>Full downside exposure if the stock collapses</li>
+          <li>Profit is capped at the premium collected</li>
+          <li>Can miss big upside moves if stock rips higher</li>
+          <li>Not available in all account types (check with your broker)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-cta">
+  <div class="container" style="text-align:center; max-width:580px;">
+    <h2>Track Every Put You Sell with the <span class="green">Free Journal</span></h2>
+    <p>Log your cash-secured puts, track premium collected, and monitor your cost basis — all in one place.</p>
+    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:28px;">
+      <a href="journal.html" class="btn btn-gold">Get the Free Trading Journal</a>
+      <a href="strategies.html" class="btn btn-outline-green">← All Strategies</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="pii-emblem-3d.png" alt="PII" class="footer-emblem" />
+        <span class="footer-brand">PRACTICAL <span>INCOME</span> INVESTING</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="strategies.html">Strategies</a></li>
+        <li><a href="journal.html">Free Journal</a></li>
+        <li><a href="index.html#market-compass">Market Compass</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2025 Practical Income Investing. All rights reserved.</p>
+    <p class="footer-disc">Options trading involves significant risk. Educational content only — not financial advice.</p>
+  </div>
+</footer>
+</body>
+</html>

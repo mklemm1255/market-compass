@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn the income investing strategies used at Practical Income Investing — covered calls, cash-secured puts, LEAPS, credit spreads, buy-writes, swing trading, and dividend stocks." />
+  <title>Strategies — Practical Income Investing</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .page-hero {
+      padding: 140px 0 80px;
+      background: var(--dark);
+      position: relative; overflow: hidden;
+      text-align: center;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 55% at 50% 0%, rgba(109,192,64,0.09) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .page-hero-inner { position: relative; z-index: 1; max-width: 740px; margin: 0 auto; }
+    .page-hero h1 { margin-bottom: 18px; }
+    .page-hero p { font-size: 1.1rem; color: rgba(255,255,255,0.6); line-height: 1.75; }
+
+    .strat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 64px;
+    }
+    .strat-hub-card {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      display: flex; flex-direction: column;
+      position: relative; overflow: hidden;
+      transition: all 0.25s ease;
+      text-decoration: none;
+    }
+    .strat-hub-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: var(--green); transform: scaleX(0); transform-origin: left; transition: transform 0.25s;
+    }
+    .strat-hub-card:hover { border-color: rgba(109,192,64,0.35); transform: translateY(-6px); box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
+    .strat-hub-card:hover::after { transform: scaleX(1); }
+    .strat-hub-icon { font-size: 2.4rem; margin-bottom: 18px; }
+    .strat-hub-tag {
+      display: inline-block; margin-bottom: 12px;
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .strat-hub-card h3 { font-size: 1.15rem; color: var(--white); margin-bottom: 10px; }
+    .strat-hub-card p { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.7; flex: 1; }
+    .strat-hub-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 20px; font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--green);
+      text-decoration: none; transition: gap 0.2s;
+    }
+    .strat-hub-card:hover .strat-hub-link { gap: 10px; }
+
+    .risk-legend {
+      display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+      margin-top: 48px; padding: 20px; background: var(--dark-card);
+      border-radius: 10px; border: 1px solid var(--dark-border);
+    }
+    .risk-item { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+    .risk-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    @media (max-width: 900px) { .strat-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .strat-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="pii-emblem-3d.png" alt="PII" class="nav-emblem" />
+      <span class="nav-logo-text">PRACTICAL <span class="green">INCOME</span> INVESTING</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="strategies.html">Strategies</a></li>
+      <li><a href="journal.html">Trading Journal</a></li>
+      <li><a href="blog.html">Resources</a></li>
+      <li><a href="index.html#market-compass" class="nav-compass">🧭 Market Compass</a></li>
+    </ul>
+    <a href="journal.html" class="btn btn-gold nav-cta">Free Journal</a>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-inner">
+      <span class="section-label">Education · Strategy Library</span>
+      <h1>Income Strategies That<br><span class="green">Actually Work</span></h1>
+      <p>Every strategy we use at PII — explained from the ground up. What it is, how to use it, real examples, and the P&amp;L profile so you know exactly what you're getting into.</p>
+    </div>
+
+    <div class="strat-grid">
+
+      <a href="covered-calls.html" class="strat-hub-card">
+        <div class="strat-hub-icon">📞</div>
+        <span class="strat-hub-tag tag-income">Income · Low Risk</span>
+        <h3>Covered Calls</h3>
+        <p>Sell the right to buy your shares at a fixed price. Collect premium every month whether the stock moves or not. The foundation of income investing.</p>
+        <span class="strat-hub-link">Learn the strategy →</span>
+      </a>
+
+      <a href="cash-secured-puts.html" class="strat-hub-card">
+        <div class="strat-hub-icon">🛡️</div>
+        <span class="strat-hub-tag tag-income">Income · Low Risk</span>
+        <h3>Cash-Secured Puts</h3>
+        <p>Get paid to wait for a stock you want to own at a lower price. If it doesn't drop, you keep the premium. If it does, you buy at a discount.</p>
+        <span class="strat-hub-link">Learn the strategy →</span>
+      </a>
+
+      <a href="buy-writes.html" class="strat-hub-card">
+        <div class="strat-hub-icon">✍️</div>
+        <span class="strat-hub-tag tag-income">Income · Combo</span>
+        <h3>Buy-Writes</h3>
+        <p>Buy stock and sell a covered call in one simultaneous trade. Instant income from day one with a built-in cost basis reduction.</p>
+        <span class="strat-hub-link">Learn the strategy →</span>
+      </a>
+
+      <a href="credit-spreads.html" class="strat-hub-card">
+        <div class="strat-hub-icon">↔️</div>
+        <span class="strat-hub-tag tag-growth">Income · Defined Risk</span>
+        <h3>Credit Spreads</h3>
+        <p>Collect premium while capping your maximum loss. Bull put spreads and bear call spreads let you express a directional view with controlled risk.</p>
+        <span class="strat-hub-link">Learn the strategy →</span>
+      </a>
+
+      <a href="leaps.html" class="strat-hub-card">
+        <div class="strat-hub-icon">🚀</div>
+        <span class="strat-hub-tag tag-growth">Growth · Leverage</span>
+        <h3>LEAPS</h3>
+        <p>Long-dated options (1–3 years out) that act like stock at a fraction of the cost. Use them as a stock replacement or to generate income by selling shorter-term calls against them.</p>
+        <span class="strat-hub-link">Learn the strategy →</span>
+      </a>
+
+      <a href="swing-trading.html" class="strat-hub-card">
+        <div class="strat-hub-icon">📊</div>
+        <span class="strat-hub-tag tag-growth">Growth · Active</span>
+        <h3>Swing Trading</h3>
+        <p>Capture short-to-medium term price moves using technical analysis. Hold for days to weeks, target clean setups, and combine with options for amplified returns.</p>
+        <span class="strat-hub-link">Learn the strategy →</span>
+      </a>
+
+      <a href="stock-portfolio.html" class="strat-hub-card">
+        <div class="strat-hub-icon">🏦</div>
+        <span class="strat-hub-tag tag-income">Income · Long-Term</span>
+        <h3>Dividend Stock Portfolio</h3>
+        <p>Build a core portfolio of high-quality dividend-paying stocks. Reinvest or live off the income. Layer covered calls on top to turbocharge the yield.</p>
+        <span class="strat-hub-link">Learn the strategy →</span>
+      </a>
+
+    </div>
+
+    <div class="risk-legend">
+      <div class="risk-item"><div class="risk-dot" style="background:var(--green);"></div> Income-focused — consistent premium collection</div>
+      <div class="risk-item"><div class="risk-dot" style="background:var(--gold);"></div> Growth-oriented — capital appreciation + leverage</div>
+      <div class="risk-item"><div class="risk-dot" style="background:var(--red);"></div> All strategies involve risk — past performance ≠ future results</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="pii-emblem-3d.png" alt="PII" class="footer-emblem" />
+        <span class="footer-brand">PRACTICAL <span>INCOME</span> INVESTING</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="strategies.html">Strategies</a></li>
+        <li><a href="journal.html">Free Journal</a></li>
+        <li><a href="index.html#market-compass">Market Compass</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2025 Practical Income Investing. All rights reserved.</p>
+    <p class="footer-disc">Options trading involves significant risk and is not appropriate for all investors. Past performance is not indicative of future results. This content is for educational purposes only and does not constitute financial advice.</p>
+  </div>
+</footer>
+
+</body>
+</html>

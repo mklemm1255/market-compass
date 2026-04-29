@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how credit spreads work — bull put spreads and bear call spreads with defined risk. Real examples and P&L diagrams." />
+  <title>Credit Spreads — Practical Income Investing</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="strategy.css" />
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="pii-emblem-3d.png" alt="PII" class="nav-emblem" />
+      <span class="nav-logo-text">PRACTICAL <span class="green">INCOME</span> INVESTING</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="strategies.html">Strategies</a></li>
+      <li><a href="journal.html">Trading Journal</a></li>
+      <li><a href="blog.html">Resources</a></li>
+      <li><a href="index.html#market-compass" class="nav-compass">🧭 Market Compass</a></li>
+    </ul>
+    <a href="journal.html" class="btn btn-gold nav-cta">Free Journal</a>
+  </div>
+</nav>
+
+<section class="strat-hero">
+  <div class="container">
+    <a href="strategies.html" class="back-link">← All Strategies</a>
+    <div class="strat-hero-inner">
+      <div>
+        <div class="strat-eyebrow">Income Strategy · Defined Risk</div>
+        <h1>Credit <span class="green">Spreads</span></h1>
+        <p class="strat-sub">Collect premium with a built-in safety net. Credit spreads let you express a directional view — bullish or bearish — while capping your maximum possible loss from the start.</p>
+        <div class="strat-meta-row">
+          <div class="strat-meta"><span class="strat-meta-label">Risk Level</span><span class="strat-meta-val med">Defined</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Income</span><span class="strat-meta-val high">Moderate</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Capital Req.</span><span class="strat-meta-val med">Spread Width × 100</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Time Frame</span><span class="strat-meta-val">Days–Weeks</span></div>
+        </div>
+      </div>
+      <div class="strat-icon-wrap">↔️</div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section alt">
+  <div class="container strat-2col">
+    <div>
+      <span class="section-label">The Basics</span>
+      <h2>What Is a <span class="green">Credit Spread?</span></h2>
+      <p>A credit spread is a two-leg options trade where you sell one option and buy another at a different strike — same expiration, same underlying. You collect a net credit upfront (hence the name).</p>
+      <p>The option you buy acts as insurance, capping your maximum loss no matter how far the stock moves against you. This is what makes credit spreads "defined risk" trades.</p>
+      <p>There are two main types:</p>
+      <ul class="strat-list">
+        <li><strong>Bull Put Spread</strong> — Bullish/neutral. Sell a higher put, buy a lower put. Profit if stock stays above the short strike.</li>
+        <li><strong>Bear Call Spread</strong> — Bearish/neutral. Sell a lower call, buy a higher call. Profit if stock stays below the short strike.</li>
+      </ul>
+      <div class="key-point">
+        <div class="kp-icon">💡</div>
+        <div><strong>The core idea:</strong> You're collecting premium with a defined max loss — great for traders who want consistent income without the unlimited risk of naked options.</div>
+      </div>
+    </div>
+    <div class="terms-box">
+      <div class="terms-title">Key Terms</div>
+      <div class="term-row"><div class="term">Short Strike</div><div class="term-def">The option you sell. This generates the premium. Your directional level — stock should stay on the profitable side of this.</div></div>
+      <div class="term-row"><div class="term">Long Strike</div><div class="term-def">The option you buy for protection. Caps your maximum loss at the spread width minus the credit received.</div></div>
+      <div class="term-row"><div class="term">Net Credit</div><div class="term-def">What you collect upfront. Premium received from short − premium paid for long.</div></div>
+      <div class="term-row"><div class="term">Spread Width</div><div class="term-def">Distance between strikes × 100 = maximum possible loss per contract.</div></div>
+      <div class="term-row"><div class="term">Max Loss</div><div class="term-def">(Spread width − net credit) × 100. Known before you enter the trade.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Walk-Through</span>
+      <h2>Bull Put Spread <span class="green">Example</span></h2>
+    </div>
+    <div class="example-box">
+      <div class="example-setup">
+        <div class="example-step">
+          <div class="step-num">1</div>
+          <div><strong>SPY is trading at $490.</strong> You're bullish and don't think it will drop below $475 in the next 30 days.</div>
+        </div>
+        <div class="example-step">
+          <div class="step-num">2</div>
+          <div><strong>You sell the $475 put</strong> for $3.20 and <strong>buy the $465 put</strong> for $1.25. Net credit: <span class="green-text">$1.95/share = $195 per contract.</span> Max loss: ($10 spread − $1.95) × 100 = <span class="red-text">$805.</span></div>
+        </div>
+        <div class="example-step">
+          <div class="step-num">3</div>
+          <div><strong>Wait for expiration:</strong></div>
+        </div>
+      </div>
+      <div class="outcomes">
+        <div class="outcome win">
+          <div class="outcome-label">✓ SPY stays above $475</div>
+          <div class="outcome-desc">Both puts expire worthless. Keep the full $195 credit. That's a 24% return on the $805 at risk.</div>
+          <div class="outcome-pnl">+$195 (24% ROC)</div>
+        </div>
+        <div class="outcome neutral">
+          <div class="outcome-label">→ SPY between $473 and $475</div>
+          <div class="outcome-desc">In the loss zone but above full max loss. Can close early to limit damage.</div>
+          <div class="outcome-pnl">Partial loss</div>
+        </div>
+        <div class="outcome loss">
+          <div class="outcome-label">⬇ SPY falls below $465</div>
+          <div class="outcome-desc">Max loss reached. Long put kicks in — you lose no more than $805 no matter how far it falls.</div>
+          <div class="outcome-pnl">−$805 max loss</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Profit & Loss</span>
+      <h2>The P&amp;L <span class="green">Profile</span></h2>
+      <p>Bull Put Spread — profit above short strike, max loss below long strike.</p>
+    </div>
+    <div class="chart-wrap">
+      <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" class="pnl-chart">
+        <line x1="80" y1="60"  x2="660" y2="60"  stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="120" x2="660" y2="120" stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="180" x2="660" y2="180" stroke="#444455" stroke-width="1.5"/>
+        <line x1="80" y1="240" x2="660" y2="240" stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="300" x2="660" y2="300" stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="40"  x2="80"  y2="310" stroke="#444455" stroke-width="2"/>
+        <line x1="80" y1="310" x2="670" y2="310" stroke="#444455" stroke-width="2"/>
+
+        <!-- Price range 450-510, 60pts, 580px = 9.67px/pt -->
+        <!-- Long strike $465: x = 80+(465-450)*9.67 = 80+145 = 225 -->
+        <!-- Short strike $475: x = 80+(475-450)*9.67 = 80+242 = 322 -->
+        <!-- Breakeven $473.05: x = 80+(473.05-450)*9.67 = 80+223 = 303 -->
+        <!-- Max profit $195: y = 180-195*0.35 = 180-68 = 112 -->
+        <!-- Max loss $805: y = 180+805*0.1 = 180+80 = 260 (scaled down for display) -->
+
+        <!-- Flat max loss left of long strike -->
+        <polyline points="80,260 225,260" fill="none" stroke="#E05252" stroke-width="3" stroke-linecap="round"/>
+        <!-- Slope from long strike to short strike -->
+        <polyline points="225,260 322,112" fill="none" stroke="#E05252" stroke-width="3" stroke-linecap="round"/>
+        <!-- Flat max profit right of short strike -->
+        <polyline points="322,112 660,112" fill="none" stroke="#6DC040" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- Breakeven -->
+        <line x1="303" y1="180" x2="303" y2="310" stroke="#aaa" stroke-width="1" stroke-dasharray="3,3"/>
+        <!-- Long strike -->
+        <line x1="225" y1="260" x2="225" y2="310" stroke="#E05252" stroke-width="1" stroke-dasharray="3,3"/>
+        <!-- Short strike -->
+        <line x1="322" y1="112" x2="322" y2="310" stroke="#D4AF37" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- Fill -->
+        <polygon points="322,112 660,112 660,180 322,180" fill="rgba(109,192,64,0.12)"/>
+        <polygon points="80,260 303,180 80,180" fill="rgba(224,82,82,0.12)"/>
+
+        <!-- Labels -->
+        <text x="88" y="176" fill="#888" font-size="11" font-family="Montserrat,sans-serif">$0</text>
+        <text x="430" y="100" fill="#6DC040" font-size="11" font-family="Montserrat,sans-serif" font-weight="700">MAX PROFIT: +$195</text>
+        <text x="88" y="258" fill="#E05252" font-size="11" font-family="Montserrat,sans-serif">MAX LOSS: −$805</text>
+
+        <text x="72"  y="325" fill="#666" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$450</text>
+        <text x="225" y="325" fill="#E05252" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$465</text>
+        <text x="303" y="325" fill="#aaa" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$473</text>
+        <text x="322" y="325" fill="#D4AF37" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$475</text>
+        <text x="660" y="325" fill="#666" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$510</text>
+
+        <text x="225" y="170" fill="#E05252" font-size="9" font-family="Montserrat,sans-serif" text-anchor="middle">Long put</text>
+        <text x="303" y="170" fill="#aaa" font-size="9" font-family="Montserrat,sans-serif" text-anchor="middle">Breakeven</text>
+        <text x="322" y="170" fill="#D4AF37" font-size="9" font-family="Montserrat,sans-serif" text-anchor="middle">Short put</text>
+      </svg>
+      <div class="chart-legend">
+        <div class="legend-item"><span class="legend-dot green"></span> Max profit zone — stock above short strike</div>
+        <div class="legend-item"><span class="legend-dot red"></span> Loss zone — between breakeven and long strike</div>
+        <div class="legend-item"><span class="legend-dot gold"></span> Short strike — where you collected premium</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section">
+  <div class="container strat-2col">
+    <div>
+      <span class="section-label">Strategy</span>
+      <h2>When to <span class="green">Use It</span></h2>
+      <ul class="strat-list">
+        <li>You have a directional view but want capped risk</li>
+        <li>You don't have enough capital for a cash-secured put</li>
+        <li>Implied volatility is high — more premium to collect</li>
+        <li>You want defined max loss before entering the trade</li>
+        <li>You're trading in a smaller account (IRA, Roth, etc.)</li>
+      </ul>
+      <div class="key-point warn">
+        <div class="kp-icon">⚠️</div>
+        <div><strong>Risk/reward reality:</strong> Most credit spreads risk $3–$5 to make $1. That's fine — your win rate just needs to be high enough. Target 70%+ probability of profit at entry.</div>
+      </div>
+    </div>
+    <div>
+      <span class="section-label">Metrics</span>
+      <h2>What to <span class="green">Target</span></h2>
+      <div class="metric-cards">
+        <div class="metric-card">
+          <div class="metric-num">~30%</div>
+          <div class="metric-label">Credit / spread width</div>
+          <div class="metric-desc">Collecting 30% of the spread width is a solid target — e.g., $3 on a $10 wide spread.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">70%+</div>
+          <div class="metric-label">Probability of profit</div>
+          <div class="metric-desc">Short strike should be OTM with ~30 delta or less for high win rate.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">21–45</div>
+          <div class="metric-label">Days to expiration</div>
+          <div class="metric-desc">Close at 50% profit or when 21 DTE is reached to avoid gamma risk.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">2:1</div>
+          <div class="metric-label">Loss:Profit management</div>
+          <div class="metric-desc">Cut losses when spread reaches 2× the credit received to protect capital.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Honest Assessment</span>
+      <h2>Pros <span class="green">&amp;</span> Cons</h2>
+    </div>
+    <div class="pros-cons">
+      <div class="pros">
+        <div class="pc-title">✓ Pros</div>
+        <ul>
+          <li>Defined max loss — know your risk before you enter</li>
+          <li>Less capital required than cash-secured puts</li>
+          <li>Works in smaller accounts and IRAs</li>
+          <li>High probability of profit trades available</li>
+          <li>Theta decay works in your favor as seller</li>
+          <li>Can be used bullishly or bearishly</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <div class="pc-title">✗ Cons</div>
+        <ul>
+          <li>Lower premium than naked options</li>
+          <li>Risk/reward is skewed — risk more than you make</li>
+          <li>Two commissions (two legs) per trade</li>
+          <li>Can still lose the full spread width on a big move</li>
+          <li>Requires managing both legs at close</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-cta">
+  <div class="container" style="text-align:center; max-width:580px;">
+    <h2>Track Every Spread with the <span class="green">Free Journal</span></h2>
+    <p>Log your credit spreads, track net credits, and monitor your risk per trade in the PII Trading Journal.</p>
+    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:28px;">
+      <a href="journal.html" class="btn btn-gold">Get the Free Trading Journal</a>
+      <a href="strategies.html" class="btn btn-outline-green">← All Strategies</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="pii-emblem-3d.png" alt="PII" class="footer-emblem" />
+        <span class="footer-brand">PRACTICAL <span>INCOME</span> INVESTING</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="strategies.html">Strategies</a></li>
+        <li><a href="journal.html">Free Journal</a></li>
+        <li><a href="index.html#market-compass">Market Compass</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2025 Practical Income Investing. All rights reserved.</p>
+    <p class="footer-disc">Options trading involves significant risk. Educational content only — not financial advice.</p>
+  </div>
+</footer>
+</body>
+</html>

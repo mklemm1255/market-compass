@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how covered calls work — what they are, how to use them, a real example, and the P&L profile. The foundation of income investing." />
+  <title>Covered Calls — Practical Income Investing</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="strategy.css" />
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="pii-emblem-3d.png" alt="PII" class="nav-emblem" />
+      <span class="nav-logo-text">PRACTICAL <span class="green">INCOME</span> INVESTING</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="strategies.html">Strategies</a></li>
+      <li><a href="journal.html">Trading Journal</a></li>
+      <li><a href="blog.html">Resources</a></li>
+      <li><a href="index.html#market-compass" class="nav-compass">🧭 Market Compass</a></li>
+    </ul>
+    <a href="journal.html" class="btn btn-gold nav-cta">Free Journal</a>
+  </div>
+</nav>
+
+<section class="strat-hero">
+  <div class="container">
+    <a href="strategies.html" class="back-link">← All Strategies</a>
+    <div class="strat-hero-inner">
+      <div>
+        <div class="strat-eyebrow">Income Strategy · Low Risk</div>
+        <h1>Covered <span class="green">Calls</span></h1>
+        <p class="strat-sub">Sell someone the right to buy your shares at a fixed price — and get paid upfront for it. Whether the stock goes up, sideways, or slightly down, you keep the premium. The cornerstone of income investing.</p>
+        <div class="strat-meta-row">
+          <div class="strat-meta"><span class="strat-meta-label">Risk Level</span><span class="strat-meta-val low">Low</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Income</span><span class="strat-meta-val high">High</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Capital Req.</span><span class="strat-meta-val med">100 Shares</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Time Frame</span><span class="strat-meta-val">Days–Weeks</span></div>
+        </div>
+      </div>
+      <div class="strat-icon-wrap">📞</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS IT -->
+<section class="strat-section alt">
+  <div class="container strat-2col">
+    <div>
+      <span class="section-label">The Basics</span>
+      <h2>What Is a <span class="green">Covered Call?</span></h2>
+      <p>A covered call is when you own 100 shares of a stock and sell someone else the right — but not the obligation — to buy those shares from you at a specific price (the strike price) by a specific date (the expiration).</p>
+      <p>In exchange for giving them that right, they pay you a premium upfront. You keep that premium no matter what happens.</p>
+      <p>"Covered" simply means you already own the shares. You're not selling a naked call — the shares backing the position cover your obligation if the buyer decides to exercise.</p>
+      <div class="key-point">
+        <div class="kp-icon">💡</div>
+        <div><strong>The core idea:</strong> You're renting out your shares. Just like a landlord collects rent while still owning the property, you collect premium while still owning the stock.</div>
+      </div>
+    </div>
+    <div class="terms-box">
+      <div class="terms-title">Key Terms</div>
+      <div class="term-row"><div class="term">Strike Price</div><div class="term-def">The price at which the buyer can purchase your shares. You choose this when you sell the call.</div></div>
+      <div class="term-row"><div class="term">Expiration</div><div class="term-def">The date the contract expires. Weekly, monthly, or quarterly options available.</div></div>
+      <div class="term-row"><div class="term">Premium</div><div class="term-def">The cash you receive upfront for selling the call. Yours to keep regardless of outcome.</div></div>
+      <div class="term-row"><div class="term">Assignment</div><div class="term-def">If the stock closes above your strike at expiration, your shares get "called away" — sold at the strike price.</div></div>
+      <div class="term-row"><div class="term">Delta</div><div class="term-def">Probability the option expires in-the-money. Selling 0.30 delta = ~30% chance of assignment.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- REAL EXAMPLE -->
+<section class="strat-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Walk-Through</span>
+      <h2>A Real <span class="green">Example</span></h2>
+    </div>
+    <div class="example-box">
+      <div class="example-setup">
+        <div class="example-step">
+          <div class="step-num">1</div>
+          <div><strong>You own 100 shares of AAPL</strong> at $185/share. Total position value: $18,500.</div>
+        </div>
+        <div class="example-step">
+          <div class="step-num">2</div>
+          <div><strong>You sell 1 covered call</strong> with a $195 strike expiring in 30 days. You collect <span class="green-text">$3.40/share = $340 premium</span> deposited into your account immediately.</div>
+        </div>
+        <div class="example-step">
+          <div class="step-num">3</div>
+          <div><strong>Wait for expiration.</strong> Three outcomes:</div>
+        </div>
+      </div>
+      <div class="outcomes">
+        <div class="outcome win">
+          <div class="outcome-label">✓ Stock stays below $195</div>
+          <div class="outcome-desc">Option expires worthless. You keep your shares AND the $340 premium. Sell another call next month.</div>
+          <div class="outcome-pnl">+$340 income</div>
+        </div>
+        <div class="outcome neutral">
+          <div class="outcome-label">→ Stock closes at exactly $195</div>
+          <div class="outcome-desc">Option expires at the money. Usually expires worthless or you buy it back for pennies. You keep the premium.</div>
+          <div class="outcome-pnl">+$340 income</div>
+        </div>
+        <div class="outcome assigned">
+          <div class="outcome-label">⬆ Stock closes above $195</div>
+          <div class="outcome-desc">Shares get called away at $195. You made $10/share in stock gain ($185→$195) PLUS the $340 premium.</div>
+          <div class="outcome-pnl">+$1,340 total</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- P&L DIAGRAM -->
+<section class="strat-section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Profit & Loss</span>
+      <h2>The P&amp;L <span class="green">Profile</span></h2>
+      <p>This is what your profit or loss looks like at expiration depending on where the stock ends up.</p>
+    </div>
+    <div class="chart-wrap">
+      <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" class="pnl-chart">
+        <!-- Grid lines -->
+        <line x1="80" y1="60" x2="660" y2="60" stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="120" x2="660" y2="120" stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="180" x2="660" y2="180" stroke="#252535" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="80" y1="240" x2="660" y2="240" stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="300" x2="660" y2="300" stroke="#252535" stroke-width="1"/>
+        <!-- Zero axis -->
+        <line x1="80" y1="180" x2="660" y2="180" stroke="#444455" stroke-width="1.5"/>
+        <!-- Axes -->
+        <line x1="80" y1="40" x2="80" y2="310" stroke="#444455" stroke-width="2"/>
+        <line x1="80" y1="310" x2="670" y2="310" stroke="#444455" stroke-width="2"/>
+
+        <!-- P&L line: covered call -->
+        <!-- Breakeven ~$181.60 (cost $185 - $3.40 premium) -->
+        <!-- Below breakeven: loss zone -->
+        <!-- Premium = $340 flat above strike $195 -->
+        <!-- Stock at $160 → loss: 160-185+3.40 = -21.60 → well into loss -->
+        <!-- map: stock $155=$55, $170=$170, $181.60=$262 (zero), $185=$280, $195=$370, $210=$460 -->
+        <!-- y-axis: 180=zero, up=profit, down=loss. 60px per $10? let's use 12px per $5 = 2.4px/$1 -->
+        <!-- price range: 155 to 220, 65 pts across 580px = 8.9px/pt, start x=80 -->
+
+        <!-- Loss line from 155 to breakeven 181.6 -->
+        <!-- x155 = 80, x181.6 = 80+(181.6-155)*8.9 = 80+236.6 = 316.6 -->
+        <!-- y155 = 180 + (185-155-3.40)*2.4 = 180 + 26.6*2.4 = 180+63.8 = 244 -->
+        <!-- y181.6 = 180 (zero) -->
+        <polyline points="80,244 317,180" fill="none" stroke="#E05252" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- Profit line from breakeven to strike $195 -->
+        <!-- x195 = 80+(195-155)*8.9 = 80+356 = 436 -->
+        <!-- y195 = 180 - 3.40*2.4*10 = ... let's simplify: premium=$340, y=180-81.6=98 -->
+        <!-- Actually let me just define the points cleanly -->
+        <!-- Breakeven x=317,y=180 → strike x=436, y=98 (profit=$340=+81.6px at 0.24px/$1) -->
+        <polyline points="317,180 436,98" fill="none" stroke="#6DC040" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- Flat cap above strike -->
+        <polyline points="436,98 660,98" fill="none" stroke="#6DC040" stroke-width="3" stroke-linecap="round" stroke-dasharray="8,4"/>
+
+        <!-- Fill zones -->
+        <polygon points="317,180 436,98 660,98 660,180" fill="rgba(109,192,64,0.12)"/>
+        <polygon points="80,244 317,180 80,180" fill="rgba(224,82,82,0.12)"/>
+
+        <!-- Labels -->
+        <text x="88" y="176" fill="#888" font-size="11" font-family="Montserrat,sans-serif">$0</text>
+        <text x="88" y="100" fill="#6DC040" font-size="11" font-family="Montserrat,sans-serif">+$340</text>
+        <text x="88" y="247" fill="#E05252" font-size="11" font-family="Montserrat,sans-serif">Loss</text>
+
+        <!-- X axis labels -->
+        <text x="72" y="325" fill="#666" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$155</text>
+        <text x="310" y="325" fill="#aaa" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$181.60</text>
+        <text x="436" y="325" fill="#D4AF37" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$195</text>
+        <text x="660" y="325" fill="#666" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$220</text>
+
+        <!-- Annotation lines -->
+        <line x1="317" y1="180" x2="317" y2="310" stroke="#aaa" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="436" y1="98" x2="436" y2="310" stroke="#D4AF37" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- Labels on chart -->
+        <text x="370" y="75" fill="#6DC040" font-size="11" font-family="Montserrat,sans-serif" font-weight="700">MAX PROFIT</text>
+        <text x="370" y="89" fill="#6DC040" font-size="10" font-family="Montserrat,sans-serif">Capped at premium + (strike - cost)</text>
+        <text x="150" y="220" fill="#E05252" font-size="11" font-family="Montserrat,sans-serif">Loss below breakeven</text>
+        <text x="480" y="115" fill="#888" font-size="10" font-family="Montserrat,sans-serif">Stock called away</text>
+        <text x="480" y="127" fill="#888" font-size="10" font-family="Montserrat,sans-serif">above strike</text>
+
+        <!-- Breakeven label -->
+        <text x="317" y="170" fill="#aaa" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">Breakeven</text>
+        <!-- Strike label -->
+        <text x="436" y="170" fill="#D4AF37" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">Strike</text>
+      </svg>
+      <div class="chart-legend">
+        <div class="legend-item"><span class="legend-dot green"></span> Profit zone</div>
+        <div class="legend-item"><span class="legend-dot red"></span> Loss zone</div>
+        <div class="legend-item"><span class="legend-dot gold"></span> Strike price — shares called away above this</div>
+        <div class="legend-item"><span class="legend-line"></span> Capped profit (stock owned limits downside, premium caps upside)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHEN TO USE -->
+<section class="strat-section">
+  <div class="container strat-2col">
+    <div>
+      <span class="section-label">Strategy</span>
+      <h2>When to <span class="green">Use It</span></h2>
+      <p>Covered calls work best in these situations:</p>
+      <ul class="strat-list">
+        <li>You own a stock and expect it to stay flat or rise slowly</li>
+        <li>You want to generate monthly income from your existing portfolio</li>
+        <li>You're okay selling the stock if it gets called away at your strike</li>
+        <li>You want to reduce your cost basis over time</li>
+        <li>The stock has high implied volatility (more premium available)</li>
+      </ul>
+      <div class="key-point warn">
+        <div class="kp-icon">⚠️</div>
+        <div><strong>Watch out:</strong> If the stock rips above your strike, you miss out on those gains. That's the trade-off — consistent income in exchange for capped upside.</div>
+      </div>
+    </div>
+    <div>
+      <span class="section-label">Metrics</span>
+      <h2>What to <span class="green">Target</span></h2>
+      <div class="metric-cards">
+        <div class="metric-card">
+          <div class="metric-num">0.25–0.35</div>
+          <div class="metric-label">Delta at entry</div>
+          <div class="metric-desc">Low probability of assignment while still collecting meaningful premium.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">30–45</div>
+          <div class="metric-label">Days to expiration (DTE)</div>
+          <div class="metric-desc">Where theta decay is fastest. Sweet spot for premium sellers.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">1–3%</div>
+          <div class="metric-label">Monthly return on shares</div>
+          <div class="metric-desc">Target 12–36% annualized yield on the position.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">50%</div>
+          <div class="metric-label">Profit target to close early</div>
+          <div class="metric-desc">Buy back at 50% of premium collected to free up capital and reduce risk.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROS / CONS -->
+<section class="strat-section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Honest Assessment</span>
+      <h2>Pros <span class="green">&amp;</span> Cons</h2>
+    </div>
+    <div class="pros-cons">
+      <div class="pros">
+        <div class="pc-title">✓ Pros</div>
+        <ul>
+          <li>Consistent monthly income regardless of market direction</li>
+          <li>Reduces cost basis of your shares over time</li>
+          <li>Premium is yours to keep no matter what</li>
+          <li>Lower risk than just holding stock (premium provides downside cushion)</li>
+          <li>Simple to execute — one leg, one trade</li>
+          <li>Works in any brokerage account that allows options</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <div class="pc-title">✗ Cons</div>
+        <ul>
+          <li>Caps upside — if stock surges, you miss gains above the strike</li>
+          <li>Still exposed to full downside if the stock drops significantly</li>
+          <li>Requires owning 100 shares (~$10K–$25K per position typically)</li>
+          <li>Tax implications if shares get called away</li>
+          <li>Not ideal on stocks you never want to sell</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="strat-cta">
+  <div class="container" style="text-align:center; max-width:580px;">
+    <h2>Ready to Start Collecting <span class="green">Premium?</span></h2>
+    <p>Track every covered call you sell with the free PII Trading Journal — built specifically for income options traders.</p>
+    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:28px;">
+      <a href="journal.html" class="btn btn-gold">Get the Free Trading Journal</a>
+      <a href="strategies.html" class="btn btn-outline-green">← All Strategies</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="pii-emblem-3d.png" alt="PII" class="footer-emblem" />
+        <span class="footer-brand">PRACTICAL <span>INCOME</span> INVESTING</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="strategies.html">Strategies</a></li>
+        <li><a href="journal.html">Free Journal</a></li>
+        <li><a href="index.html#market-compass">Market Compass</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2025 Practical Income Investing. All rights reserved.</p>
+    <p class="footer-disc">Options trading involves significant risk and is not appropriate for all investors. Past performance is not indicative of future results. This content is for educational purposes only and does not constitute financial advice.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how LEAPS work — long-dated options as a stock replacement to generate income and capture upside with less capital." />
+  <title>LEAPS — Practical Income Investing</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="strategy.css" />
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="pii-emblem-3d.png" alt="PII" class="nav-emblem" />
+      <span class="nav-logo-text">PRACTICAL <span class="green">INCOME</span> INVESTING</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="strategies.html">Strategies</a></li>
+      <li><a href="journal.html">Trading Journal</a></li>
+      <li><a href="blog.html">Resources</a></li>
+      <li><a href="index.html#market-compass" class="nav-compass">🧭 Market Compass</a></li>
+    </ul>
+    <a href="journal.html" class="btn btn-gold nav-cta">Free Journal</a>
+  </div>
+</nav>
+
+<section class="strat-hero">
+  <div class="container">
+    <a href="strategies.html" class="back-link">← All Strategies</a>
+    <div class="strat-hero-inner">
+      <div>
+        <div class="strat-eyebrow">Growth Strategy · Leverage</div>
+        <h1>LEAPS — <span class="green">Long-Dated Options</span></h1>
+        <p class="strat-sub">Control 100 shares of stock for 1–3 years at a fraction of the cost. Use LEAPS as a stock replacement to reduce capital at risk — then sell shorter-term calls against them to generate income while you wait.</p>
+        <div class="strat-meta-row">
+          <div class="strat-meta"><span class="strat-meta-label">Risk Level</span><span class="strat-meta-val med">Moderate</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Growth Potential</span><span class="strat-meta-val high">High</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Capital Req.</span><span class="strat-meta-val low">30–50% of shares</span></div>
+          <div class="strat-meta"><span class="strat-meta-label">Time Frame</span><span class="strat-meta-val">1–3 Years</span></div>
+        </div>
+      </div>
+      <div class="strat-icon-wrap">🚀</div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section alt">
+  <div class="container strat-2col">
+    <div>
+      <span class="section-label">The Basics</span>
+      <h2>What Are <span class="green">LEAPS?</span></h2>
+      <p>LEAPS stands for Long-term Equity AnticiPation Securities. They're simply options contracts with expiration dates more than one year out — typically 1 to 3 years.</p>
+      <p>Because they expire so far in the future, deep in-the-money LEAPS move almost dollar-for-dollar with the stock — but you only pay a fraction of the stock price to control 100 shares. This is the "stock replacement" strategy.</p>
+      <p>The real magic: once you own a LEAPS call, you can sell shorter-dated calls against it (like a covered call), collecting monthly premium to offset the cost of your LEAPS. This is called a <strong>poor man's covered call (PMCC)</strong>.</p>
+      <div class="key-point">
+        <div class="kp-icon">💡</div>
+        <div><strong>The core idea:</strong> Instead of spending $18,500 on 100 shares of AAPL, spend $5,000 on a 2-year deep ITM call. Control the same 100 shares, collect the same premium from selling calls, with far less capital at risk.</div>
+      </div>
+    </div>
+    <div class="terms-box">
+      <div class="terms-title">Key Terms</div>
+      <div class="term-row"><div class="term">LEAPS</div><div class="term-def">Options with expiration dates more than 12 months out. Available on most major stocks and ETFs.</div></div>
+      <div class="term-row"><div class="term">Deep ITM</div><div class="term-def">Deep in-the-money — buy a call with a delta of 0.80+ so it moves nearly 1:1 with the stock.</div></div>
+      <div class="term-row"><div class="term">Stock Replacement</div><div class="term-def">Using a LEAPS call instead of buying 100 shares. Similar P&L, much less capital required.</div></div>
+      <div class="term-row"><div class="term">PMCC</div><div class="term-def">Poor Man's Covered Call — own a LEAPS call, sell short-term calls against it for income.</div></div>
+      <div class="term-row"><div class="term">Time Decay (Theta)</div><div class="term-def">Long-dated options decay slowly — the main advantage of LEAPS over shorter options.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Walk-Through</span>
+      <h2>A Real <span class="green">PMCC Example</span></h2>
+    </div>
+    <div class="example-box">
+      <div class="example-setup">
+        <div class="example-step">
+          <div class="step-num">1</div>
+          <div><strong>AAPL is at $185.</strong> Instead of buying 100 shares for $18,500, you buy 1 LEAPS call: <strong>$150 strike, 2 years out</strong>. Cost: <span class="green-text">$4,800</span> (delta ~0.85). You now control 100 shares for $4,800 instead of $18,500.</div>
+        </div>
+        <div class="example-step">
+          <div class="step-num">2</div>
+          <div><strong>Each month, sell a 30-DTE call</strong> against your LEAPS — say the $195 strike for $3.40 = <span class="green-text">$340 premium.</span> That's 7% of your LEAPS cost every single month.</div>
+        </div>
+        <div class="example-step">
+          <div class="step-num">3</div>
+          <div><strong>After 6 months of selling calls:</strong> You've collected $340 × 6 = <span class="green-text">$2,040 in premium.</span> Your net cost in the LEAPS position is now $4,800 − $2,040 = $2,760. And you still control 100 shares.</div>
+        </div>
+      </div>
+      <div class="outcomes">
+        <div class="outcome win">
+          <div class="outcome-label">✓ AAPL rises to $210</div>
+          <div class="outcome-desc">LEAPS gains ~$25/share = $2,500 in value. Plus all premium collected. Profit far exceeds the cost.</div>
+          <div class="outcome-pnl">Big profit, levered</div>
+        </div>
+        <div class="outcome neutral">
+          <div class="outcome-label">→ AAPL stays flat</div>
+          <div class="outcome-desc">LEAPS loses some value slowly, but monthly premium collected offsets theta decay.</div>
+          <div class="outcome-pnl">Premium offsets decay</div>
+        </div>
+        <div class="outcome loss">
+          <div class="outcome-label">⬇ AAPL drops to $155</div>
+          <div class="outcome-desc">LEAPS loses value. Max loss is capped at what you paid ($4,800) — vs. $3,000+ loss on 100 shares.</div>
+          <div class="outcome-pnl">Max loss = premium paid</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Profit & Loss</span>
+      <h2>LEAPS vs. Stock <span class="green">Comparison</span></h2>
+      <p>At expiration, a deep ITM LEAPS call tracks closely with the stock — but with a lower breakeven and capped max loss.</p>
+    </div>
+    <div class="chart-wrap">
+      <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" class="pnl-chart">
+        <line x1="80" y1="60"  x2="660" y2="60"  stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="120" x2="660" y2="120" stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="180" x2="660" y2="180" stroke="#444455" stroke-width="1.5"/>
+        <line x1="80" y1="240" x2="660" y2="240" stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="300" x2="660" y2="300" stroke="#252535" stroke-width="1"/>
+        <line x1="80" y1="40"  x2="80"  y2="310" stroke="#444455" stroke-width="2"/>
+        <line x1="80" y1="310" x2="670" y2="310" stroke="#444455" stroke-width="2"/>
+
+        <!-- Price range $130-$220, 90pts, 580px = 6.44px/pt -->
+        <!-- Stock line: bought at $185 → breakeven $185 → x=80+(185-130)*6.44=80+354=434, y=180 -->
+        <!-- At $130: stock loss = -55 → y = 180+55*2 = 290 -->
+        <!-- At $220: stock profit = +35 → y = 180-35*2 = 110 -->
+        <polyline points="80,290 434,180 660,110" fill="none" stroke="#8A8AA0" stroke-width="2" stroke-dasharray="6,3"/>
+
+        <!-- LEAPS line: paid $4800 ($48/share equiv), strike $150 -->
+        <!-- Breakeven = $150 + $48 = $198 → x = 80+(198-130)*6.44=80+438=518, y=180 -->
+        <!-- Below $150: max loss = $4800 flat → y = 180 + 48*2 = 180+96 = 276 but cap at 260 -->
+        <!-- At $130: still at max loss y=260 -->
+        <!-- At $150 (strike): still max loss y=260 -->
+        <!-- At $198 (breakeven): y=180 -->
+        <!-- At $220: profit = 220-198 = $22 → y = 180-22*2=180-44=136 -->
+        <polyline points="80,260 354,260" fill="none" stroke="#6DC040" stroke-width="3" stroke-linecap="round"/>
+        <polyline points="354,260 518,180 660,136" fill="none" stroke="#6DC040" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- x at $150: 80+(150-130)*6.44=80+128.8=209 — but this should equal x for flat portion -->
+        <!-- Actually flat from 130 to 150 (strike), then slope up. Let me recalculate... -->
+        <!-- x150 = 80+(150-130)*6.44 = 80+128.8 = 209 -->
+        <!-- So flat from 80 to 209, then slope from 209,260 to 518,180 -->
+
+        <!-- Fix: redraw LEAPS -->
+        <!-- Annotations -->
+        <line x1="209" y1="260" x2="209" y2="310" stroke="#6DC040" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="518" y1="180" x2="518" y2="310" stroke="#aaa" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="434" y1="180" x2="434" y2="310" stroke="#888" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <text x="88"  y="176" fill="#888" font-size="11" font-family="Montserrat,sans-serif">$0</text>
+        <text x="88"  y="258" fill="#6DC040" font-size="11" font-family="Montserrat,sans-serif">Max loss ($48/sh)</text>
+
+        <text x="72"  y="325" fill="#666" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$130</text>
+        <text x="209" y="325" fill="#6DC040" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$150</text>
+        <text x="434" y="325" fill="#888" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$185</text>
+        <text x="518" y="325" fill="#aaa" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$198</text>
+        <text x="660" y="325" fill="#666" font-size="10" font-family="Montserrat,sans-serif" text-anchor="middle">$220</text>
+
+        <text x="209" y="170" fill="#6DC040" font-size="9" font-family="Montserrat,sans-serif" text-anchor="middle">Strike</text>
+        <text x="434" y="170" fill="#888" font-size="9" font-family="Montserrat,sans-serif" text-anchor="middle">Stock B/E</text>
+        <text x="518" y="170" fill="#aaa" font-size="9" font-family="Montserrat,sans-serif" text-anchor="middle">LEAPS B/E</text>
+
+        <!-- Legend inside chart -->
+        <line x1="400" y1="55" x2="430" y2="55" stroke="#8A8AA0" stroke-width="2" stroke-dasharray="6,3"/>
+        <text x="435" y="59" fill="#8A8AA0" font-size="10" font-family="Montserrat,sans-serif">Owning 100 shares</text>
+        <line x1="400" y1="72" x2="430" y2="72" stroke="#6DC040" stroke-width="3"/>
+        <text x="435" y="76" fill="#6DC040" font-size="10" font-family="Montserrat,sans-serif">LEAPS call</text>
+      </svg>
+      <div class="chart-legend">
+        <div class="legend-item"><span class="legend-dot green"></span> LEAPS — capped max loss, similar upside</div>
+        <div class="legend-item" style="color:rgba(255,255,255,0.3);">— — Owning 100 shares — unlimited downside</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section">
+  <div class="container strat-2col">
+    <div>
+      <span class="section-label">Strategy</span>
+      <h2>When to <span class="green">Use It</span></h2>
+      <ul class="strat-list">
+        <li>You're bullish long-term on a stock but don't want to tie up full capital</li>
+        <li>You want to run a covered call strategy with less cash</li>
+        <li>Implied volatility is low — LEAPS are cheaper to buy</li>
+        <li>You want to leverage a conviction trade with defined max loss</li>
+        <li>You want monthly income from a position you control for years</li>
+      </ul>
+      <div class="key-point warn">
+        <div class="kp-icon">⚠️</div>
+        <div><strong>Key rule for PMCC:</strong> Always make sure your short call strike is above your LEAPS breakeven price. If the stock gets called away, you need to make a profit on the whole trade.</div>
+      </div>
+    </div>
+    <div>
+      <span class="section-label">Metrics</span>
+      <h2>What to <span class="green">Target</span></h2>
+      <div class="metric-cards">
+        <div class="metric-card">
+          <div class="metric-num">0.80+</div>
+          <div class="metric-label">Delta on LEAPS</div>
+          <div class="metric-desc">Deep ITM. Moves nearly dollar-for-dollar with the stock.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">1–2 yr</div>
+          <div class="metric-label">Expiration on LEAPS</div>
+          <div class="metric-desc">At least 1 year out. Sell monthly calls, roll LEAPS before 6 months remain.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">5–10%</div>
+          <div class="metric-label">Monthly premium / LEAPS cost</div>
+          <div class="metric-desc">Target monthly call premium that's 5–10% of what you paid for the LEAPS.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">Low IV</div>
+          <div class="metric-label">Best time to buy LEAPS</div>
+          <div class="metric-desc">Buy when IV is low — you get more time for less premium. Opposite of when to sell.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-section alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Honest Assessment</span>
+      <h2>Pros <span class="green">&amp;</span> Cons</h2>
+    </div>
+    <div class="pros-cons">
+      <div class="pros">
+        <div class="pc-title">✓ Pros</div>
+        <ul>
+          <li>Control 100 shares for 30–50% of the stock price</li>
+          <li>Maximum loss is limited to the premium paid</li>
+          <li>Sell monthly calls to generate income and offset cost</li>
+          <li>Same upside as stock ownership (above breakeven)</li>
+          <li>Slow theta decay compared to shorter options</li>
+          <li>Great for high-priced stocks (NVDA, AAPL, SPY)</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <div class="pc-title">✗ Cons</div>
+        <ul>
+          <li>No dividends (you don't actually own shares)</li>
+          <li>Breakeven is higher than stock purchase price</li>
+          <li>Still loses value over time if stock is flat</li>
+          <li>More complex to manage than simply owning shares</li>
+          <li>Requires monitoring to roll before expiration</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strat-cta">
+  <div class="container" style="text-align:center; max-width:580px;">
+    <h2>Track Your LEAPS Positions in the <span class="green">Free Journal</span></h2>
+    <p>Monitor your LEAPS cost basis, monthly premium collected, and overall P&L — all in one place.</p>
+    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:28px;">
+      <a href="journal.html" class="btn btn-gold">Get the Free Trading Journal</a>
+      <a href="strategies.html" class="btn btn-outline-green">← All Strategies</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="pii-emblem-3d.png" alt="PII" class="footer-emblem" />
+        <span class="footer-brand">PRACTICAL <span>INCOME</span> INVESTING</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="strategies.html">Strategies</a></li>
+        <li><a href="journal.html">Free Journal</a></li>
+        <li><a href="index.html#market-compass">Market Compass</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2025 Practical Income Investing. All rights reserved.</p>
+    <p class="footer-disc">Options trading involves significant risk. Educational content only — not financial advice.</p>
+  </div>
+</footer>
+</body>
+</html>
