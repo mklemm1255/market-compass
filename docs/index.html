@@ -141,10 +141,10 @@
 function compassSpotlightSubmit(e) {
   e.preventDefault();
   var email = document.getElementById('compassSpotlightEmail').value;
-  fetch('https://app.kit.com/forms/5c379f8548/subscriptions', {
+  fetch('https://app.convertkit.com/forms/5c379f8548/subscriptions', {
     method: 'POST',
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    body: 'email_address=' + encodeURIComponent(email)
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ email_address: email })
   }).catch(function(){});
   document.getElementById('spotlight-success').style.display = 'flex';
   setTimeout(function(){ window.open('https://pii-market-compass.streamlit.app', '_blank'); }, 800);

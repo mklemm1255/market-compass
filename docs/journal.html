@@ -360,13 +360,13 @@ function journalSubmit(e) {
   var email     = document.getElementById('journalEmail').value.trim();
 
   // Submit to Kit
-  var body = 'email_address=' + encodeURIComponent(email);
-  if (firstName) body += '&fields[first_name]=' + encodeURIComponent(firstName);
+  var payload = { email_address: email };
+  if (firstName) payload.fields = { first_name: firstName };
 
-  fetch('https://app.kit.com/forms/5c379f8548/subscriptions', {
+  fetch('https://app.convertkit.com/forms/5c379f8548/subscriptions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: body
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
   }).catch(function(){});
 
   // Show success
