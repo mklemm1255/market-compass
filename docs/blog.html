@@ -986,6 +986,135 @@
   </div>
 </section>
 
+<!-- ══════════════════ VIDEO LIBRARY ══════════════════ -->
+<section class="tools-section" id="videos" style="padding:70px 0; background: var(--bg); border-top:1px solid rgba(255,255,255,0.06);">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">YouTube Channel</span>
+      <h2>Watch &amp; <span class="green">Learn</span></h2>
+      <p style="color:var(--text-muted); max-width:520px; margin:12px auto 0; font-size:0.97rem; line-height:1.7;">Real trades, real numbers, real walkthroughs. Every video is an actual execution — not a theory lecture.</p>
+    </div>
+
+    <!-- Category tabs -->
+    <div class="filter-tabs" style="margin:36px 0 32px;">
+      <button class="filter-tab active" onclick="filterVideos('all', this)">All Videos</button>
+      <button class="filter-tab" onclick="filterVideos('covered-calls', this)">Covered Calls</button>
+      <button class="filter-tab" onclick="filterVideos('cash-secured-puts', this)">Cash-Secured Puts</button>
+      <button class="filter-tab" onclick="filterVideos('buy-write', this)">Buy-Writes</button>
+      <button class="filter-tab" onclick="filterVideos('etfs', this)">Covered Call ETFs</button>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px;" id="video-grid">
+
+      <!-- Covered Calls -->
+      <a href="https://youtu.be/H8CdiQIhQ9U" target="_blank" rel="noopener" class="vid-card" data-vcat="covered-calls">
+        <div class="vid-thumb"><img src="https://img.youtube.com/vi/H8CdiQIhQ9U/mqdefault.jpg" alt="" /><div class="vid-play">▶</div></div>
+        <div class="vid-info"><span class="vid-tag vtag-cc">Covered Calls</span><div class="vid-title">This Covered Call Generated a 179% Annualized Yield | Real Example</div></div>
+      </a>
+
+      <a href="https://youtu.be/CLwSjertYbk" target="_blank" rel="noopener" class="vid-card" data-vcat="covered-calls">
+        <div class="vid-thumb"><img src="https://img.youtube.com/vi/CLwSjertYbk/mqdefault.jpg" alt="" /><div class="vid-play">▶</div></div>
+        <div class="vid-info"><span class="vid-tag vtag-cc">Covered Calls</span><div class="vid-title">How to Actually Place a Covered Call (Step-by-Step)</div></div>
+      </a>
+
+      <a href="https://youtu.be/LwRpN0-2PlQ" target="_blank" rel="noopener" class="vid-card" data-vcat="covered-calls">
+        <div class="vid-thumb"><img src="https://img.youtube.com/vi/LwRpN0-2PlQ/mqdefault.jpg" alt="" /><div class="vid-play">▶</div></div>
+        <div class="vid-info"><span class="vid-tag vtag-cc">Covered Calls</span><div class="vid-title">Covered Calls Explained for Beginners | Before You Sell One, Watch This</div></div>
+      </a>
+
+      <!-- Cash-Secured Puts -->
+      <a href="https://youtu.be/C-WfV1xAZSQ" target="_blank" rel="noopener" class="vid-card" data-vcat="cash-secured-puts">
+        <div class="vid-thumb"><img src="https://img.youtube.com/vi/C-WfV1xAZSQ/mqdefault.jpg" alt="" /><div class="vid-play">▶</div></div>
+        <div class="vid-info"><span class="vid-tag vtag-csp">Cash-Secured Puts</span><div class="vid-title">Managing Cash-Secured Puts: When to Close, Take Assignment, or Roll</div></div>
+      </a>
+
+      <a href="https://youtu.be/VxbRaSiQkoI" target="_blank" rel="noopener" class="vid-card" data-vcat="cash-secured-puts">
+        <div class="vid-thumb"><img src="https://img.youtube.com/vi/VxbRaSiQkoI/mqdefault.jpg" alt="" /><div class="vid-play">▶</div></div>
+        <div class="vid-info"><span class="vid-tag vtag-csp">Cash-Secured Puts</span><div class="vid-title">This Trade Annualizes at 111% — Live Cash-Secured Put Walkthrough</div></div>
+      </a>
+
+      <a href="https://youtu.be/Uhlujy2qTIs" target="_blank" rel="noopener" class="vid-card" data-vcat="cash-secured-puts">
+        <div class="vid-thumb"><img src="https://img.youtube.com/vi/Uhlujy2qTIs/mqdefault.jpg" alt="" /><div class="vid-play">▶</div></div>
+        <div class="vid-info"><span class="vid-tag vtag-csp">Cash-Secured Puts</span><div class="vid-title">How to Place a Cash-Secured Put (Step-by-Step)</div></div>
+      </a>
+
+      <a href="https://youtu.be/34wCWXe1aAA" target="_blank" rel="noopener" class="vid-card" data-vcat="cash-secured-puts">
+        <div class="vid-thumb"><img src="https://img.youtube.com/vi/34wCWXe1aAA/mqdefault.jpg" alt="" /><div class="vid-play">▶</div></div>
+        <div class="vid-info"><span class="vid-tag vtag-csp">Cash-Secured Puts</span><div class="vid-title">Cash-Secured Puts Explained for Beginners — Get Paid While Waiting to Buy Stocks</div></div>
+      </a>
+
+      <!-- Buy-Writes -->
+      <a href="https://youtu.be/zzCo_8tMIOc" target="_blank" rel="noopener" class="vid-card" data-vcat="buy-write">
+        <div class="vid-thumb"><img src="https://img.youtube.com/vi/zzCo_8tMIOc/mqdefault.jpg" alt="" /><div class="vid-play">▶</div></div>
+        <div class="vid-info"><span class="vid-tag vtag-bw">Buy-Write</span><div class="vid-title">2x Palantir ETF Buy-Write | Live PTIR Trade From Chart to Execution</div></div>
+      </a>
+
+      <a href="https://youtu.be/r0zVlPJGLYA" target="_blank" rel="noopener" class="vid-card" data-vcat="buy-write">
+        <div class="vid-thumb"><img src="https://img.youtube.com/vi/r0zVlPJGLYA/mqdefault.jpg" alt="" /><div class="vid-play">▶</div></div>
+        <div class="vid-info"><span class="vid-tag vtag-bw">Buy-Write</span><div class="vid-title">Buy-Write Strategy Explained | Covered Call Income From Day One</div></div>
+      </a>
+
+      <!-- Covered Call ETFs -->
+      <a href="https://youtu.be/d5vLD0pyv5A" target="_blank" rel="noopener" class="vid-card" data-vcat="etfs">
+        <div class="vid-thumb"><img src="https://img.youtube.com/vi/d5vLD0pyv5A/mqdefault.jpg" alt="" /><div class="vid-play">▶</div></div>
+        <div class="vid-info"><span class="vid-tag vtag-etf">Covered Call ETFs</span><div class="vid-title">Covered Call ETFs vs Doing It Yourself (What Most Investors Miss)</div></div>
+      </a>
+
+      <a href="https://youtu.be/qwYLmFxmikk" target="_blank" rel="noopener" class="vid-card" data-vcat="etfs">
+        <div class="vid-thumb"><img src="https://img.youtube.com/vi/qwYLmFxmikk/mqdefault.jpg" alt="" /><div class="vid-play">▶</div></div>
+        <div class="vid-info"><span class="vid-tag vtag-etf">Covered Call ETFs</span><div class="vid-title">3 Mistakes People Make With Covered Call ETFs (And How To Avoid Them)</div></div>
+      </a>
+
+      <a href="https://youtu.be/6QvUMTA6gAU" target="_blank" rel="noopener" class="vid-card" data-vcat="etfs">
+        <div class="vid-thumb"><img src="https://img.youtube.com/vi/6QvUMTA6gAU/mqdefault.jpg" alt="" /><div class="vid-play">▶</div></div>
+        <div class="vid-info"><span class="vid-tag vtag-etf">Covered Call ETFs</span><div class="vid-title">Covered Call ETFs: Who They're Best For (And Who Should Avoid Them)</div></div>
+      </a>
+
+      <!-- Fundamentals -->
+      <a href="https://youtu.be/ELDB3sVn6Po" target="_blank" rel="noopener" class="vid-card" data-vcat="covered-calls">
+        <div class="vid-thumb"><img src="https://img.youtube.com/vi/ELDB3sVn6Po/mqdefault.jpg" alt="" /><div class="vid-play">▶</div></div>
+        <div class="vid-info"><span class="vid-tag vtag-cc">Fundamentals</span><div class="vid-title">My 7 Fundamental Principles Checklist Before I Buy or Trade a Stock</div></div>
+      </a>
+
+    </div>
+
+    <div style="text-align:center; margin-top:40px;">
+      <a href="https://www.youtube.com/@practicalincomeinvesting" target="_blank" rel="noopener" class="btn btn-outline-green" style="display:inline-flex; align-items:center; gap:10px;">
+        <svg width="18" height="13" viewBox="0 0 20 14" fill="none"><path d="M19.6 2.2C19.4 1.5 18.8 0.9 18.1 0.7C16.5 0.2 10 0.2 10 0.2C10 0.2 3.5 0.2 1.9 0.7C1.2 0.9 0.6 1.5 0.4 2.2C0 3.8 0 7 0 7C0 7 0 10.2 0.4 11.8C0.6 12.5 1.2 13.1 1.9 13.3C3.5 13.8 10 13.8 10 13.8C10 13.8 16.5 13.8 18.1 13.3C18.8 13.1 19.4 12.5 19.6 11.8C20 10.2 20 7 20 7C20 7 20 3.8 19.6 2.2Z" fill="#FF0000"/><path d="M8 10L13.2 7L8 4V10Z" fill="white"/></svg>
+        Subscribe on YouTube
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+.vid-card { display:block; background:var(--card-bg); border:1px solid rgba(255,255,255,0.07); border-radius:12px; overflow:hidden; text-decoration:none; transition:border-color 0.2s, transform 0.2s; }
+.vid-card:hover { border-color:var(--green); transform:translateY(-3px); }
+.vid-thumb { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; }
+.vid-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.vid-play { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.3); opacity:0; transition:opacity 0.2s; font-size:2rem; color:#fff; }
+.vid-card:hover .vid-play { opacity:1; }
+.vid-info { padding:14px 16px; }
+.vid-tag { display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; padding:2px 8px; border-radius:100px; margin-bottom:8px; }
+.vtag-cc  { background:rgba(0,200,81,0.12); color:var(--green); }
+.vtag-csp { background:rgba(255,200,0,0.1); color:#ffc800; }
+.vtag-bw  { background:rgba(100,180,255,0.1); color:#64b4ff; }
+.vtag-etf { background:rgba(200,130,255,0.1); color:#c882ff; }
+.vid-title { font-size:0.88rem; font-weight:600; color:#fff; line-height:1.45; }
+</style>
+
+<script>
+function filterVideos(cat, btn) {
+  document.querySelectorAll('#video-grid .filter-tab, .filter-tabs button').forEach(function(b){ /* handled below */ });
+  // find the tabs container within the videos section and update active
+  btn.closest('.filter-tabs').querySelectorAll('.filter-tab').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('#video-grid .vid-card').forEach(function(card){
+    card.style.display = (cat === 'all' || card.dataset.vcat === cat) ? 'block' : 'none';
+  });
+}
+</script>
+
 <!-- ══════════════════ NEWSLETTER CTA ══════════════════ -->
 <section class="newsletter-section">
   <div class="container" style="text-align:center; max-width:540px;">
