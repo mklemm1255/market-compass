@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free options and income investing resources — guides, glossary, tools, and articles from Practical Income Investing." />
+  <title>Resources — Practical Income Investing</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Resources page styles ── */
+    .resources-hero {
+      background: linear-gradient(135deg, #0a1628 0%, #0d2040 60%, #0a1628 100%);
+      padding: 80px 0 60px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .resources-hero h1 { font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 14px; }
+    .resources-hero p { color: var(--text-muted); font-size: 1.1rem; max-width: 560px; margin: 0 auto; }
+
+    /* ── Filter tabs ── */
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 40px 0 48px;
+    }
+    .filter-tab {
+      padding: 8px 20px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 100px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: all 0.2s;
+    }
+    .filter-tab:hover, .filter-tab.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: #000;
+    }
+
+    /* ── Article grid ── */
+    .articles-section { padding: 0 0 80px; background: var(--bg); }
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .article-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .article-card:hover {
+      border-color: var(--green);
+      transform: translateY(-3px);
+    }
+    .article-card-top {
+      padding: 24px 24px 0;
+    }
+    .article-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 12px;
+    }
+    .tag-covered-calls { background: rgba(0,200,81,0.15); color: var(--green); }
+    .tag-puts { background: rgba(255,200,0,0.12); color: #ffc800; }
+    .tag-risk { background: rgba(255,80,80,0.12); color: #ff5050; }
+    .tag-income { background: rgba(100,180,255,0.12); color: #64b4ff; }
+    .tag-mindset { background: rgba(200,130,255,0.12); color: #c882ff; }
+    .tag-basics { background: rgba(255,255,255,0.1); color: #ccc; }
+    .article-card h3 { font-size: 1.08rem; margin-bottom: 10px; line-height: 1.4; }
+    .article-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px; }
+    .article-card-footer {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .article-read-time { font-size: 0.78rem; color: var(--text-muted); }
+    .article-read-link {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--green);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+    }
+    .article-read-link:hover { text-decoration: underline; }
+
+    /* ── Full article modal/expand ── */
+    .article-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 1000;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+      overflow-y: auto;
+    }
+    .article-modal-overlay.open { display: flex; }
+    .article-modal {
+      background: #0d1e35;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      max-width: 720px;
+      width: 100%;
+      padding: 48px;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 20px; right: 24px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-close:hover { color: #fff; }
+    .modal-tag { margin-bottom: 16px; }
+    .article-modal h2 { font-size: 1.6rem; margin-bottom: 24px; line-height: 1.3; }
+    .article-modal .article-body p { color: var(--text-muted); font-size: 0.97rem; line-height: 1.75; margin-bottom: 18px; }
+    .article-modal .article-body h3 { font-size: 1.1rem; color: #fff; margin: 28px 0 12px; }
+    .article-modal .article-body ul { padding-left: 20px; color: var(--text-muted); line-height: 1.8; margin-bottom: 18px; }
+    .article-modal .article-body ul li { margin-bottom: 6px; }
+    .article-modal .article-body strong { color: #fff; }
+    .article-modal .article-body .callout {
+      background: rgba(0,200,81,0.08);
+      border-left: 3px solid var(--green);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 24px 0;
+      color: var(--text-muted);
+      font-size: 0.93rem;
+      line-height: 1.6;
+    }
+    .article-modal .article-body .callout strong { color: var(--green); }
+
+    /* ── Tools section ── */
+    .tools-section {
+      background: #060f1e;
+      padding: 70px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .tool-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 28px 24px;
+      transition: border-color 0.2s;
+    }
+    .tool-card:hover { border-color: var(--green); }
+    .tool-icon { font-size: 2rem; margin-bottom: 14px; }
+    .tool-card h3 { font-size: 1rem; margin-bottom: 8px; }
+    .tool-card p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; margin-bottom: 18px; }
+    .tool-link {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--green);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+    }
+    .tool-link:hover { text-decoration: underline; }
+
+    /* ── Glossary section ── */
+    .glossary-section { padding: 70px 0; background: var(--bg); }
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 40px;
+    }
+    @media (max-width: 640px) { .glossary-grid { grid-template-columns: 1fr; } }
+    .gloss-item {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 20px 22px;
+    }
+    .gloss-term { font-weight: 700; color: var(--green); font-size: 0.95rem; margin-bottom: 6px; }
+    .gloss-def { color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .articles-grid { grid-template-columns: 1fr; }
+      .article-modal { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="pii-emblem-3d.png" alt="PII" class="nav-emblem" />
+      <span class="nav-logo-text">PRACTICAL <span class="green">INCOME</span> INVESTING</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="strategies.html">Strategies</a></li>
+      <li><a href="journal.html">Trading Journal</a></li>
+      <li><a href="blog.html">Resources</a></li>
+      <li><a href="journal.html">Free Journal</a></li>
+    </ul>
+    <a href="index.html#market-compass" class="btn btn-green nav-cta">🧭 Market Compass</a>
+  </div>
+</nav>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section class="resources-hero">
+  <div class="container">
+    <div class="strat-eyebrow" style="text-align:center; margin-bottom:12px;">Education &amp; Tools</div>
+    <h1>Resources for <span class="green">Income Investors</span></h1>
+    <p>Practical guides, key concepts, and free tools — everything you need to build and run a real income portfolio.</p>
+  </div>
+</section>
+
+<!-- ══════════════════ FILTER + ARTICLES ══════════════════ -->
+<section class="articles-section">
+  <div class="container">
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterArticles('all', this)">All</button>
+      <button class="filter-tab" onclick="filterArticles('covered-calls', this)">Covered Calls</button>
+      <button class="filter-tab" onclick="filterArticles('puts', this)">Puts &amp; Spreads</button>
+      <button class="filter-tab" onclick="filterArticles('income', this)">Income Strategy</button>
+      <button class="filter-tab" onclick="filterArticles('risk', this)">Risk &amp; Sizing</button>
+      <button class="filter-tab" onclick="filterArticles('mindset', this)">Mindset</button>
+      <button class="filter-tab" onclick="filterArticles('basics', this)">Basics</button>
+    </div>
+
+    <div class="articles-grid" id="articles-grid">
+
+      <!-- Article 1 -->
+      <div class="article-card" data-category="covered-calls" onclick="openModal('modal-strike')">
+        <div class="article-card-top">
+          <span class="article-tag tag-covered-calls">Covered Calls</span>
+          <h3>How to Pick Your Covered Call Strike Price</h3>
+          <p>ATM, OTM, or deep OTM? The strike you choose determines your income, your upside cap, and your odds of keeping the shares. Here's how to think through it.</p>
+        </div>
+        <div class="article-card-footer">
+          <span class="article-read-time">5 min read</span>
+          <span class="article-read-link">Read →</span>
+        </div>
+      </div>
+
+      <!-- Article 2 -->
+      <div class="article-card" data-category="covered-calls" onclick="openModal('modal-rolling')">
+        <div class="article-card-top">
+          <span class="article-tag tag-covered-calls">Covered Calls</span>
+          <h3>Rolling Options: When to Extend, When to Let Go</h3>
+          <p>Your call is about to expire in-the-money. Do you roll it out? Up and out? Or just let the shares get called away and start fresh? The answer depends on more than just the premium.</p>
+        </div>
+        <div class="article-card-footer">
+          <span class="article-read-time">6 min read</span>
+          <span class="article-read-link">Read →</span>
+        </div>
+      </div>
+
+      <!-- Article 3 -->
+      <div class="article-card" data-category="covered-calls" onclick="openModal('modal-exdiv')">
+        <div class="article-card-top">
+          <span class="article-tag tag-covered-calls">Covered Calls</span>
+          <h3>The Ex-Dividend Date Trap</h3>
+          <p>Selling a covered call the week before ex-dividend can cost you the dividend. Here's exactly how the timing works — and how to avoid getting burned by early assignment.</p>
+        </div>
+        <div class="article-card-footer">
+          <span class="article-read-time">4 min read</span>
+          <span class="article-read-link">Read →</span>
+        </div>
+      </div>
+
+      <!-- Article 4 -->
+      <div class="article-card" data-category="puts" onclick="openModal('modal-csp-vs-cc')">
+        <div class="article-card-top">
+          <span class="article-tag tag-puts">Puts &amp; Spreads</span>
+          <h3>Cash-Secured Puts vs. Covered Calls: Which to Use?</h3>
+          <p>Both strategies sell option premium and generate income. But they're not interchangeable. The best choice depends on whether you want to own the stock — and at what price.</p>
+        </div>
+        <div class="article-card-footer">
+          <span class="article-read-time">5 min read</span>
+          <span class="article-read-link">Read →</span>
+        </div>
+      </div>
+
+      <!-- Article 5 -->
+      <div class="article-card" data-category="risk" onclick="openModal('modal-sizing')">
+        <div class="article-card-top">
+          <span class="article-tag tag-risk">Risk &amp; Sizing</span>
+          <h3>The 1–2% Rule: How to Size Every Trade</h3>
+          <p>The fastest way to blow up a portfolio is position sizing. Most traders know this — and still get it wrong. Here's a simple framework to protect your capital no matter what happens next.</p>
+        </div>
+        <div class="article-card-footer">
+          <span class="article-read-time">4 min read</span>
+          <span class="article-read-link">Read →</span>
+        </div>
+      </div>
+
+      <!-- Article 6 -->
+      <div class="article-card" data-category="income" onclick="openModal('modal-high-yield')">
+        <div class="article-card-top">
+          <span class="article-tag tag-income">Income Strategy</span>
+          <h3>Why High-Yield ETFs Aren't Always the Answer</h3>
+          <p>YieldMAX, Roundhill, QYLD — these funds promise eye-popping yields. But there's a catch baked into most of them. Here's what to check before you buy one for income.</p>
+        </div>
+        <div class="article-card-footer">
+          <span class="article-read-time">5 min read</span>
+          <span class="article-read-link">Read →</span>
+        </div>
+      </div>
+
+      <!-- Article 7 -->
+      <div class="article-card" data-category="income" onclick="openModal('modal-wheel')">
+        <div class="article-card-top">
+          <span class="article-tag tag-income">Income Strategy</span>
+          <h3>The Wheel Strategy: Generating Income in a Loop</h3>
+          <p>Sell a put, get assigned, sell covered calls until called away, repeat. The "Wheel" sounds simple — and it is. Here's how to run it on quality stocks and what to watch out for.</p>
+        </div>
+        <div class="article-card-footer">
+          <span class="article-read-time">6 min read</span>
+          <span class="article-read-link">Read →</span>
+        </div>
+      </div>
+
+      <!-- Article 8 -->
+      <div class="article-card" data-category="mindset" onclick="openModal('modal-expectations')">
+        <div class="article-card-top">
+          <span class="article-tag tag-mindset">Mindset</span>
+          <h3>Keep Expectations Reasonable — And You'll Keep Trading</h3>
+          <p>Chasing 50% monthly returns is how people blow up. The traders who are still doing this in 10 years are the ones who set realistic targets, stayed consistent, and didn't get greedy.</p>
+        </div>
+        <div class="article-card-footer">
+          <span class="article-read-time">4 min read</span>
+          <span class="article-read-link">Read →</span>
+        </div>
+      </div>
+
+      <!-- Article 9 -->
+      <div class="article-card" data-category="basics" onclick="openModal('modal-greeks')">
+        <div class="article-card-top">
+          <span class="article-tag tag-basics">Basics</span>
+          <h3>Options Greeks: What Actually Matters for Income Sellers</h3>
+          <p>Delta, theta, vega, gamma — you don't need a finance degree to understand them. Here are the three Greeks that income sellers actually care about, explained plainly.</p>
+        </div>
+        <div class="article-card-footer">
+          <span class="article-read-time">5 min read</span>
+          <span class="article-read-link">Read →</span>
+        </div>
+      </div>
+
+      <!-- Article 10 -->
+      <div class="article-card" data-category="basics" onclick="openModal('modal-iv')">
+        <div class="article-card-top">
+          <span class="article-tag tag-basics">Basics</span>
+          <h3>Implied Volatility: The Income Seller's Best Friend</h3>
+          <p>High IV means fat premiums. Low IV means thin ones. Knowing where IV is — and where it's been — tells you when it's a great time to sell, and when to wait. Here's how to use it.</p>
+        </div>
+        <div class="article-card-footer">
+          <span class="article-read-time">5 min read</span>
+          <span class="article-read-link">Read →</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ MODALS ══════════════════ -->
+
+<!-- Modal: Strike Selection -->
+<div class="article-modal-overlay" id="modal-strike">
+  <div class="article-modal">
+    <button class="modal-close" onclick="closeModal('modal-strike')">✕</button>
+    <div class="modal-tag"><span class="article-tag tag-covered-calls">Covered Calls</span></div>
+    <h2>How to Pick Your Covered Call Strike Price</h2>
+    <div class="article-body">
+      <p>The strike price you choose on a covered call is the single most important decision you make when entering the trade. Get it right and you collect solid income while keeping room to profit. Get it wrong and you either earn barely anything or cap yourself out of a great move.</p>
+      <h3>The Three Zones</h3>
+      <p><strong>At-the-money (ATM)</strong> — Sell the strike closest to the current stock price. You collect the most premium, but any upside is immediately capped. Best in flat or slightly bearish environments when you want maximum income and don't mind giving up appreciation.</p>
+      <p><strong>Out-of-the-money (OTM)</strong> — Sell a strike 5–10% above current price. Less premium, but you participate in some upside before getting capped. This is the sweet spot for most income investors — you still collect meaningful premium while giving the stock breathing room.</p>
+      <p><strong>Deep OTM</strong> — Sell a strike 15–20%+ above price. Very little premium. You'll barely notice the income. Only makes sense if you're extremely bullish and mostly want a small "rent check" on shares you'd never sell anyway.</p>
+      <div class="callout">
+        <strong>PII default:</strong> We target strikes 5–8% OTM on 30–45 day expirations. This zone typically generates 1–2% monthly premium while leaving room for the stock to run before being called away.
+      </div>
+      <h3>What Else Affects Strike Selection</h3>
+      <ul>
+        <li><strong>Implied volatility:</strong> When IV is high, OTM strikes pay more. You can go further out-of-the-money and still collect good premium.</li>
+        <li><strong>Your outlook:</strong> Bullish on the stock? Go further OTM. Neutral or mildly bearish? Move closer to ATM for more income now.</li>
+        <li><strong>Ex-dividend date:</strong> If ex-div is within the option's life, avoid deep ITM strikes — early assignment risk goes up significantly.</li>
+        <li><strong>Upcoming earnings:</strong> Don't sell calls through earnings unless you want to be surprised. Let earnings pass, then sell.</li>
+      </ul>
+      <h3>The Simple Rule</h3>
+      <p>Pick a strike you'd be comfortable selling the shares at. If AAPL is at $195 and you'd be happy selling at $210, sell the $210 call. If getting called away at that price would bother you, go higher — or don't sell the call at all that month.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Rolling -->
+<div class="article-modal-overlay" id="modal-rolling">
+  <div class="article-modal">
+    <button class="modal-close" onclick="closeModal('modal-rolling')">✕</button>
+    <div class="modal-tag"><span class="article-tag tag-covered-calls">Covered Calls</span></div>
+    <h2>Rolling Options: When to Extend, When to Let Go</h2>
+    <div class="article-body">
+      <p>Rolling a covered call means buying back your current call and simultaneously selling a new one — usually further out in time, higher in strike, or both. It's one of the most useful tools in an income seller's toolkit. It's also one of the most misused.</p>
+      <h3>When Rolling Makes Sense</h3>
+      <ul>
+        <li><strong>The stock moved up strongly and you want more upside.</strong> Roll up and out — buy back the current call, sell a higher strike further in time. You collect more premium and give the position room to breathe.</li>
+        <li><strong>The call is near expiration with little time value left.</strong> If you're at 21 DTE or less and the call has decayed well, close it and sell a new one. Don't wait until expiration.</li>
+        <li><strong>You want to avoid assignment.</strong> If the stock is well above your strike at expiration and you don't want to sell the shares, rolling out in time (and possibly up in strike) can buy you more time.</li>
+      </ul>
+      <h3>When to Just Let It Expire</h3>
+      <p>If the stock is called away and you made a reasonable profit — let it happen. Rolling for the sake of rolling can create a bad habit of avoiding assignment at any cost, which sometimes means you're rolling into worse and worse positions just to keep the shares.</p>
+      <div class="callout">
+        <strong>The rule of thumb:</strong> Only roll if you can collect a net credit (meaning you take in more from the new call than you pay to buy back the old one). Never roll for a debit unless you have a very specific reason.
+      </div>
+      <h3>The Mechanics</h3>
+      <p>Most brokers let you enter a roll as a single spread order — sell the calendar spread — so you close one leg and open the other simultaneously. This is cleaner than legging in separately and reduces slippage. Set a limit order for the net credit you want and be patient.</p>
+      <h3>What to Avoid</h3>
+      <p>Rolling down — selling a lower strike to collect more premium on a falling stock — is often a mistake. You might collect a credit now, but you've lowered your breakeven and increased your downside. If the stock is falling, the problem isn't your strike. It's the stock.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Ex-Div -->
+<div class="article-modal-overlay" id="modal-exdiv">
+  <div class="article-modal">
+    <button class="modal-close" onclick="closeModal('modal-exdiv')">✕</button>
+    <div class="modal-tag"><span class="article-tag tag-covered-calls">Covered Calls</span></div>
+    <h2>The Ex-Dividend Date Trap</h2>
+    <div class="article-body">
+      <p>If you're building a dividend portfolio with covered calls on top, this is one of the most important things to understand. Getting it wrong costs you real money.</p>
+      <h3>How It Works</h3>
+      <p>When you sell a covered call, the buyer of that call has the right — but not the obligation — to exercise early and buy your shares before expiration. They almost never do this. But there's one exception: <strong>when there's an upcoming dividend worth more than the remaining time value in the call.</strong></p>
+      <p>If your call has $0.40 of time value left and the stock is paying a $0.75 dividend next week, a savvy buyer will exercise early, take your shares, and collect the dividend themselves. You lose both the shares and the dividend in one move.</p>
+      <div class="callout">
+        <strong>The danger zone:</strong> Deep in-the-money calls with little time value remaining, in the week before ex-dividend. This is when early assignment risk is highest.
+      </div>
+      <h3>How to Avoid It</h3>
+      <ul>
+        <li>Know every ex-dividend date for stocks in your portfolio. Check them before selling calls.</li>
+        <li>Avoid selling ITM or low-time-value calls in the 1–2 weeks before ex-div.</li>
+        <li>If you're already in a deep ITM call as ex-div approaches, consider buying it back early. The cost of buyback may be less than losing the dividend.</li>
+        <li>OTM calls generally have enough time value that early exercise doesn't make sense for the buyer. Staying OTM is your natural protection.</li>
+      </ul>
+      <h3>The Flip Side</h3>
+      <p>Many traders sell calls specifically to expire after ex-div — so they keep the dividend AND the premium. As long as the call is OTM at expiration, you've collected both income streams. That's the income stacking approach we use at PII.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: CSP vs CC -->
+<div class="article-modal-overlay" id="modal-csp-vs-cc">
+  <div class="article-modal">
+    <button class="modal-close" onclick="closeModal('modal-csp-vs-cc')">✕</button>
+    <div class="modal-tag"><span class="article-tag tag-puts">Puts &amp; Spreads</span></div>
+    <h2>Cash-Secured Puts vs. Covered Calls: Which to Use?</h2>
+    <div class="article-body">
+      <p>Both strategies sell option premium. Both generate income. On paper, they have nearly identical risk/reward profiles at the same strikes. But in practice, you'll use them in very different situations.</p>
+      <h3>Use a Cash-Secured Put When…</h3>
+      <ul>
+        <li>You want to buy a stock at a lower price than where it's trading now</li>
+        <li>You're comfortable owning 100 shares if assigned</li>
+        <li>The stock has pulled back and you see value at current or lower prices</li>
+        <li>You want to enter a covered call position — but cheaper</li>
+      </ul>
+      <p>A CSP is essentially a limit buy order that pays you to wait. Instead of placing a limit order at $180 and sitting there hoping the stock comes down, you sell a put at $180 and collect $2.50 in premium. If the stock drops to $180, you buy it at an effective cost of $177.50. If it doesn't, you keep the $2.50 and repeat.</p>
+      <h3>Use a Covered Call When…</h3>
+      <ul>
+        <li>You already own 100 shares and want to generate income on them</li>
+        <li>You're okay with selling the shares at the strike price</li>
+        <li>You want to reduce your cost basis month after month</li>
+        <li>The stock isn't going anywhere fast and you want to be paid while you wait</li>
+      </ul>
+      <div class="callout">
+        <strong>The Wheel:</strong> Many income traders use these together — sell CSPs until assigned, then sell covered calls until called away, then sell CSPs again. This loop lets you generate income in every phase of a position.
+      </div>
+      <h3>Which Pays More?</h3>
+      <p>At the same strike, the premiums are theoretically identical (put-call parity). In practice, puts often carry a slight edge because of "volatility skew" — the market prices downside risk more heavily than upside. For income sellers, this is a subtle edge in favor of puts.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Position Sizing -->
+<div class="article-modal-overlay" id="modal-sizing">
+  <div class="article-modal">
+    <button class="modal-close" onclick="closeModal('modal-sizing')">✕</button>
+    <div class="modal-tag"><span class="article-tag tag-risk">Risk &amp; Sizing</span></div>
+    <h2>The 1–2% Rule: How to Size Every Trade</h2>
+    <div class="article-body">
+      <p>Most trading accounts don't blow up from one bad trade. They blow up from one bad trade that was too big. Position sizing is the difference between a loss you can recover from and a loss that ends your trading career.</p>
+      <h3>The Rule</h3>
+      <p>Never risk more than 1–2% of your total portfolio on any single trade. If you have a $50,000 account, that's $500–$1,000 per trade. That's it. No exceptions.</p>
+      <p>For covered calls and cash-secured puts, "risk" means the maximum loss on the position — which for a CSP is strike price minus premium received, times 100. For a covered call, it's effectively the stock position's downside.</p>
+      <div class="callout">
+        <strong>Why this matters:</strong> If you risk 1% per trade, you can lose 10 trades in a row and still have 90% of your capital. At 10% per trade, 10 losses wipes you out. The math is brutal — protect yourself.
+      </div>
+      <h3>How This Works for Income Strategies</h3>
+      <p>For covered calls and dividend portfolios, the 1–2% rule applies to swing trades and speculative positions you add on top. Your core income portfolio can represent a larger share of your capital — the income structure itself limits your active risk.</p>
+      <p>Where this really matters is for swing trades, LEAPS speculation, or credit spreads where the max loss is defined but can be significant relative to the premium you collected.</p>
+      <h3>Practical Example</h3>
+      <p>You have a $100K portfolio. You're considering a bull put spread on SPY with a max loss of $800. At 1% risk tolerance, your limit is $1,000 in risk per trade — so one spread is fine. At 2% ($2,000), you could do two. But doing five spreads at $800 each ($4,000 total risk) violates the rule. A bad week wipes 4% of your account on one trade.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: High Yield ETFs -->
+<div class="article-modal-overlay" id="modal-high-yield">
+  <div class="article-modal">
+    <button class="modal-close" onclick="closeModal('modal-high-yield')">✕</button>
+    <div class="modal-tag"><span class="article-tag tag-income">Income Strategy</span></div>
+    <h2>Why High-Yield ETFs Aren't Always the Answer</h2>
+    <div class="article-body">
+      <p>A 40% annual yield sounds incredible. And funds like YieldMAX, Roundhill, and QYLD are delivering numbers that look like that. But there's something important buried in the fine print that most investors don't see until it's too late.</p>
+      <h3>How These Funds Work</h3>
+      <p>Covered call ETFs generate income by selling options on their underlying holdings. They pass that premium income to shareholders as distributions. QYLD does it on QQQ. YieldMAX does it on individual stocks. The structure is valid — it's essentially what we teach at PII.</p>
+      <h3>The NAV Erosion Problem</h3>
+      <p>Here's the catch: when a fund sells calls aggressively to generate high yields, it caps its own upside. In a bull market, the underlying index or stock climbs while the fund stays flat — or worse, its net asset value slowly erodes because it can't capture the gains that would otherwise grow the fund.</p>
+      <p>You might receive a 40% yield in distributions, but if the fund's NAV drops 25%, your total return is only 15% — and your principal is worth less than when you started.</p>
+      <div class="callout">
+        <strong>The test:</strong> Look at a fund's total return (NAV change + distributions), not just its distribution yield. If total return significantly lags the underlying asset, NAV erosion is eating your principal.
+      </div>
+      <h3>When They Make Sense</h3>
+      <p>High-yield covered call ETFs can work well for investors who genuinely need cash flow right now and have a short time horizon — like retirees drawing income. If you're reinvesting distributions into a declining NAV, however, you're running a treadmill that may be moving backward.</p>
+      <h3>The PII Alternative</h3>
+      <p>By running your own covered calls on dividend-paying stocks, you capture the same premium income — but you also participate in price appreciation when the stock isn't called away. You decide the strike, the expiration, and the timing. The fund can't do that for you.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: The Wheel -->
+<div class="article-modal-overlay" id="modal-wheel">
+  <div class="article-modal">
+    <button class="modal-close" onclick="closeModal('modal-wheel')">✕</button>
+    <div class="modal-tag"><span class="article-tag tag-income">Income Strategy</span></div>
+    <h2>The Wheel Strategy: Generating Income in a Loop</h2>
+    <div class="article-body">
+      <p>The Wheel is one of the most popular income strategies for retail investors — and for good reason. It's simple, repeatable, and generates income in every phase. Here's exactly how it works.</p>
+      <h3>Phase 1: Sell a Cash-Secured Put</h3>
+      <p>Pick a stock you genuinely want to own at a price you'd be happy to buy at. Sell an OTM put at that strike. Collect the premium. Two outcomes: the put expires worthless (you keep the premium and go again), or you get assigned and buy 100 shares at the strike price minus the premium collected.</p>
+      <h3>Phase 2: Sell Covered Calls</h3>
+      <p>Now you own 100 shares. Sell OTM covered calls month after month, reducing your cost basis each time. Eventually one of two things happens: the call expires worthless (keep premium, repeat) or the stock gets called away above your strike.</p>
+      <h3>Phase 3: Repeat</h3>
+      <p>Your shares were called away at a profit. You're back to cash. Go back to Phase 1. Sell another put. The wheel keeps turning.</p>
+      <div class="callout">
+        <strong>Why it works:</strong> You're always collecting premium. Whether you own shares or not, you're generating income. And because you only run this on stocks you'd actually want to hold, getting assigned isn't a disaster — it's just the next phase.
+      </div>
+      <h3>What the Wheel Doesn't Fix</h3>
+      <p>If you get assigned on a stock and it keeps falling, you're holding a losing position. The covered call premium helps reduce your cost basis, but a bad stock pick can overcome any amount of premium income. Stock selection matters as much as the strategy itself. Run the Wheel only on high-quality companies with strong fundamentals and liquid options markets.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Expectations -->
+<div class="article-modal-overlay" id="modal-expectations">
+  <div class="article-modal">
+    <button class="modal-close" onclick="closeModal('modal-expectations')">✕</button>
+    <div class="modal-tag"><span class="article-tag tag-mindset">Mindset</span></div>
+    <h2>Keep Expectations Reasonable — And You'll Keep Trading</h2>
+    <div class="article-body">
+      <p>There's a version of income investing that promises 50% annual returns with zero risk. You'll find it on social media, in courses, in Discord groups run by people who got lucky in 2021. It's a trap.</p>
+      <p>The traders who are still doing this in 10 years aren't the ones chasing massive yields. They're the ones who set realistic targets, stayed consistent, and didn't blow up chasing something unsustainable.</p>
+      <h3>What Reasonable Actually Looks Like</h3>
+      <p>A well-run covered call portfolio on quality dividend stocks should realistically generate 12–20% annually on a total return basis — including dividends, call premiums, and modest price appreciation. That's excellent. Compounded over 10 years, that turns $100K into $620K–$620K at the high end.</p>
+      <p>Compare that to chasing 40% "yield" products that erode their NAV by 30% annually. The math doesn't work. The sustainable path wins.</p>
+      <div class="callout">
+        <strong>The rule we follow:</strong> Trading doesn't have to be hard. Do it right, do it safely, stay consistent, keep expectations reasonable. The income adds up — slowly, then powerfully.
+      </div>
+      <h3>The Consistency Edge</h3>
+      <p>Selling covered calls isn't exciting. It's methodical. You sell a call, you wait, you do it again. Most months are uneventful. That's the point. The traders who look for excitement in their portfolio are the ones who end up making impulsive decisions at exactly the wrong time.</p>
+      <h3>Give Yourself Permission to Be Boring</h3>
+      <p>If a strategy sounds boring, that's usually a good sign. Boring strategies that you can execute consistently over years will outperform exciting strategies that you abandon after a rough patch. Build the boring portfolio. Stick to the plan. Let time do the work.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Greeks -->
+<div class="article-modal-overlay" id="modal-greeks">
+  <div class="article-modal">
+    <button class="modal-close" onclick="closeModal('modal-greeks')">✕</button>
+    <div class="modal-tag"><span class="article-tag tag-basics">Basics</span></div>
+    <h2>Options Greeks: What Actually Matters for Income Sellers</h2>
+    <div class="article-body">
+      <p>There are five options Greeks. As an income seller, you really only need to understand three of them well. Here's what each one means in plain English — and how it affects your covered calls and CSPs.</p>
+      <h3>Delta — How Much the Option Moves With the Stock</h3>
+      <p>Delta tells you how much an option's price changes when the stock moves $1. A delta of 0.30 means the option gains or loses $0.30 for every $1 the stock moves. For covered calls, delta also approximates the probability that the call expires in-the-money — a 0.30 delta call has roughly a 30% chance of being called away.</p>
+      <p>Most income sellers target 0.20–0.35 delta on their short options — far enough OTM to likely expire worthless, close enough to collect meaningful premium.</p>
+      <h3>Theta — Time Decay (Your Friend)</h3>
+      <p>Theta is the amount an option loses in value each day due to the passage of time. As an option seller, theta works in your favor — every day that passes without the stock reaching your strike is money in your pocket. Theta decay accelerates in the last 30 days before expiration, which is why the 30–45 DTE range is the sweet spot for income selling.</p>
+      <div class="callout">
+        <strong>Simple version:</strong> You're selling an asset that decays toward zero every day. Theta is the rate of that decay. Sell options, let time pass, profit.
+      </div>
+      <h3>Vega — Sensitivity to Implied Volatility</h3>
+      <p>Vega measures how much an option's price changes when implied volatility changes by 1%. High IV means high vega, which means options are expensive — great time to sell. Low IV means thin premiums. As an income seller, you want to sell when vega (and IV) is elevated and buy back when it collapses.</p>
+      <h3>The Other Two (Brief)</h3>
+      <p><strong>Gamma</strong> tells you how fast delta changes. Highest near expiration and at-the-money. For income sellers, high gamma near expiration on ATM options is a risk — a small move can create a big P&L swing. <strong>Rho</strong> is interest rate sensitivity. Not practically relevant for short-dated income strategies.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: IV -->
+<div class="article-modal-overlay" id="modal-iv">
+  <div class="article-modal">
+    <button class="modal-close" onclick="closeModal('modal-iv')">✕</button>
+    <div class="modal-tag"><span class="article-tag tag-basics">Basics</span></div>
+    <h2>Implied Volatility: The Income Seller's Best Friend</h2>
+    <div class="article-body">
+      <p>Option pricing is fundamentally about uncertainty. The more uncertain the market is about where a stock will be in 30 days, the more it's willing to pay for options protection — and the more you can collect as a seller.</p>
+      <h3>What Implied Volatility Is</h3>
+      <p>Implied volatility (IV) is the market's forecast of how much a stock will move over the life of an option. It's expressed as an annualized percentage. An IV of 30% means the market expects the stock to move roughly 30% over the next year — or about 8–9% over the next month.</p>
+      <p>IV is "implied" because it's derived from the actual option prices being traded — not calculated from historical data. It's the market's collective expectation baked into current prices.</p>
+      <h3>IV Rank — The Number That Actually Matters</h3>
+      <p>IV by itself doesn't tell you much. A 30% IV might be high for one stock and low for another. IV Rank (IVR) puts IV in context: it compares today's IV to the past 52 weeks of IV for that same stock.</p>
+      <p>An IVR of 80 means today's IV is higher than 80% of all readings over the past year. That's a signal that premiums are elevated and it's a good time to sell. An IVR below 20 means premiums are cheap — thin pickings for sellers.</p>
+      <div class="callout">
+        <strong>The rule:</strong> Sell options when IVR is above 50. Be selective or sit on your hands when IVR is below 30. Don't sell cheap premium just to stay busy.
+      </div>
+      <h3>When IV Spikes</h3>
+      <p>Market selloffs, earnings surprises, and macro uncertainty all push IV higher. This creates some of the best premium selling opportunities — but also the most risk. In a fast-moving market, selling options on quality stocks with defined risk (credit spreads) is often smarter than going naked. Know your exposure before IV spikes become your problem, not your opportunity.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ TOOLS ══════════════════ -->
+<section class="tools-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Free Tools</span>
+      <h2>Tools to Help You <span class="green">Trade Smarter</span></h2>
+    </div>
+    <div class="tools-grid">
+
+      <div class="tool-card">
+        <div class="tool-icon">🧭</div>
+        <h3>Market Compass</h3>
+        <p>Real-time market environment analysis. Know whether conditions favor aggressive selling, playing defense, or sitting on your hands before you place a trade.</p>
+        <a class="tool-link" href="index.html#market-compass">Open Market Compass →</a>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon">📓</div>
+        <h3>Free Trading Journal</h3>
+        <p>Track every covered call, put, and dividend received. Log your entries, monitor your income, and actually learn from your trades over time.</p>
+        <a class="tool-link" href="journal.html">Get the Journal →</a>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon">📊</div>
+        <h3>barchart.com</h3>
+        <p>Free IV Rank data, options chains, and screeners. One of the best free tools for finding high-IV stocks to sell premium on. Check IVR before every trade.</p>
+        <a class="tool-link" href="https://www.barchart.com/stocks/options/highest-implied-volatility" target="_blank" rel="noopener">Open Barchart →</a>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon">📈</div>
+        <h3>Options Profit Calculator</h3>
+        <p>Model out the exact P&amp;L of any covered call or spread before you enter. See your breakeven, max profit, and max loss at a glance.</p>
+        <a class="tool-link" href="https://www.optionsprofitcalculator.com" target="_blank" rel="noopener">Open Calculator →</a>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon">💸</div>
+        <h3>DRIP Returns Calculator</h3>
+        <p>See exactly how much your dividend income compounds over time with reinvestment. A sobering — and motivating — look at what consistency produces.</p>
+        <a class="tool-link" href="https://www.dripreturnscalculator.com" target="_blank" rel="noopener">Open Calculator →</a>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon">🗓</div>
+        <h3>Dividend Calendar</h3>
+        <p>Track ex-dividend dates for every stock in your portfolio. Know when to adjust your covered calls so you don't accidentally lose your dividend income.</p>
+        <a class="tool-link" href="https://www.nasdaq.com/market-activity/dividends" target="_blank" rel="noopener">Open Calendar →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ GLOSSARY ══════════════════ -->
+<section class="glossary-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Quick Reference</span>
+      <h2>Options <span class="green">Glossary</span></h2>
+    </div>
+    <div class="glossary-grid">
+      <div class="gloss-item">
+        <div class="gloss-term">Call Option</div>
+        <div class="gloss-def">The right to buy 100 shares at the strike price before expiration. Sellers of calls collect premium and obligate themselves to sell if exercised.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Put Option</div>
+        <div class="gloss-def">The right to sell 100 shares at the strike price before expiration. Sellers of puts collect premium and obligate themselves to buy if exercised.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Strike Price</div>
+        <div class="gloss-def">The price at which the option can be exercised — the price you agree to sell (call) or buy (put) the shares if assigned.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Expiration Date</div>
+        <div class="gloss-def">The date the option contract expires. After this date, the contract is worthless if not exercised. Most income sellers target monthly expirations.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Premium</div>
+        <div class="gloss-def">The price paid/received for an option contract. As a seller, premium collected is your income. Multiply by 100 (one contract = 100 shares).</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">In-the-Money (ITM)</div>
+        <div class="gloss-def">A call is ITM when the stock is above the strike. A put is ITM when the stock is below the strike. ITM options have intrinsic value.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Out-of-the-Money (OTM)</div>
+        <div class="gloss-def">A call is OTM when the strike is above the stock price. OTM options have no intrinsic value — only time value (theta).</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Implied Volatility (IV)</div>
+        <div class="gloss-def">The market's expectation of future price movement, expressed as an annualized percentage. Higher IV = higher option premiums = better income selling conditions.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Delta</div>
+        <div class="gloss-def">How much an option price changes per $1 move in the stock. Also approximates the probability the option expires in-the-money (e.g., 0.30 delta ≈ 30% chance).</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Theta</div>
+        <div class="gloss-def">Daily time decay. The amount an option loses in value each passing day, all else equal. Option sellers benefit from theta — it's why covered calls work.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Assignment</div>
+        <div class="gloss-def">When the option buyer exercises their right, and you're required to buy or sell shares at the strike price. Covered calls → you sell shares. CSPs → you buy shares.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">DTE (Days to Expiration)</div>
+        <div class="gloss-def">How many calendar days until the option expires. Income sellers typically target 30–45 DTE when opening new positions for optimal theta decay.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Credit Spread</div>
+        <div class="gloss-def">Selling one option and buying another at a different strike to cap both your max profit and max loss. Reduces capital required vs. a naked option.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Ex-Dividend Date</div>
+        <div class="gloss-def">The cutoff date to receive the next dividend. You must own shares before this date. Critical timing consideration when selling covered calls.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Payout Ratio</div>
+        <div class="gloss-def">Percentage of earnings paid out as dividends. Below 60% is healthy. Above 90% is a warning sign — the dividend may be unsustainable.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">IV Rank (IVR)</div>
+        <div class="gloss-def">Where today's implied volatility sits relative to the past 52 weeks. IVR above 50 = elevated premiums, good time to sell. Below 30 = thin premiums, proceed carefully.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ NEWSLETTER CTA ══════════════════ -->
+<section class="newsletter-section">
+  <div class="container" style="text-align:center; max-width:540px;">
+    <h2>Get the Free <span class="green">Trading Journal</span></h2>
+    <p>Track your income, log every trade, and see your strategy working over time — in one free spreadsheet built for income investors.</p>
+    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:28px;">
+      <a href="journal.html" class="btn btn-gold">Get the Free Journal</a>
+      <a href="strategies.html" class="btn btn-outline-green">Explore Strategies</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="pii-emblem-3d.png" alt="PII" class="footer-emblem" />
+        <span class="footer-brand">PRACTICAL <span>INCOME</span> INVESTING</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="strategies.html">Strategies</a></li>
+        <li><a href="journal.html">Free Journal</a></li>
+        <li><a href="index.html#market-compass">Market Compass</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2025 Practical Income Investing. All rights reserved.</p>
+    <p class="footer-disc">Options trading involves significant risk. Educational content only — not financial advice.</p>
+  </div>
+</footer>
+
+<script>
+// ── Filter articles ──
+function filterArticles(cat, btn) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.article-card').forEach(card => {
+    if (cat === 'all' || card.dataset.category === cat) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+// ── Modals ──
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+// Close on overlay click
+document.querySelectorAll('.article-modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+});
+// Close on Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.article-modal-overlay.open').forEach(m => {
+      m.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  }
+});
+</script>
+
+</body>
+</html>
