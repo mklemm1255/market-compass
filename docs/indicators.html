@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Premium TradingView indicators from Practical Income Investing — built for swing traders using covered calls, cash-secured puts, and wheel-style management." />
+  <title>Premium Indicators — Practical Income Investing</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Indicators page ── */
+    .ind-hero {
+      background: linear-gradient(135deg, #060f1e 0%, #0a1a2e 50%, #060f1e 100%);
+      padding: 90px 0 70px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    .ind-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(0,200,81,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .ind-hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); margin-bottom: 16px; }
+    .ind-hero p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 36px; line-height: 1.7; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,200,81,0.1);
+      border: 1px solid rgba(0,200,81,0.25);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 24px;
+    }
+    .hero-badge::before { content: '●'; font-size: 0.6rem; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.3; } }
+
+    /* ── Indicator card ── */
+    .ind-section { padding: 80px 0; background: var(--bg); }
+    .ind-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+    .ind-card-header {
+      background: linear-gradient(135deg, #0a1a2e, #0d2040);
+      padding: 40px 48px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 32px;
+      align-items: start;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    @media (max-width: 700px) { .ind-card-header { grid-template-columns: 1fr; padding: 28px 24px; } }
+    .ind-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+    .badge-premium { background: rgba(255,200,0,0.12); color: #ffd700; border: 1px solid rgba(255,200,0,0.2); }
+    .badge-coming  { background: rgba(100,180,255,0.1); color: #64b4ff; border: 1px solid rgba(100,180,255,0.2); }
+    .ind-card-header h2 { font-size: clamp(1.3rem, 3vw, 1.9rem); margin-bottom: 12px; line-height: 1.3; }
+    .ind-card-header p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; max-width: 540px; }
+    .ind-icon-wrap {
+      width: 90px;
+      height: 90px;
+      background: linear-gradient(135deg, rgba(0,200,81,0.12), rgba(0,200,81,0.04));
+      border: 1px solid rgba(0,200,81,0.2);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.6rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Feature grid ── */
+    .ind-card-body { padding: 40px 48px; }
+    @media (max-width: 700px) { .ind-card-body { padding: 28px 24px; } }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .feature-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+    }
+    .feature-dot { color: var(--green); font-size: 0.8rem; margin-top: 3px; flex-shrink: 0; }
+    .feature-text { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
+    .feature-text strong { color: #fff; display: block; margin-bottom: 3px; font-size: 0.9rem; }
+
+    /* ── Use case strip ── */
+    .use-strip {
+      background: rgba(0,200,81,0.05);
+      border: 1px solid rgba(0,200,81,0.12);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 32px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .use-strip .kp-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .use-strip p { color: var(--text-muted); font-size: 0.92rem; line-height: 1.65; margin: 0; }
+    .use-strip strong { color: #fff; }
+
+    /* ── Timeframe tags ── */
+    .tf-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+    .tf-tag {
+      padding: 5px 14px;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .tf-primary { background: rgba(0,200,81,0.15); color: var(--green); border: 1px solid rgba(0,200,81,0.25); }
+    .tf-secondary { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1); }
+
+    /* ── Coming soon card ── */
+    .ind-coming {
+      background: var(--card-bg);
+      border: 1px dashed rgba(100,180,255,0.2);
+      border-radius: 20px;
+      padding: 48px;
+      text-align: center;
+    }
+    .ind-coming h3 { font-size: 1.4rem; margin-bottom: 12px; }
+    .ind-coming p { color: var(--text-muted); max-width: 480px; margin: 0 auto; line-height: 1.7; font-size: 0.95rem; }
+
+    /* ── Waitlist section ── */
+    .waitlist-section {
+      background: linear-gradient(135deg, #060f1e 0%, #0a1622 100%);
+      padding: 90px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .waitlist-box {
+      max-width: 620px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .waitlist-box h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 16px; }
+    .waitlist-box p { color: var(--text-muted); font-size: 1rem; line-height: 1.7; margin-bottom: 36px; }
+    .waitlist-form {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 36px;
+      text-align: left;
+    }
+    .wl-field { margin-bottom: 16px; }
+    .wl-field label { display: block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .wl-field input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    .wl-field input:focus { outline: none; border-color: var(--green); }
+    .wl-field input::placeholder { color: rgba(255,255,255,0.25); }
+    .wl-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--green);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      margin-top: 8px;
+      transition: opacity 0.2s;
+    }
+    .wl-submit:hover { opacity: 0.88; }
+    .wl-note { font-size: 0.78rem; color: rgba(255,255,255,0.3); text-align: center; margin-top: 14px; }
+    .wl-success {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+      gap: 14px;
+    }
+    .wl-success-icon { font-size: 3rem; }
+    .wl-success h3 { font-size: 1.3rem; color: var(--green); margin: 0; }
+    .wl-success p { color: var(--text-muted); font-size: 0.92rem; margin: 0; }
+
+    /* ── Why PII indicators ── */
+    .why-section { padding: 80px 0; background: #060f1e; border-top: 1px solid rgba(255,255,255,0.05); }
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 40px; }
+    .why-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 26px 22px; }
+    .why-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .why-card h4 { font-size: 0.95rem; margin-bottom: 8px; }
+    .why-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="pii-emblem-3d.png" alt="PII" class="nav-emblem" />
+      <span class="nav-logo-text">PRACTICAL <span class="green">INCOME</span> INVESTING</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="strategies.html">Strategies</a></li>
+      <li><a href="journal.html">Trading Journal</a></li>
+      <li><a href="indicators.html">Indicators</a></li>
+      <li><a href="blog.html">Resources</a></li>
+      <li><a href="journal.html">Free Journal</a></li>
+    </ul>
+    <a href="index.html#market-compass" class="btn btn-green nav-cta">🧭 Market Compass</a>
+  </div>
+</nav>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section class="ind-hero">
+  <div class="container">
+    <div class="hero-badge">Premium TradingView Indicators</div>
+    <h1>Built for <span class="green">Serious</span> Income Traders</h1>
+    <p>These aren't quick AI-generated scripts. Every indicator in this library took dozens of iterations to get right — built around real swing trading, wheel strategies, and income-focused options execution.</p>
+    <a href="#waitlist" class="btn btn-green" style="font-size:1rem; padding:14px 36px;">Join the Early Access List</a>
+  </div>
+</section>
+
+<!-- ══════════════════ INDICATORS ══════════════════ -->
+<section class="ind-section">
+  <div class="container">
+
+    <!-- Wheel Overlay V10 -->
+    <div class="ind-card">
+      <div class="ind-card-header">
+        <div>
+          <div class="ind-badge badge-premium">⭐ Flagship Indicator</div>
+          <h2>Wheel Overlay V10 <span class="green">— Daily Swing Framework</span></h2>
+          <p>A premium, rules-based chart overlay for swing traders running cash-secured puts, covered calls, and wheel-style management on higher timeframes. Built for daily-chart decision-making with weekly context baked in.</p>
+        </div>
+        <div class="ind-icon-wrap">🎯</div>
+      </div>
+      <div class="ind-card-body">
+        <div class="tf-tags">
+          <span class="tf-tag tf-primary">● Daily Chart (Primary)</span>
+          <span class="tf-tag tf-secondary">Weekly Context</span>
+          <span class="tf-tag tf-secondary">Not for Intraday</span>
+        </div>
+        <div class="use-strip">
+          <div class="kp-icon">💡</div>
+          <p><strong>Primary use case:</strong> Structured evaluation of higher-quality swing opportunities — especially around support, reversal, confluence, and income-focused options positioning. It doesn't tell you what to trade. It tells you whether a setup is worth your attention.</p>
+        </div>
+        <div class="feature-grid">
+          <div class="feature-item">
+            <span class="feature-dot">✓</span>
+            <div class="feature-text"><strong>A+ &amp; Unicorn Bull Setups</strong>Advanced CSP setup detection — flags only the highest-conviction long entries.</div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot">✓</span>
+            <div class="feature-text"><strong>A+ &amp; Unicorn Bear Setups</strong>Covered call and short-side detection for elevated-IV environments.</div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot">✓</span>
+            <div class="feature-text"><strong>Hover-Based Trade Intel</strong>Premium setup details appear on hover — no cluttered chart.</div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot">✓</span>
+            <div class="feature-text"><strong>Adaptive Target Planning</strong>Probability-weighted targets generated dynamically for each setup.</div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot">✓</span>
+            <div class="feature-text"><strong>Delta-Style Strike Guidance</strong>CSP strike recommendations built directly into the chart context.</div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot">✓</span>
+            <div class="feature-text"><strong>Position Sizing Guidance</strong>Risk-appropriate sizing suggestions tied to each setup's structure.</div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot">✓</span>
+            <div class="feature-text"><strong>Structure Health Context</strong>"Why this is not Unicorn" explanations — know exactly what's missing.</div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot">✓</span>
+            <div class="feature-text"><strong>Support &amp; Resistance Zones</strong>Key levels auto-drawn and integrated into zone-aware scoring.</div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot">✓</span>
+            <div class="feature-text"><strong>Probability Liquidity Map</strong>Pressure and hit-probability context for strike reference planning.</div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-dot">✓</span>
+            <div class="feature-text"><strong>Clutter Control</strong>Toggle simplified view for cleaner chart reading when you don't need all the data.</div>
+          </div>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:20px 24px; font-size:0.85rem; color:var(--text-muted); line-height:1.7;">
+          <strong style="color:#fff;">Best used on:</strong> Liquid names, indexes, and high-quality watchlist stocks. &nbsp;|&nbsp;
+          <strong style="color:#fff;">Access:</strong> Invite-only on TradingView — managed by authorization. &nbsp;|&nbsp;
+          <strong style="color:#fff;">Disclaimer:</strong> Chart-based decision support only. Not financial advice. Understand options risk and assignment risk before using live.
+        </div>
+      </div>
+    </div>
+
+    <!-- Second indicator - coming soon -->
+    <div class="ind-coming">
+      <div style="font-size:2.5rem; margin-bottom:16px;">🔬</div>
+      <div class="ind-badge badge-coming" style="display:inline-flex; margin-bottom:16px;">Coming Soon</div>
+      <h3>Second Indicator <span class="green">In Development</span></h3>
+      <p>A new indicator is in final testing — with a unique set of features not found in V10. Join the waitlist below to be first in line for early access when it drops.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════ WHY PII ══════════════════ -->
+<section class="why-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Why These Indicators</span>
+      <h2>Not Built in <span class="green">Five Minutes</span></h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">🔁</div>
+        <h4>Dozens of Iterations</h4>
+        <p>Each indicator went through 30–40+ refinement cycles before release. The logic reflects real trading experience, not a first draft.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🎯</div>
+        <h4>Built Around Income Strategies</h4>
+        <p>Designed specifically for wheel traders, CSP sellers, and covered call writers — not generic momentum or day trading signals.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">📊</div>
+        <h4>Daily Chart Focus</h4>
+        <p>Built for swing traders making quality decisions on higher timeframes — not for scalping noise on the 5-minute chart.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🧠</div>
+        <h4>Decision Support, Not Signals</h4>
+        <p>These tools help you think better — not replace your thinking. You still make the trade. The indicator tells you what the chart is saying.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ WAITLIST ══════════════════ -->
+<section class="waitlist-section" id="waitlist">
+  <div class="container">
+    <div class="waitlist-box">
+      <span class="section-label" style="display:block; text-align:center; margin-bottom:16px;">Early Access</span>
+      <h2>Get First Access to <span class="green">Every Indicator</span></h2>
+      <p>Join the waitlist and be notified the moment new indicators become available. Early access members get priority — and first look at pricing before it goes public.</p>
+
+      <div class="waitlist-form">
+        <div id="wl-form-wrap">
+          <div class="wl-field">
+            <label>First Name</label>
+            <input type="text" id="wl-name" placeholder="Mike" />
+          </div>
+          <div class="wl-field">
+            <label>Email Address</label>
+            <input type="email" id="wl-email" placeholder="you@email.com" />
+          </div>
+          <div class="wl-field">
+            <label>TradingView Username</label>
+            <input type="text" id="wl-tv" placeholder="@yourusername" />
+          </div>
+          <button class="wl-submit" onclick="submitWaitlist()">Join the Early Access List →</button>
+          <p class="wl-note">No spam. We'll only reach out when there's something worth telling you about.</p>
+        </div>
+        <div class="wl-success" id="wl-success">
+          <div class="wl-success-icon">✅</div>
+          <h3>You're on the list.</h3>
+          <p>We've got your name, email, and TradingView username. You'll hear from us first when early access opens.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="pii-emblem-3d.png" alt="PII" class="footer-emblem" />
+        <span class="footer-brand">PRACTICAL <span>INCOME</span> INVESTING</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="strategies.html">Strategies</a></li>
+        <li><a href="journal.html">Free Journal</a></li>
+        <li><a href="index.html#market-compass">Market Compass</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2025 Practical Income Investing. All rights reserved.</p>
+    <p class="footer-disc">Options trading involves significant risk. Educational content only — not financial advice.</p>
+  </div>
+</footer>
+
+<!-- Hidden Kit form -->
+<iframe name="kit-sink-ind" style="display:none;"></iframe>
+<form id="kit-ind-form" action="https://app.convertkit.com/forms/9381328/subscriptions" method="POST" target="kit-sink-ind" style="display:none;">
+  <input type="hidden" name="email_address" id="kit-ind-email" />
+  <input type="hidden" name="fields[first_name]" id="kit-ind-name" />
+  <input type="hidden" name="fields[tradingview_username]" id="kit-ind-tv" />
+</form>
+
+<script>
+function submitWaitlist() {
+  var name  = document.getElementById('wl-name').value.trim();
+  var email = document.getElementById('wl-email').value.trim();
+  var tv    = document.getElementById('wl-tv').value.trim();
+
+  if (!email) { alert('Please enter your email address.'); return; }
+
+  document.getElementById('kit-ind-email').value = email;
+  document.getElementById('kit-ind-name').value  = name;
+  document.getElementById('kit-ind-tv').value    = tv;
+  document.getElementById('kit-ind-form').submit();
+
+  document.getElementById('wl-form-wrap').style.display = 'none';
+  document.getElementById('wl-success').style.display   = 'flex';
+}
+</script>
+
+</body>
+</html>
