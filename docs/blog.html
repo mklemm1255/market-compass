@@ -181,8 +181,87 @@
       color: var(--green);
       text-decoration: none;
       letter-spacing: 0.03em;
+      cursor: pointer;
     }
     .tool-link:hover { text-decoration: underline; }
+
+    /* ── Inline calculators ── */
+    .calc-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.78);
+      z-index: 1100;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+      overflow-y: auto;
+    }
+    .calc-modal-overlay.open { display: flex; }
+    .calc-modal {
+      background: #0d1e35;
+      border: 1px solid rgba(0,200,81,0.25);
+      border-radius: 16px;
+      max-width: 600px;
+      width: 100%;
+      padding: 44px 44px 36px;
+      position: relative;
+    }
+    .calc-modal h2 { font-size: 1.4rem; margin-bottom: 6px; }
+    .calc-modal .calc-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 28px; }
+    .calc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .calc-row.full { grid-template-columns: 1fr; }
+    .calc-field label { display: block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 7px; }
+    .calc-field input, .calc-field select {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    .calc-field input:focus, .calc-field select:focus { outline: none; border-color: var(--green); }
+    .calc-field select option { background: #0d1e35; }
+    .calc-btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--green);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      margin-top: 8px;
+      transition: opacity 0.2s;
+    }
+    .calc-btn:hover { opacity: 0.88; }
+    .calc-results {
+      margin-top: 28px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 24px;
+      display: none;
+    }
+    .calc-results.visible { display: block; }
+    .calc-result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .calc-result-box { background: rgba(0,200,81,0.07); border: 1px solid rgba(0,200,81,0.18); border-radius: 10px; padding: 14px 12px; text-align: center; }
+    .calc-result-num { font-size: 1.3rem; font-weight: 800; color: var(--green); margin-bottom: 4px; }
+    .calc-result-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .calc-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-top: 4px; }
+    .calc-table th { text-align: left; padding: 8px 10px; color: var(--text-muted); font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .calc-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); color: #ccc; }
+    .calc-table td:first-child { color: #fff; font-weight: 600; }
+    .calc-table td.green { color: var(--green); font-weight: 700; }
+    .calc-table-wrap { max-height: 240px; overflow-y: auto; border-radius: 8px; background: rgba(0,0,0,0.2); }
+    @media (max-width: 600px) {
+      .calc-modal { padding: 28px 20px; }
+      .calc-row { grid-template-columns: 1fr; }
+    }
 
     /* ── Glossary section ── */
     .glossary-section { padding: 70px 0; background: var(--bg); }
@@ -667,13 +746,6 @@
       </div>
 
       <div class="tool-card">
-        <div class="tool-icon">📊</div>
-        <h3>barchart.com</h3>
-        <p>Free IV Rank data, options chains, and screeners. One of the best free tools for finding high-IV stocks to sell premium on. Check IVR before every trade.</p>
-        <a class="tool-link" href="https://www.barchart.com/stocks/options/highest-implied-volatility" target="_blank" rel="noopener">Open Barchart →</a>
-      </div>
-
-      <div class="tool-card">
         <div class="tool-icon">📈</div>
         <h3>Options Profit Calculator</h3>
         <p>Model out the exact P&amp;L of any covered call or spread before you enter. See your breakeven, max profit, and max loss at a glance.</p>
@@ -682,9 +754,23 @@
 
       <div class="tool-card">
         <div class="tool-icon">💸</div>
-        <h3>DRIP Returns Calculator</h3>
-        <p>See exactly how much your dividend income compounds over time with reinvestment. A sobering — and motivating — look at what consistency produces.</p>
-        <a class="tool-link" href="https://www.marketbeat.com/dividends/drip-calculator/" target="_blank" rel="noopener">Open Calculator →</a>
+        <h3>DRIP Income Compounder</h3>
+        <p>See exactly how much your dividend portfolio compounds over time with reinvestment. Enter your numbers and watch the income stack up year by year.</p>
+        <span class="tool-link" onclick="openCalc('calc-drip')">Open Calculator →</span>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon">📐</div>
+        <h3>Covered Call Yield Estimator</h3>
+        <p>Enter your position size, monthly premium, and dividend yield — see exactly what the PII income formula produces for your specific portfolio.</p>
+        <span class="tool-link" onclick="openCalc('calc-cc')">Open Calculator →</span>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon">🛡</div>
+        <h3>Position Size Calculator</h3>
+        <p>The 1–2% rule made simple. Enter your account size, entry, and stop — get the exact number of shares or contracts you can safely trade.</p>
+        <span class="tool-link" onclick="openCalc('calc-size')">Open Calculator →</span>
       </div>
 
       <div class="tool-card">
@@ -697,6 +783,132 @@
     </div>
   </div>
 </section>
+
+<!-- ══════════════════ CALCULATOR MODALS ══════════════════ -->
+
+<!-- DRIP Income Compounder -->
+<div class="calc-modal-overlay" id="calc-drip">
+  <div class="calc-modal">
+    <button class="modal-close" onclick="closeCalc('calc-drip')">✕</button>
+    <h2>💸 DRIP Income Compounder</h2>
+    <p class="calc-subtitle">See how your dividend portfolio grows year by year with reinvestment.</p>
+    <div class="calc-row">
+      <div class="calc-field">
+        <label>Starting Portfolio Value</label>
+        <input type="number" id="drip-start" value="50000" min="1000" step="1000" />
+      </div>
+      <div class="calc-field">
+        <label>Dividend Yield (%)</label>
+        <input type="number" id="drip-yield" value="3.5" min="0.1" max="20" step="0.1" />
+      </div>
+    </div>
+    <div class="calc-row">
+      <div class="calc-field">
+        <label>Annual Dividend Growth (%)</label>
+        <input type="number" id="drip-growth" value="6" min="0" max="20" step="0.5" />
+      </div>
+      <div class="calc-field">
+        <label>Years to Project</label>
+        <input type="number" id="drip-years" value="20" min="1" max="40" step="1" />
+      </div>
+    </div>
+    <div class="calc-row full">
+      <div class="calc-field">
+        <label>Reinvest Dividends?</label>
+        <select id="drip-reinvest">
+          <option value="yes">Yes — reinvest all dividends</option>
+          <option value="no">No — take dividends as income</option>
+        </select>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calcDRIP()">Calculate →</button>
+    <div class="calc-results" id="drip-results">
+      <div class="calc-result-grid" id="drip-summary"></div>
+      <div class="calc-table-wrap">
+        <table class="calc-table">
+          <thead><tr><th>Year</th><th>Portfolio Value</th><th>Annual Income</th><th>Cumulative Income</th></tr></thead>
+          <tbody id="drip-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Covered Call Yield Estimator -->
+<div class="calc-modal-overlay" id="calc-cc">
+  <div class="calc-modal">
+    <button class="modal-close" onclick="closeCalc('calc-cc')">✕</button>
+    <h2>📐 Covered Call Yield Estimator</h2>
+    <p class="calc-subtitle">See the PII formula in action on your specific portfolio.</p>
+    <div class="calc-row">
+      <div class="calc-field">
+        <label>Stock Price per Share ($)</label>
+        <input type="number" id="cc-price" value="185" min="1" step="1" />
+      </div>
+      <div class="calc-field">
+        <label>Number of Contracts</label>
+        <input type="number" id="cc-contracts" value="3" min="1" max="100" step="1" />
+      </div>
+    </div>
+    <div class="calc-row">
+      <div class="calc-field">
+        <label>Monthly Premium / Contract ($)</label>
+        <input type="number" id="cc-premium" value="215" min="1" step="5" />
+      </div>
+      <div class="calc-field">
+        <label>Annual Dividend Yield (%)</label>
+        <input type="number" id="cc-div" value="3.5" min="0" max="15" step="0.1" />
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calcCC()">Calculate →</button>
+    <div class="calc-results" id="cc-results">
+      <div class="calc-result-grid" id="cc-summary"></div>
+      <p style="color:var(--text-muted); font-size:0.82rem; margin-top:16px; line-height:1.6;">
+        <strong style="color:#fff">Note:</strong> Premium estimates assume consistent monthly cycles. Actual premiums vary with implied volatility and market conditions. This is an estimator — not a guarantee.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Position Size Calculator -->
+<div class="calc-modal-overlay" id="calc-size">
+  <div class="calc-modal">
+    <button class="modal-close" onclick="closeCalc('calc-size')">✕</button>
+    <h2>🛡 Position Size Calculator</h2>
+    <p class="calc-subtitle">Never risk more than you can afford to lose. Enter your trade parameters below.</p>
+    <div class="calc-row">
+      <div class="calc-field">
+        <label>Total Account Value ($)</label>
+        <input type="number" id="ps-account" value="50000" min="1000" step="1000" />
+      </div>
+      <div class="calc-field">
+        <label>Max Risk Per Trade</label>
+        <select id="ps-risk">
+          <option value="1">1% (Conservative)</option>
+          <option value="1.5">1.5% (Moderate)</option>
+          <option value="2" selected>2% (Standard)</option>
+        </select>
+      </div>
+    </div>
+    <div class="calc-row">
+      <div class="calc-field">
+        <label>Entry Price ($)</label>
+        <input type="number" id="ps-entry" value="185" min="0.01" step="0.5" />
+      </div>
+      <div class="calc-field">
+        <label>Stop Loss Price ($)</label>
+        <input type="number" id="ps-stop" value="175" min="0.01" step="0.5" />
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calcSize()">Calculate →</button>
+    <div class="calc-results" id="ps-results">
+      <div class="calc-result-grid" id="ps-summary"></div>
+      <p style="color:var(--text-muted); font-size:0.82rem; margin-top:16px; line-height:1.6;">
+        <strong style="color:#fff">For options trades:</strong> "Max dollar risk" is the most you should lose on a single position. For spreads, this is your max loss. For stock trades, this determines your share count above.
+      </p>
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════ GLOSSARY ══════════════════ -->
 <section class="glossary-section">
@@ -840,12 +1052,120 @@ document.querySelectorAll('.article-modal-overlay').forEach(overlay => {
 // Close on Escape
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
-    document.querySelectorAll('.article-modal-overlay.open').forEach(m => {
+    document.querySelectorAll('.article-modal-overlay.open, .calc-modal-overlay.open').forEach(m => {
       m.classList.remove('open');
       document.body.style.overflow = '';
     });
   }
 });
+
+// ── Calculator modals ──
+function openCalc(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCalc(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('.calc-modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) { this.classList.remove('open'); document.body.style.overflow = ''; }
+  });
+});
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+function pct(n) { return n.toFixed(1) + '%'; }
+
+// ── DRIP Calculator ──
+function calcDRIP() {
+  var start   = parseFloat(document.getElementById('drip-start').value) || 50000;
+  var yld     = parseFloat(document.getElementById('drip-yield').value) / 100 || 0.035;
+  var growth  = parseFloat(document.getElementById('drip-growth').value) / 100 || 0.06;
+  var years   = parseInt(document.getElementById('drip-years').value) || 20;
+  var reinvest = document.getElementById('drip-reinvest').value === 'yes';
+
+  var portfolio = start;
+  var cumIncome = 0;
+  var currentYld = yld;
+  var rows = '';
+
+  for (var y = 1; y <= years; y++) {
+    var income = portfolio * currentYld;
+    cumIncome += income;
+    if (reinvest) portfolio += income;
+    currentYld *= (1 + growth);
+    rows += '<tr><td>' + y + '</td><td>' + fmt(portfolio) + '</td><td class="green">' + fmt(income) + '</td><td>' + fmt(cumIncome) + '</td></tr>';
+  }
+
+  var finalIncome = portfolio * (yld * Math.pow(1 + growth, years));
+  document.getElementById('drip-summary').innerHTML =
+    box(fmt(portfolio), 'Final Portfolio') +
+    box(fmt(finalIncome), 'Year ' + years + ' Income') +
+    box(fmt(cumIncome), 'Total Income Generated') +
+    box(pct((portfolio / start - 1) * 100), 'Total Growth');
+  document.getElementById('drip-table').innerHTML = rows;
+  document.getElementById('drip-results').classList.add('visible');
+}
+
+// ── Covered Call Yield Estimator ──
+function calcCC() {
+  var price     = parseFloat(document.getElementById('cc-price').value) || 185;
+  var contracts = parseInt(document.getElementById('cc-contracts').value) || 3;
+  var premium   = parseFloat(document.getElementById('cc-premium').value) || 215;
+  var divYld    = parseFloat(document.getElementById('cc-div').value) / 100 || 0.035;
+
+  var shares      = contracts * 100;
+  var position    = price * shares;
+  var monthlyCall = premium * contracts;
+  var annualCall  = monthlyCall * 12;
+  var annualDiv   = position * divYld;
+  var totalAnnual = annualCall + annualDiv;
+  var totalYld    = (totalAnnual / position) * 100;
+  var callYld     = (annualCall / position) * 100;
+
+  document.getElementById('cc-summary').innerHTML =
+    box(fmt(monthlyCall), 'Monthly Call Income') +
+    box(fmt(annualCall), 'Annual Call Income') +
+    box(fmt(annualDiv), 'Annual Dividend Income') +
+    box(fmt(totalAnnual), 'Total Annual Income') +
+    box(pct(callYld), 'Call Yield on Position') +
+    box(pct(totalYld), 'Combined Total Yield');
+  document.getElementById('cc-results').classList.add('visible');
+}
+
+// ── Position Size Calculator ──
+function calcSize() {
+  var account = parseFloat(document.getElementById('ps-account').value) || 50000;
+  var riskPct = parseFloat(document.getElementById('ps-risk').value) / 100 || 0.02;
+  var entry   = parseFloat(document.getElementById('ps-entry').value) || 185;
+  var stop    = parseFloat(document.getElementById('ps-stop').value) || 175;
+
+  if (stop >= entry) {
+    alert('Stop loss must be below entry price.');
+    return;
+  }
+
+  var maxRisk    = account * riskPct;
+  var riskPerSh  = entry - stop;
+  var maxShares  = Math.floor(maxRisk / riskPerSh);
+  var maxContracts = Math.floor(maxShares / 100);
+  var positionCost = maxShares * entry;
+  var pctOfAccount = (positionCost / account) * 100;
+
+  document.getElementById('ps-summary').innerHTML =
+    box(fmt(maxRisk), 'Max Dollar Risk') +
+    box(maxShares + ' shares', 'Max Share Count') +
+    box(maxContracts > 0 ? maxContracts + ' contracts' : '< 1 contract', 'Max Contracts') +
+    box(fmt(positionCost), 'Position Cost') +
+    box(pct(pctOfAccount), '% of Account Used') +
+    box(fmt(riskPerSh) + '/sh', 'Risk Per Share');
+  document.getElementById('ps-results').classList.add('visible');
+}
+
+function box(val, label) {
+  return '<div class="calc-result-box"><div class="calc-result-num">' + val + '</div><div class="calc-result-label">' + label + '</div></div>';
+}
 </script>
 
 </body>
