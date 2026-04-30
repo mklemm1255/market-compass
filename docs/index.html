@@ -137,15 +137,20 @@
     </div>
   </div>
 </section>
+<!-- Hidden Kit form submission infrastructure -->
+<iframe name="kit-sink" style="display:none;"></iframe>
+<form id="kit-hidden-form" action="https://app.convertkit.com/forms/5c379f8548/subscriptions" method="POST" target="kit-sink" style="display:none;">
+  <input type="hidden" name="email_address" id="kit-hidden-email" />
+</form>
 <script>
+function submitToKit(email) {
+  document.getElementById('kit-hidden-email').value = email;
+  document.getElementById('kit-hidden-form').submit();
+}
 function compassSpotlightSubmit(e) {
   e.preventDefault();
   var email = document.getElementById('compassSpotlightEmail').value;
-  fetch('https://app.convertkit.com/forms/5c379f8548/subscriptions', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ email_address: email })
-  }).catch(function(){});
+  submitToKit(email);
   document.getElementById('spotlight-success').style.display = 'flex';
   setTimeout(function(){ window.open('https://pii-market-compass.streamlit.app', '_blank'); }, 800);
 }
@@ -449,13 +454,7 @@ function compassSpotlightSubmit(e) {
         function compassSubmit(e) {
           e.preventDefault();
           var email = document.getElementById('compassEmail').value;
-          // Submit to Kit in background
-          fetch('https://app.kit.com/forms/5c379f8548/subscriptions', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: 'email_address=' + encodeURIComponent(email)
-          }).catch(function(){});
-          // Launch Market Compass regardless
+          submitToKit(email);
           window.open('https://pii-market-compass.streamlit.app', '_blank');
         }
         </script>

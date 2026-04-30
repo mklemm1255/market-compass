@@ -352,27 +352,26 @@
   </div>
 </footer>
 
+<!-- Hidden Kit form submission -->
+<iframe name="kit-sink" style="display:none;"></iframe>
+<form id="kit-hidden-form" action="https://app.convertkit.com/forms/5c379f8548/subscriptions" method="POST" target="kit-sink" style="display:none;">
+  <input type="hidden" name="email_address" id="kit-hidden-email" />
+  <input type="hidden" name="fields[first_name]" id="kit-hidden-name" />
+</form>
 <script>
 function journalSubmit(e) {
   e.preventDefault();
-
   var firstName = document.getElementById('journalFirstName').value.trim();
   var email     = document.getElementById('journalEmail').value.trim();
 
-  // Submit to Kit
-  var payload = { email_address: email };
-  if (firstName) payload.fields = { first_name: firstName };
+  // Submit to Kit via hidden form (bypasses CORS)
+  document.getElementById('kit-hidden-email').value = email;
+  document.getElementById('kit-hidden-name').value = firstName;
+  document.getElementById('kit-hidden-form').submit();
 
-  fetch('https://app.convertkit.com/forms/5c379f8548/subscriptions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  }).catch(function(){});
-
-  // Show success
+  // Show success state
   document.getElementById('gate-form-wrap').style.display = 'none';
-  var success = document.getElementById('gate-success');
-  success.style.display = 'flex';
+  document.getElementById('gate-success').style.display = 'flex';
 }
 </script>
 
