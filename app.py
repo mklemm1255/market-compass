@@ -14109,6 +14109,32 @@ def render_radar_v3_module() -> None:
 inject_styles()
 render_masthead()
 
+# ---------------------------
+# Beta Notice Banner
+# ---------------------------
+st.markdown("""
+<div style="
+    border: 1px solid rgba(247, 204, 102, 0.35);
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(122,97,21,0.22), rgba(80,60,10,0.14));
+    padding: 0.85rem 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+">
+    <div style="font-size:1.25rem; line-height:1.3;">🧪</div>
+    <div>
+        <div style="font-size:0.80rem; font-weight:900; text-transform:uppercase; letter-spacing:0.12em; color:#f7cc66; margin-bottom:0.25rem;">Beta Testing Mode</div>
+        <div style="font-size:0.88rem; color:#e8d9a8; line-height:1.55;">
+            Market Compass is currently in beta. <strong>Scanner data is a curated sample</strong> and does not reflect live market conditions — live data integration is in progress.
+            <strong>Ask RADAR</strong> is running as a local prototype; full AI-powered responses are coming soon.
+            We'll let you know when everything is fully wired up with live, verified data.
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
 # ── Session-state navigation ─────────────────────────────────────────────
 _NAV_ITEMS = [
     ("scanner",  "🔍", "Option Scanner",   "Strategy-first scanner",
