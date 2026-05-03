@@ -13994,9 +13994,16 @@ def render_radar_v3_module() -> None:
             unsafe_allow_html=True,
         )
 
+        _radar_input_key = f"radar_v3_input_{st.session_state['radar_v3_input_ver']}"
+        _preset_pending = st.session_state.pop("radar_v3_preset_pending", None)
+        if _preset_pending:
+            st.session_state["radar_v3_input_ver"] += 1
+            _radar_input_key = f"radar_v3_input_{st.session_state['radar_v3_input_ver']}"
+            st.session_state[_radar_input_key] = _preset_pending
+
         st.text_area(
             "Ask RADAR a question",
-            key="radar_v3_input",
+            key=_radar_input_key,
             height=118,
             placeholder="Example: Explain why this ticker fits CC & CSP better than Credit Spread right now.",
         )
@@ -14009,8 +14016,9 @@ def render_radar_v3_module() -> None:
             clear_clicked = st.button("Clear", use_container_width=True)
 
         if clear_clicked:
-            st.session_state["radar_v3_input"] = ""
+            st.session_state["radar_v3_input_ver"] += 1
             st.session_state["radar_v3_response"] = "RADAR is ready. Type a question, then click Ask RADAR."
+            st.rerun()
 
         _RADAR_QUESTION_LIMIT = 5
         _questions_used = st.session_state.get("radar_v3_questions_used", 0)
