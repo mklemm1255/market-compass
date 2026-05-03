@@ -13912,8 +13912,8 @@ if "indicator_interest_log" not in st.session_state:
 
 
 def render_radar_v3_module() -> None:
-    if "radar_v3_input" not in st.session_state:
-        st.session_state["radar_v3_input"] = ""
+    if "radar_v3_input_ver" not in st.session_state:
+        st.session_state["radar_v3_input_ver"] = 0
     if "radar_v3_mode" not in st.session_state:
         st.session_state["radar_v3_mode"] = "Live Local Prototype"
     if "radar_v3_scope" not in st.session_state:
