@@ -1816,7 +1816,7 @@ def live_radar_response(prompt: str, ticker: str, focus: str, scope: str) -> str
         "generationConfig": {"maxOutputTokens": 400, "temperature": 0.4},
     }).encode("utf-8")
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
     req = Request(url, data=payload, headers={"content-type": "application/json"}, method="POST")
     try:
         with urlopen(req, timeout=20) as resp:
