@@ -14090,7 +14090,8 @@ def render_radar_v3_module() -> None:
         ]
         for i, prompt in enumerate(prompt_list):
             if st.button(prompt, key=f"radar_v3_prompt_{i}", use_container_width=True):
-                st.session_state["radar_v3_input"] = prompt
+                st.session_state["radar_v3_preset_pending"] = prompt
+                st.rerun()
 
         st.markdown("<div class='section-label'>RADAR Grounding</div>", unsafe_allow_html=True)
         st.markdown(
