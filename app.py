@@ -14034,7 +14034,7 @@ def render_radar_v3_module() -> None:
             )
 
         if ask_clicked:
-            _q_input = st.session_state.get("radar_v3_input", "").strip()
+            _q_input = st.session_state.get(_radar_input_key, "").strip()
             if not _q_input:
                 st.session_state["radar_v3_response"] = "Please type a question first."
             elif _questions_used >= _RADAR_QUESTION_LIMIT:
@@ -14051,7 +14051,7 @@ def render_radar_v3_module() -> None:
                     _live = live_radar_response(_q_input, ticker, focus, scope)
                 st.session_state["radar_v3_response"] = _live
                 st.session_state["radar_v3_questions_used"] = _questions_used + 1
-                st.session_state["radar_v3_input"] = ""
+                st.session_state["radar_v3_input_ver"] += 1
             else:
                 # Fallback to canned response if no API key
                 ticker = st.session_state["radar_v3_context_ticker"]
