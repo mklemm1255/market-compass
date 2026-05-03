@@ -1792,11 +1792,24 @@ def get_gemini_api_key() -> str | None:
             return val
     return None
 
+def get_openai_api_key() -> str | None:
+    for name in ("OPENAI_API_KEY",):
+        try:
+            val = st.secrets.get(name)
+            if val:
+                return val
+        except Exception:
+            pass
+        val = os.environ.get(name)
+        if val:
+            return val
+    return None
+
 def live_radar_response(prompt: str, ticker: str, focus: str, scope: str) -> str:
-    """Call Google Gemini API via urllib — no SDK needed."""
-    api_key = get_gemini_api_key()
+    """Call OpenAI API via urllib — no SDK needed."""
+    api_key = get_openai_api_key()
     if not api_key:
-        return "RADAR is not connected yet. Add your Google API key to Streamlit Secrets to enable live responses."
+        return "RADAR is not connected yet. Add your OPENAI_API_KEY to Streamlit Secrets to enable live responses."
 
     system_msg = (
         "You are RADAR — Research, Analysis, Decision, and Reasoning — the AI assistant "
@@ -1811,20 +1824,27 @@ def live_radar_response(prompt: str, ticker: str, focus: str, scope: str) -> str
     )
 
     payload = json.dumps({
-        "system_instruction": {"parts": [{"text": system_msg}]},
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"maxOutputTokens": 400, "temperature": 0.4},
+        "model": "gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system_msg},
+            {"role": "user", "content": prompt},
+        ],
+        "max_tokens": 400,
+        "temperature": 0.4,
     }).encode("utf-8")
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
-    req = Request(url, data=payload, headers={"content-type": "application/json"}, method="POST")
+    url = "https://api.openai.com/v1/chat/completions"
+    req = Request(url, data=payload, headers={
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}",
+    }, method="POST")
     try:
         with urlopen(req, timeout=20) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-            return data["candidates"][0]["content"]["parts"][0]["text"].strip()
+            return data["choices"][0]["message"]["content"].strip()
     except HTTPError as e:
         body = e.read().decode("utf-8") if hasattr(e, "read") else ""
-        return f"RADAR API error ({e.code}). Please try again. {body[:120]}"
+        return f"RADAR could not connect ({e.code}). Please try again. {body[:120]}"
     except Exception as e:
         return f"RADAR could not connect. Please try again. ({e})"
 
