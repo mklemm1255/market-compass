@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free Roth Conversion Decision Worksheet — a simple Practical Income Investing tool to help you think through whether a Roth conversion may be worth exploring before speaking with a tax professional." />
+  <title>Free Roth Conversion Decision Worksheet — Practical Income Investing</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+
+    /* ── WORKSHEET HERO ── */
+    .roth-hero {
+      padding: 140px 0 80px;
+      background: var(--dark);
+      position: relative;
+      overflow: hidden;
+    }
+    .roth-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 55% at 80% 30%, rgba(212,175,55,0.06) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 50% at 15% 80%, rgba(109,192,64,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .roth-hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
+      position: relative; z-index: 1;
+    }
+    .roth-hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 20px;
+    }
+    .roth-hero-eyebrow::before {
+      content: ''; width: 28px; height: 2px; background: var(--gold); border-radius: 2px;
+    }
+    .roth-hero h1 { margin-bottom: 20px; }
+    .roth-hero h1 em { font-style: normal; color: var(--gold); }
+    .roth-hero-sub {
+      font-size: 1.05rem; color: rgba(255,255,255,0.6);
+      margin-bottom: 36px; line-height: 1.75;
+    }
+    .roth-what-covers {
+      list-style: none; margin-bottom: 28px;
+    }
+    .roth-what-covers li {
+      display: flex; align-items: flex-start; gap: 12px;
+      color: rgba(255,255,255,0.75); font-size: 0.88rem;
+      padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .roth-what-covers li:last-child { border-bottom: none; }
+    .roth-what-covers .roth-check {
+      flex-shrink: 0; width: 20px; height: 20px;
+      background: rgba(212,175,55,0.12); border: 1px solid rgba(212,175,55,0.35);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; color: var(--gold); font-weight: 900;
+      margin-top: 1px;
+    }
+
+    /* ── EMAIL GATE CARD (gold accent variant for worksheet) ── */
+    .roth-gate-card {
+      background: linear-gradient(160deg, #1A160A 0%, #201A0C 100%);
+      border: 1px solid rgba(212,175,55,0.35);
+      border-radius: 20px;
+      padding: 44px 36px;
+      box-shadow: 0 0 28px rgba(212,175,55,0.12), 0 12px 48px rgba(0,0,0,0.5);
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .gate-icon { font-size: 3.8rem; line-height: 1; margin-bottom: 14px; }
+    .gate-title {
+      font-size: 1.35rem; font-weight: 900; color: var(--white);
+      margin-bottom: 8px; letter-spacing: -0.01em;
+    }
+    .gate-subtitle {
+      font-size: 0.84rem; color: rgba(255,255,255,0.5);
+      margin-bottom: 24px; line-height: 1.65;
+    }
+    .gate-badge-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
+    .gate-badge {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 20px;
+    }
+    .gate-form {
+      width: 100%; display: flex; flex-direction: column; gap: 10px;
+    }
+    .gate-form input[type="text"],
+    .gate-form input[type="email"] {
+      width: 100%; padding: 13px 16px; border-radius: 8px;
+      border: 1px solid rgba(212,175,55,0.3);
+      background: rgba(255,255,255,0.05); color: var(--white);
+      font-family: 'Montserrat', sans-serif; font-size: 0.88rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .gate-form input::placeholder { color: rgba(255,255,255,0.3); }
+    .gate-form input:focus { border-color: var(--gold); }
+    .gate-submit {
+      width: 100%; padding: 14px 28px; font-size: 0.9rem;
+      border-radius: 10px; margin-top: 4px; cursor: pointer;
+      border: none; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      background: var(--gold); color: #1A0800;
+      transition: all 0.22s ease;
+    }
+    .gate-submit:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 0 24px rgba(212,175,55,0.35); }
+    .gate-note { font-size: 0.68rem; color: rgba(255,255,255,0.22); margin-top: 12px; line-height: 1.6; }
+
+    /* Direct download link (no-email option) */
+    .gate-direct-link {
+      margin-top: 10px;
+      font-size: 0.7rem; color: rgba(255,255,255,0.25);
+    }
+    .gate-direct-link a {
+      color: rgba(212,175,55,0.45); text-decoration: underline;
+      text-underline-offset: 2px; transition: color 0.2s;
+    }
+    .gate-direct-link a:hover { color: rgba(212,175,55,0.7); }
+
+    /* ── SUCCESS STATE ── */
+    .gate-success {
+      display: none; flex-direction: column; align-items: center; gap: 14px; width: 100%;
+    }
+    .gate-success-icon { font-size: 3.5rem; }
+    .gate-success h3 { font-size: 1.3rem; font-weight: 900; color: var(--gold); }
+    .gate-success p { font-size: 0.88rem; color: rgba(255,255,255,0.6); line-height: 1.65; }
+    .btn-download {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--gold); color: #1A0800;
+      border: 2px solid var(--gold); border-radius: 8px;
+      padding: 14px 32px; font-family: 'Montserrat', sans-serif;
+      font-size: 0.88rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; text-decoration: none;
+      transition: all 0.22s ease; margin-top: 6px;
+    }
+    .btn-download:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 0 24px rgba(212,175,55,0.35); }
+
+    /* ── WHAT IT COVERS SECTION ── */
+    .roth-details {
+      background: var(--dark-card);
+      padding: 96px 0;
+    }
+    .roth-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px; margin-top: 52px;
+    }
+    .roth-card {
+      background: var(--dark); border: 1px solid var(--dark-border);
+      border-radius: 14px; padding: 28px;
+      border-left: 3px solid var(--gold);
+      transition: all 0.25s;
+    }
+    .roth-card:hover { border-color: rgba(212,175,55,0.5); transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+    .roth-card-icon { font-size: 1.8rem; margin-bottom: 14px; }
+    .roth-card h3 { font-size: 0.97rem; margin-bottom: 8px; color: var(--white); }
+    .roth-card p { font-size: 0.83rem; color: rgba(255,255,255,0.5); line-height: 1.7; }
+
+    /* ── DISCLAIMER SECTION ── */
+    .roth-disclaimer-section {
+      background: var(--dark);
+      padding: 64px 0;
+      border-top: 1px solid var(--dark-border);
+    }
+    .roth-disclaimer-box {
+      max-width: 780px; margin: 0 auto;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 32px 36px;
+    }
+    .roth-disclaimer-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(255,255,255,0.25);
+      margin-bottom: 12px;
+    }
+    .roth-disclaimer-box p {
+      font-size: 0.8rem; color: rgba(255,255,255,0.35);
+      line-height: 1.75; margin: 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .roth-hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .roth-cards-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .roth-gate-card { padding: 32px 24px; }
+      .roth-cards-grid { grid-template-columns: 1fr; }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ NAVIGATION ═══════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="pii-emblem-3d.png" alt="PII" class="nav-emblem" />
+      <span class="nav-logo-text">PRACTICAL <span class="green">INCOME</span> INVESTING</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="strategies.html">Strategies</a></li>
+      <li><a href="journal.html">Trading Journal</a></li>
+      <li><a href="indicators.html">Indicators</a></li>
+      <li><a href="blog.html">Resources</a></li>
+      <li><a href="journal.html">Free Journal</a></li>
+    </ul>
+    <a href="index.html#market-compass" class="btn btn-green nav-cta">🧭 Market Compass</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="roth-hero">
+  <div class="container">
+    <div class="roth-hero-inner">
+
+      <!-- Left: pitch -->
+      <div>
+        <div class="roth-hero-eyebrow">Retirement Education Series · Free Download</div>
+        <h1>Free Roth Conversion<br><em>Decision Worksheet</em></h1>
+        <p class="roth-hero-sub">
+          A simple Practical Income Investing worksheet to help you think through
+          whether a Roth conversion may be worth exploring before speaking with a
+          CPA, tax professional, or advisor.
+        </p>
+
+        <ul class="roth-what-covers">
+          <li>
+            <span class="roth-check">✓</span>
+            Understand the key factors that make a Roth conversion worth considering
+          </li>
+          <li>
+            <span class="roth-check">✓</span>
+            Walk through your current tax situation and bracket context
+          </li>
+          <li>
+            <span class="roth-check">✓</span>
+            Evaluate timeline and "pay taxes now vs. later" tradeoffs clearly
+          </li>
+          <li>
+            <span class="roth-check">✓</span>
+            Consider Medicare, Social Security, and IRMAA implications
+          </li>
+          <li>
+            <span class="roth-check">✓</span>
+            Arrive at your next conversation with your advisor fully prepared
+          </li>
+        </ul>
+      </div>
+
+      <!-- Right: email gate card -->
+      <div class="roth-gate-card">
+        <div id="roth-gate-form-wrap">
+          <div class="gate-icon">📋</div>
+          <div class="gate-title">Get the Free Worksheet</div>
+          <div class="gate-subtitle">Enter your details below and download the worksheet instantly.</div>
+
+          <div class="gate-badge-row">
+            <span class="gate-badge" style="background:rgba(212,175,55,0.1);color:var(--gold);border:1px solid rgba(212,175,55,0.3);">100% Free</span>
+            <span class="gate-badge" style="background:rgba(109,192,64,0.08);color:var(--green);border:1px solid rgba(109,192,64,0.25);">3-Page PDF</span>
+            <span class="gate-badge" style="background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);">Instant Download</span>
+          </div>
+
+          <form class="gate-form" onsubmit="rothSubmit(event)">
+            <input type="text" id="rothFirstName" placeholder="First name" required />
+            <input type="email" id="rothEmail" placeholder="your@email.com" required />
+            <button type="submit" class="gate-submit">Download the Worksheet →</button>
+          </form>
+          <p class="gate-note">No spam. Just income investing education and tools. Unsubscribe anytime.</p>
+
+          <!--
+            EMAIL CAPTURE NOTE:
+            Currently connected to Kit (ConvertKit) Form ID 9381328.
+            To segment Roth worksheet subscribers separately from other leads,
+            create a new Kit Form or Tag specifically for this lead magnet and
+            update the kit-roth-hidden-form action URL and the tag field below.
+            Example: add a hidden input: <input type="hidden" name="tags[]" value="roth-worksheet" />
+          -->
+          <p class="gate-direct-link">Prefer not to subscribe? <a href="downloads/Roth_Conversion_Decision_Worksheet_Practical_Income_Investing.pdf" target="_blank">Download directly here.</a></p>
+        </div>
+
+        <div class="gate-success" id="roth-gate-success">
+          <div class="gate-success-icon">✅</div>
+          <h3>You're all set!</h3>
+          <p>Your worksheet is ready. Click below to download it — and check your inbox for a confirmation from us.</p>
+          <a href="downloads/Roth_Conversion_Decision_Worksheet_Practical_Income_Investing.pdf"
+             download="Roth_Conversion_Decision_Worksheet_Practical_Income_Investing.pdf"
+             class="btn-download">
+            ⬇ Download the Worksheet
+          </a>
+          <p style="margin-top: 12px; font-size:0.75rem; color:rgba(255,255,255,0.3);">
+            File not downloading? <a href="downloads/Roth_Conversion_Decision_Worksheet_Practical_Income_Investing.pdf" target="_blank" style="color:rgba(212,175,55,0.5); text-decoration:underline;">Open in browser.</a>
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ WHAT THE WORKSHEET COVERS ═══════════════════ -->
+<section class="roth-details">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Inside the Worksheet</span>
+      <h2>Think It Through Before<br><span class="gold">You Call Your Advisor</span></h2>
+      <p>A Roth conversion decision has a lot of moving parts. This worksheet helps you organize your thinking — so your next professional conversation is focused, informed, and efficient.</p>
+    </div>
+
+    <div class="roth-cards-grid">
+      <div class="roth-card">
+        <div class="roth-card-icon">📊</div>
+        <h3>Tax Bracket Snapshot</h3>
+        <p>Map out where you sit today and estimate where a conversion would push your taxable income — before you make any moves.</p>
+      </div>
+      <div class="roth-card">
+        <div class="roth-card-icon">⏱️</div>
+        <h3>Time Horizon Check</h3>
+        <p>Evaluate how many years you have before RMDs kick in and whether your timeline supports paying taxes now at a potentially lower rate.</p>
+      </div>
+      <div class="roth-card">
+        <div class="roth-card-icon">🏥</div>
+        <h3>Medicare &amp; IRMAA Awareness</h3>
+        <p>A conversion can push income above IRMAA thresholds, increasing Medicare Part B and D premiums. The worksheet flags this before it surprises you.</p>
+      </div>
+      <div class="roth-card">
+        <div class="roth-card-icon">💰</div>
+        <h3>Social Security Impact</h3>
+        <p>Higher income in a conversion year can increase how much of your Social Security benefit is taxable. Know the range before you decide.</p>
+      </div>
+      <div class="roth-card">
+        <div class="roth-card-icon">🧮</div>
+        <h3>Conversion Amount Sizing</h3>
+        <p>Think through what amount to convert — filling up a bracket, partial conversions, or full conversions — and what each means for your tax bill.</p>
+      </div>
+      <div class="roth-card">
+        <div class="roth-card-icon">📋</div>
+        <h3>Advisor Prep Checklist</h3>
+        <p>Arrive at your CPA or financial advisor meeting with your questions answered and your numbers organized — so the conversation goes straight to decisions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ BOTTOM CTA ═══════════════════ -->
+<section style="background: linear-gradient(135deg, #1A1400 0%, #1E1800 100%); padding: 80px 0; text-align: center; border-top: 1px solid rgba(212,175,55,0.15);">
+  <div class="container" style="max-width: 600px;">
+    <span class="section-label" style="color:var(--gold); border-color:rgba(212,175,55,0.3); background:rgba(212,175,55,0.07);">It's Free</span>
+    <h2 style="margin-bottom: 16px;">Ready to Think Through<br><span class="gold">Your Roth Decision?</span></h2>
+    <p style="margin-bottom: 32px; font-size: 1.02rem;">Get the worksheet, do the thinking, then walk into your advisor conversation with real clarity.</p>
+    <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" class="btn btn-gold" style="font-size:0.95rem; padding: 15px 36px;">
+      Get the Free Worksheet ↑
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════════════ DISCLAIMER ═══════════════════ -->
+<section class="roth-disclaimer-section">
+  <div class="container">
+    <div class="roth-disclaimer-box">
+      <div class="roth-disclaimer-label">Important Disclaimer</div>
+      <p>
+        This worksheet is for educational and informational purposes only. It is not tax, legal, investment, or
+        financial advice. Roth conversions can affect taxable income, tax brackets, Medicare premiums, Social
+        Security taxation, health insurance subsidies, and retirement planning. Every individual's situation is
+        different. Always consult a qualified tax professional, CPA, or financial advisor before making a
+        Roth conversion decision.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="pii-emblem-3d.png" alt="PII" class="footer-emblem" />
+        <span class="footer-brand">PRACTICAL <span>INCOME</span> INVESTING</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="strategies.html">Strategies</a></li>
+        <li><a href="journal.html">Free Journal</a></li>
+        <li><a href="index.html#market-compass">Market Compass</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2026 Practical Income Investing. All rights reserved.</p>
+    <p class="footer-disc">Options trading involves significant risk and is not appropriate for all investors. Past performance is not indicative of future results. This content is for educational purposes only and does not constitute financial advice.</p>
+  </div>
+</footer>
+
+<!-- Hidden Kit form submission -->
+<iframe name="kit-roth-sink" style="display:none;"></iframe>
+<form id="kit-roth-hidden-form" action="https://app.convertkit.com/forms/9381328/subscriptions" method="POST" target="kit-roth-sink" style="display:none;">
+  <input type="hidden" name="email_address" id="kit-roth-hidden-email" />
+  <input type="hidden" name="fields[first_name]" id="kit-roth-hidden-name" />
+  <!-- TAG NOTE: Uncomment and set a Kit tag ID below to segment Roth worksheet leads separately -->
+  <!-- <input type="hidden" name="tags[]" value="YOUR_TAG_ID_HERE" /> -->
+</form>
+
+<script>
+function rothSubmit(e) {
+  e.preventDefault();
+  var firstName = document.getElementById('rothFirstName').value.trim();
+  var email     = document.getElementById('rothEmail').value.trim();
+
+  // Submit to Kit via hidden form (bypasses CORS)
+  document.getElementById('kit-roth-hidden-email').value = email;
+  document.getElementById('kit-roth-hidden-name').value = firstName;
+  document.getElementById('kit-roth-hidden-form').submit();
+
+  // Show success state with download button
+  document.getElementById('roth-gate-form-wrap').style.display = 'none';
+  document.getElementById('roth-gate-success').style.display   = 'flex';
+
+  // Trigger the download automatically after a short delay
+  setTimeout(function() {
+    var a = document.createElement('a');
+    a.href = 'downloads/Roth_Conversion_Decision_Worksheet_Practical_Income_Investing.pdf';
+    a.download = 'Roth_Conversion_Decision_Worksheet_Practical_Income_Investing.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }, 600);
+}
+</script>
+
+</body>
+</html>
