@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free guide — How I Built My AI Trading Assistants. A beginner-friendly Practical Income Investing walkthrough for setting up ChatGPT + Claude for trade planning, logging, dashboards, risk review, and daily workflow support." />
+  <title>Free Guide: How I Built My AI Trading Assistants — Practical Income Investing</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+
+    /* ── GUIDE HERO ── */
+    .guide-hero {
+      padding: 140px 0 80px;
+      background: var(--dark);
+      position: relative;
+      overflow: hidden;
+    }
+    .guide-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 55% at 80% 30%, rgba(109,192,64,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 50% at 15% 80%, rgba(109,192,64,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .guide-hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
+      position: relative; z-index: 1;
+    }
+    .guide-hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--green); margin-bottom: 20px;
+    }
+    .guide-hero-eyebrow::before {
+      content: ''; width: 28px; height: 2px; background: var(--green); border-radius: 2px;
+    }
+    .guide-hero h1 { margin-bottom: 20px; }
+    .guide-hero h1 em { font-style: normal; color: var(--green); }
+    .guide-hero-sub {
+      font-size: 1.05rem; color: rgba(255,255,255,0.6);
+      margin-bottom: 36px; line-height: 1.75;
+    }
+    .guide-what-covers {
+      list-style: none; margin-bottom: 28px;
+    }
+    .guide-what-covers li {
+      display: flex; align-items: flex-start; gap: 12px;
+      color: rgba(255,255,255,0.75); font-size: 0.88rem;
+      padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .guide-what-covers li:last-child { border-bottom: none; }
+    .guide-what-covers .guide-check {
+      flex-shrink: 0; width: 20px; height: 20px;
+      background: rgba(109,192,64,0.12); border: 1px solid rgba(109,192,64,0.35);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; color: var(--green); font-weight: 900;
+      margin-top: 1px;
+    }
+
+    /* ── EMAIL GATE CARD (green accent) ── */
+    .guide-gate-card {
+      background: linear-gradient(160deg, #0A1A08 0%, #0C200E 100%);
+      border: 1px solid rgba(109,192,64,0.35);
+      border-radius: 20px;
+      padding: 44px 36px;
+      box-shadow: 0 0 28px rgba(109,192,64,0.12), 0 12px 48px rgba(0,0,0,0.5);
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .gate-icon { font-size: 3.8rem; line-height: 1; margin-bottom: 14px; }
+    .gate-title {
+      font-size: 1.35rem; font-weight: 900; color: var(--white);
+      margin-bottom: 8px; letter-spacing: -0.01em;
+    }
+    .gate-subtitle {
+      font-size: 0.84rem; color: rgba(255,255,255,0.5);
+      margin-bottom: 24px; line-height: 1.65;
+    }
+    .gate-badge-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
+    .gate-badge {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 20px;
+    }
+    .gate-form {
+      width: 100%; display: flex; flex-direction: column; gap: 10px;
+    }
+    .gate-form input[type="text"],
+    .gate-form input[type="email"] {
+      width: 100%; padding: 13px 16px; border-radius: 8px;
+      border: 1px solid rgba(109,192,64,0.3);
+      background: rgba(255,255,255,0.05); color: var(--white);
+      font-family: 'Montserrat', sans-serif; font-size: 0.88rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .gate-form input::placeholder { color: rgba(255,255,255,0.3); }
+    .gate-form input:focus { border-color: var(--green); }
+    .gate-submit {
+      width: 100%; padding: 14px 28px; font-size: 0.9rem;
+      border-radius: 10px; margin-top: 4px; cursor: pointer;
+      border: none; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      background: var(--green); color: #0A1200;
+      transition: all 0.22s ease;
+    }
+    .gate-submit:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 0 24px rgba(109,192,64,0.35); }
+    .gate-note { font-size: 0.68rem; color: rgba(255,255,255,0.22); margin-top: 12px; line-height: 1.6; }
+
+    /* Direct download link (no-email option) */
+    .gate-direct-link {
+      margin-top: 10px;
+      font-size: 0.7rem; color: rgba(255,255,255,0.25);
+    }
+    .gate-direct-link a {
+      color: rgba(109,192,64,0.5); text-decoration: underline;
+      text-underline-offset: 2px; transition: color 0.2s;
+    }
+    .gate-direct-link a:hover { color: rgba(109,192,64,0.8); }
+
+    /* ── SUCCESS STATE ── */
+    .gate-success {
+      display: none; flex-direction: column; align-items: center; gap: 14px; width: 100%;
+    }
+    .gate-success-icon { font-size: 3.5rem; }
+    .gate-success h3 { font-size: 1.3rem; font-weight: 900; color: var(--green); }
+    .gate-success p { font-size: 0.88rem; color: rgba(255,255,255,0.6); line-height: 1.65; }
+    .btn-download {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--green); color: #0A1200;
+      border: 2px solid var(--green); border-radius: 8px;
+      padding: 14px 32px; font-family: 'Montserrat', sans-serif;
+      font-size: 0.88rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; text-decoration: none;
+      transition: all 0.22s ease; margin-top: 6px;
+    }
+    .btn-download:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 0 24px rgba(109,192,64,0.35); }
+
+    /* ── WHAT IT COVERS SECTION ── */
+    .guide-details {
+      background: var(--dark-card);
+      padding: 96px 0;
+    }
+    .guide-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px; margin-top: 52px;
+    }
+    .guide-card {
+      background: var(--dark); border: 1px solid var(--dark-border);
+      border-radius: 14px; padding: 28px;
+      border-left: 3px solid var(--green);
+      transition: all 0.25s;
+    }
+    .guide-card:hover { border-color: rgba(109,192,64,0.5); transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+    .guide-card-icon { font-size: 1.8rem; margin-bottom: 14px; }
+    .guide-card h3 { font-size: 0.97rem; margin-bottom: 8px; color: var(--white); }
+    .guide-card p { font-size: 0.83rem; color: rgba(255,255,255,0.5); line-height: 1.7; }
+
+    /* ── DISCLAIMER SECTION ── */
+    .guide-disclaimer-section {
+      background: var(--dark);
+      padding: 64px 0;
+      border-top: 1px solid var(--dark-border);
+    }
+    .guide-disclaimer-box {
+      max-width: 780px; margin: 0 auto;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 32px 36px;
+    }
+    .guide-disclaimer-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(255,255,255,0.25);
+      margin-bottom: 12px;
+    }
+    .guide-disclaimer-box p {
+      font-size: 0.8rem; color: rgba(255,255,255,0.35);
+      line-height: 1.75; margin: 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .guide-hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .guide-cards-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .guide-gate-card { padding: 32px 24px; }
+      .guide-cards-grid { grid-template-columns: 1fr; }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ NAVIGATION ═══════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="pii-emblem-3d.png" alt="PII" class="nav-emblem" />
+      <span class="nav-logo-text">PRACTICAL <span class="green">INCOME</span> INVESTING</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="strategies.html">Strategies</a></li>
+      <li><a href="journal.html">Trading Journal</a></li>
+      <li><a href="indicators.html">Indicators</a></li>
+      <li><a href="blog.html">Resources</a></li>
+      <li><a href="journal.html">Free Journal</a></li>
+    </ul>
+    <a href="index.html#market-compass" class="btn btn-green nav-cta">🧭 Market Compass</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="guide-hero">
+  <div class="container">
+    <div class="guide-hero-inner">
+
+      <!-- Left: pitch -->
+      <div>
+        <div class="guide-hero-eyebrow">AI &amp; Workflow Series · Free Download</div>
+        <h1>How I Built My<br><em>AI Trading Assistants</em></h1>
+        <p class="guide-hero-sub">
+          A beginner-friendly guide to setting up ChatGPT + Claude as your
+          trade-planning, logging, dashboard, risk-review, and daily-workflow
+          partners — the actual system I use, explained in plain English.
+        </p>
+
+        <ul class="guide-what-covers">
+          <li>
+            <span class="guide-check">✓</span>
+            Set up ChatGPT + Claude to work together — one plans, the other builds
+          </li>
+          <li>
+            <span class="guide-check">✓</span>
+            "Vibe coding" explained — talk to AI instead of writing perfect commands
+          </li>
+          <li>
+            <span class="guide-check">✓</span>
+            Interview your AI so it learns your style, goals, account size, and risk tolerance
+          </li>
+          <li>
+            <span class="guide-check">✓</span>
+            Build a real workflow: pre-trade review, logging, position management, end-of-day
+          </li>
+          <li>
+            <span class="guide-check">✓</span>
+            Apply risk guardrails, emotional circuit breakers, and bear-market rules
+          </li>
+          <li>
+            <span class="guide-check">✓</span>
+            A copy/paste prompt appendix you can adapt to your own workflow
+          </li>
+        </ul>
+      </div>
+
+      <!-- Right: email gate card -->
+      <div class="guide-gate-card">
+        <div id="guide-gate-form-wrap">
+          <div class="gate-icon">🤖</div>
+          <div class="gate-title">Get the Free Guide</div>
+          <div class="gate-subtitle">Enter your details below and download the 18-page guide instantly.</div>
+
+          <div class="gate-badge-row">
+            <span class="gate-badge" style="background:rgba(109,192,64,0.1);color:var(--green);border:1px solid rgba(109,192,64,0.3);">100% Free</span>
+            <span class="gate-badge" style="background:rgba(212,175,55,0.1);color:var(--gold);border:1px solid rgba(212,175,55,0.25);">18-Page PDF</span>
+            <span class="gate-badge" style="background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);">Instant Download</span>
+          </div>
+
+          <form class="gate-form" onsubmit="guideSubmit(event)">
+            <input type="text" id="guideFirstName" placeholder="First name" required />
+            <input type="email" id="guideEmail" placeholder="your@email.com" required />
+            <button type="submit" class="gate-submit">Download the Guide →</button>
+          </form>
+          <p class="gate-note">No spam. Just income investing education and tools. Unsubscribe anytime.</p>
+
+          <!--
+            EMAIL CAPTURE NOTE:
+            Currently connected to Kit (ConvertKit) Form ID 9381328.
+            To segment AI-guide subscribers separately from other leads,
+            create a new Kit Form or Tag specifically for this lead magnet and
+            update the kit-guide-hidden-form action URL and the tag field below.
+            Example: add a hidden input: <input type="hidden" name="tags[]" value="ai-trading-guide" />
+          -->
+          <p class="gate-direct-link">Prefer not to subscribe? <a href="downloads/Practical_Income_Investing_AI_Trading_Assistant_Guide.pdf" target="_blank">Download directly here.</a></p>
+        </div>
+
+        <div class="gate-success" id="guide-gate-success">
+          <div class="gate-success-icon">✅</div>
+          <h3>You're all set!</h3>
+          <p>Your guide is ready. Click below to download it — and check your inbox for a confirmation from us.</p>
+          <a href="downloads/Practical_Income_Investing_AI_Trading_Assistant_Guide.pdf"
+             download="Practical_Income_Investing_AI_Trading_Assistant_Guide.pdf"
+             class="btn-download">
+            ⬇ Download the Guide
+          </a>
+          <p style="margin-top: 12px; font-size:0.75rem; color:rgba(255,255,255,0.3);">
+            File not downloading? <a href="downloads/Practical_Income_Investing_AI_Trading_Assistant_Guide.pdf" target="_blank" style="color:rgba(109,192,64,0.5); text-decoration:underline;">Open in browser.</a>
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ WHAT THE GUIDE COVERS ═══════════════════ -->
+<section class="guide-details">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Inside the Guide</span>
+      <h2>An AI Workflow Built for<br><span class="green">Real Traders</span></h2>
+      <p>This isn't a magic trading bot. It's a practical, repeatable system for using AI as your trade journal, risk checker, file builder, and thinking partner — one you improve over time.</p>
+    </div>
+
+    <div class="guide-cards-grid">
+      <div class="guide-card">
+        <div class="guide-card-icon">🤖</div>
+        <h3>The Two-Model Setup</h3>
+        <p>Use ChatGPT and Claude together — one as the fast reasoning and pressure-testing layer, the other for files, dashboards, and longer-form building.</p>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-icon">🗣️</div>
+        <h3>Vibe Coding, Explained</h3>
+        <p>Build with plain English instead of perfect code. Talk to the AI about what you want and iterate — no technical background required.</p>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-icon">🎯</div>
+        <h3>Interview Your AI</h3>
+        <p>Teach your assistant your trading style, goals, account size, risk tolerance, and blind spots so it actually helps from day one.</p>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-icon">📋</div>
+        <h3>A Daily Workflow</h3>
+        <p>Set up pre-trade review, trade logging, position management, and an end-of-day recap that captures what worked and what to fix.</p>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-icon">🛡️</div>
+        <h3>Risk Guardrails</h3>
+        <p>Build in emotional circuit breakers and bear-market rules, and keep your trading account separate from your long-term wealth bucket.</p>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-icon">📝</div>
+        <h3>Prompt Appendix</h3>
+        <p>A copy/paste library of prompts you can adapt to your own trading workflow and start using immediately.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ BOTTOM CTA ═══════════════════ -->
+<section style="background: linear-gradient(135deg, #0A1A08 0%, #0C200E 100%); padding: 80px 0; text-align: center; border-top: 1px solid rgba(109,192,64,0.15);">
+  <div class="container" style="max-width: 600px;">
+    <span class="section-label" style="color:var(--green); border-color:rgba(109,192,64,0.3); background:rgba(109,192,64,0.07);">It's Free</span>
+    <h2 style="margin-bottom: 16px;">Ready to Build Your Own<br><span class="green">AI Trading Assistant?</span></h2>
+    <p style="margin-bottom: 32px; font-size: 1.02rem;">Grab the guide, set up the workflow, and put AI to work as your trade journal, risk checker, and thinking partner.</p>
+    <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" class="btn btn-green" style="font-size:0.95rem; padding: 15px 36px;">
+      Get the Free Guide ↑
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════════════ DISCLAIMER ═══════════════════ -->
+<section class="guide-disclaimer-section">
+  <div class="container">
+    <div class="guide-disclaimer-box">
+      <div class="guide-disclaimer-label">Important Disclaimer</div>
+      <p>
+        This guide is for educational and informational purposes only. It describes one trader's personal
+        AI-assisted workflow and is not financial, investment, legal, tax, or trading advice, and not a
+        recommendation to buy, sell, trade, hold, automate, or connect any account. AI tools can be wrong,
+        outdated, overconfident, or misconfigured — verify everything before acting. You are responsible for
+        your own accounts, security, risk, taxes, broker rules, and decisions.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="pii-emblem-3d.png" alt="PII" class="footer-emblem" />
+        <span class="footer-brand">PRACTICAL <span>INCOME</span> INVESTING</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="strategies.html">Strategies</a></li>
+        <li><a href="journal.html">Free Journal</a></li>
+        <li><a href="index.html#market-compass">Market Compass</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2026 Practical Income Investing. All rights reserved.</p>
+    <p class="footer-disc">Options trading involves significant risk and is not appropriate for all investors. Past performance is not indicative of future results. This content is for educational purposes only and does not constitute financial advice.</p>
+  </div>
+</footer>
+
+<!-- Hidden Kit form submission -->
+<iframe name="kit-guide-sink" style="display:none;"></iframe>
+<form id="kit-guide-hidden-form" action="https://app.convertkit.com/forms/9381328/subscriptions" method="POST" target="kit-guide-sink" style="display:none;">
+  <input type="hidden" name="email_address" id="kit-guide-hidden-email" />
+  <input type="hidden" name="fields[first_name]" id="kit-guide-hidden-name" />
+  <!-- TAG NOTE: Uncomment and set a Kit tag ID below to segment AI-guide leads separately -->
+  <!-- <input type="hidden" name="tags[]" value="YOUR_TAG_ID_HERE" /> -->
+</form>
+
+<script>
+function guideSubmit(e) {
+  e.preventDefault();
+  var firstName = document.getElementById('guideFirstName').value.trim();
+  var email     = document.getElementById('guideEmail').value.trim();
+
+  // Submit to Kit via hidden form (bypasses CORS)
+  document.getElementById('kit-guide-hidden-email').value = email;
+  document.getElementById('kit-guide-hidden-name').value = firstName;
+  document.getElementById('kit-guide-hidden-form').submit();
+
+  // Show success state with download button
+  document.getElementById('guide-gate-form-wrap').style.display = 'none';
+  document.getElementById('guide-gate-success').style.display   = 'flex';
+
+  // Trigger the download automatically after a short delay
+  setTimeout(function() {
+    var a = document.createElement('a');
+    a.href = 'downloads/Practical_Income_Investing_AI_Trading_Assistant_Guide.pdf';
+    a.download = 'Practical_Income_Investing_AI_Trading_Assistant_Guide.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }, 600);
+}
+</script>
+
+</body>
+</html>
