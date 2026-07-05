@@ -183,7 +183,7 @@
         <div id="gate-form-wrap">
           <div class="gate-icon">📒</div>
           <div class="gate-title">Get the Free Journal</div>
-          <div class="gate-subtitle">Enter your details below and download the journal instantly.</div>
+          <div class="gate-subtitle">Enter your details below, then pick your version — Google Sheets or Excel.</div>
 
           <div class="gate-badge-row">
             <span class="gate-badge badge-free">100% Free</span>
@@ -197,15 +197,15 @@
             <button type="submit" class="gate-submit">Send Me the Journal →</button>
           </form>
           <p class="gate-note">We respect your inbox. No spam — just income strategies and tool updates.</p>
-          <p style="margin-top:10px;font-size:0.7rem;color:rgba(255,255,255,0.3);">Prefer not to subscribe? <a href="downloads/PII_Trading_Journal_Excel.xlsx" target="_blank" style="color:var(--green);text-decoration:underline;">Download directly.</a></p>
+          <p style="margin-top:10px;font-size:0.7rem;color:rgba(255,255,255,0.3);">Prefer not to subscribe? <a href="https://docs.google.com/spreadsheets/d/1JzQ4Mi20Njb2CcOPFv98QN7hsZhDhu00i_BMchc-eT8/copy" target="_blank" rel="noopener" style="color:var(--green);text-decoration:underline;">Google Sheets</a> or <a href="downloads/PII_Trading_Journal_Excel.xlsx" target="_blank" style="color:var(--green);text-decoration:underline;">Excel</a>.</p>
         </div>
 
         <div class="gate-success" id="gate-success">
           <div class="gate-success-icon">🎉</div>
-          <h3>You're in!</h3>
-          <p>Your journal is downloading now. If it doesn't start automatically, use the button below.</p>
-          <a href="downloads/PII_Trading_Journal_Excel.xlsx" download="PII_Trading_Journal_Excel.xlsx" class="btn btn-green" style="margin-top:8px;">⬇ Download the Journal</a>
-          <p style="margin-top:12px;font-size:0.75rem;color:rgba(255,255,255,0.35);">Trouble downloading? <a href="downloads/PII_Trading_Journal_Excel.xlsx" target="_blank" style="color:var(--green);text-decoration:underline;">Open it in your browser.</a> Then explore the <a href="index.html#market-compass" style="color:var(--green);text-decoration:underline;">Market Compass</a>.</p>
+          <h3>You're in! Pick your version:</h3>
+          <a href="https://docs.google.com/spreadsheets/d/1JzQ4Mi20Njb2CcOPFv98QN7hsZhDhu00i_BMchc-eT8/copy" target="_blank" rel="noopener" class="btn btn-green" style="margin-top:8px; width:100%;">📊 Open in Google Sheets</a>
+          <a href="downloads/PII_Trading_Journal_Excel.xlsx" download="PII_Trading_Journal_Excel.xlsx" class="btn btn-gold" style="margin-top:10px; width:100%;">⬇ Download for Excel</a>
+          <p style="margin-top:14px;font-size:0.74rem;color:rgba(255,255,255,0.4);line-height:1.6;"><strong style="color:rgba(255,255,255,0.62)">Google Sheets</strong> pulls live prices automatically (click above → "Make a copy"). <strong style="color:rgba(255,255,255,0.62)">Excel</strong> uses manual price entry. Both auto-calculate P&amp;L, returns, and win rate.</p>
         </div>
       </div>
 
@@ -372,19 +372,9 @@ function journalSubmit(e) {
   document.getElementById('kit-hidden-name').value = firstName;
   document.getElementById('kit-hidden-form').submit();
 
-  // Show success state
+  // Show success state with the two format choices
   document.getElementById('gate-form-wrap').style.display = 'none';
   document.getElementById('gate-success').style.display = 'flex';
-
-  // Trigger the journal download automatically
-  setTimeout(function() {
-    var a = document.createElement('a');
-    a.href = 'downloads/PII_Trading_Journal_Excel.xlsx';
-    a.download = 'PII_Trading_Journal_Excel.xlsx';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }, 600);
 }
 </script>
 
