@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Index Drawdowns &amp; LEAPS: Free Historical Reference Guide — Practical Income Investing</title>
+  <meta name="description" content="Download the free one-page guide comparing ordinary market days with 5%, 10%, 15%, and 20% index drawdowns, including historical ETF outcomes and modelled LEAPS risk." />
+  <link rel="canonical" href="https://practicalincomeinvesting.com/index-leaps-guide/" />
+
+  <!-- Open Graph / social -->
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Practical Income Investing" />
+  <meta property="og:url" content="https://practicalincomeinvesting.com/index-leaps-guide/" />
+  <meta property="og:title" content="What Happens After the Market Drops 20%?" />
+  <meta property="og:description" content="Historical SPY, QQQ, IWM, and DIA drawdown results — plus what the LEAPS models reveal about volatility and tail risk." />
+  <meta property="og:image" content="https://practicalincomeinvesting.com/img/index-drawdown-leaps-reference-guide.png" />
+  <meta property="og:image:width" content="2060" />
+  <meta property="og:image:height" content="1592" />
+  <meta property="og:image:alt" content="Index Drawdowns &amp; LEAPS — one-page historical reference guide" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="What Happens After the Market Drops 20%?" />
+  <meta name="twitter:description" content="Historical SPY, QQQ, IWM, and DIA drawdown results — plus what the LEAPS models reveal about volatility and tail risk." />
+  <meta name="twitter:image" content="https://practicalincomeinvesting.com/img/index-drawdown-leaps-reference-guide.png" />
+
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .leaps-hero {
+      padding: 140px 0 56px;
+      background: var(--dark);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    .leaps-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 55% at 78% 28%, rgba(109,192,64,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 44% 52% at 18% 78%, rgba(212,175,55,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .leaps-hero-inner { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; }
+    .leaps-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 20px;
+    }
+    .leaps-eyebrow::before { content: ''; width: 28px; height: 2px; background: var(--gold); border-radius: 2px; }
+    .leaps-hero h1 { margin-bottom: 14px; line-height: 1.12; }
+    .leaps-hero h1 em { font-style: normal; color: var(--green); }
+    .leaps-subtitle {
+      font-size: 1.15rem; color: var(--gold);
+      letter-spacing: 0.01em; margin-bottom: 26px; font-weight: 600;
+    }
+    .leaps-intro {
+      font-size: 1.02rem; color: rgba(255,255,255,0.66);
+      line-height: 1.75; margin: 0 auto 36px; max-width: 640px;
+    }
+    .leaps-cta {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      background: var(--green); color: #0B1408;
+      font-size: 1rem; font-weight: 800; letter-spacing: 0.01em;
+      padding: 17px 40px; border-radius: 8px; text-decoration: none;
+      box-shadow: var(--glow-green); transition: background .18s ease, transform .18s ease;
+    }
+    .leaps-cta:hover, .leaps-cta:focus-visible { background: var(--green-bright); transform: translateY(-2px); }
+    .leaps-cta:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .leaps-cta svg { width: 18px; height: 18px; flex: none; }
+    .leaps-nogate {
+      margin-top: 16px; font-size: 0.78rem; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--gray);
+    }
+
+    .leaps-preview-section { padding: 8px 0 72px; background: var(--dark); }
+    .leaps-preview-frame {
+      max-width: 1180px; margin: 0 auto;
+      background: var(--dark-card); border: 1px solid var(--dark-border);
+      border-radius: 12px; padding: 14px; box-shadow: var(--shadow-lg);
+    }
+    .leaps-preview-frame a { display: block; border-radius: 6px; }
+    .leaps-preview-frame a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .leaps-preview-frame img {
+      display: block; width: 100%; height: auto;
+      border-radius: 6px; background: #FBFAF4;
+    }
+    .leaps-tap {
+      max-width: 1180px; margin: 12px auto 0; text-align: center;
+      font-size: 0.78rem; color: var(--gray);
+    }
+    .leaps-below {
+      max-width: 1180px; margin: 22px auto 0;
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 14px;
+    }
+    .leaps-direct {
+      color: var(--green); font-size: 0.92rem; font-weight: 600;
+      text-decoration: none; border-bottom: 1px solid rgba(109,192,64,0.4);
+      padding-bottom: 2px;
+    }
+    .leaps-direct:hover, .leaps-direct:focus-visible { color: var(--green-bright); border-bottom-color: var(--green-bright); }
+    .leaps-meta { font-size: 0.82rem; color: var(--gray); }
+    .leaps-meta strong { color: rgba(255,255,255,0.72); font-weight: 600; }
+    .leaps-disclaimer {
+      max-width: 1180px; margin: 30px auto 0;
+      border-top: 1px solid var(--dark-border); padding-top: 20px;
+      font-size: 0.8rem; color: var(--gray); line-height: 1.7;
+    }
+
+    @media (max-width: 860px) {
+      .leaps-hero { padding: 112px 0 40px; }
+      .leaps-subtitle { font-size: 1rem; }
+      .leaps-intro { font-size: 0.95rem; }
+      .leaps-cta { width: 100%; padding: 16px 24px; }
+      .leaps-preview-frame { padding: 8px; border-radius: 9px; }
+      .leaps-below { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <img src="../pii-emblem-3d.png" alt="PII" class="nav-emblem" />
+      <span class="nav-logo-text">PRACTICAL <span class="green">INCOME</span> INVESTING</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../about.html">About</a></li>
+      <li><a href="../strategies.html">Strategies</a></li>
+      <li><a href="../journal.html">Trading Journal</a></li>
+      <li><a href="../indicators.html">Indicators</a></li>
+      <li><a href="../blog.html">Resources</a></li>
+      <li><a href="../journal.html">Free Journal</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="leaps-hero">
+  <div class="container">
+    <div class="leaps-hero-inner">
+      <span class="leaps-eyebrow">Free Reference Guide</span>
+      <h1>Index Drawdowns &amp; <em>LEAPS</em></h1>
+      <p class="leaps-subtitle">One-Page Historical Reference Guide</p>
+      <p class="leaps-intro">Download the one-page reference guide from our historical study of SPY, QQQ, IWM, and DIA drawdowns and modelled LEAPS outcomes.</p>
+
+      <a class="leaps-cta" href="../downloads/index-drawdown-leaps-reference-guide.pdf" download="index-drawdown-leaps-reference-guide.pdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Download the Free PDF
+      </a>
+      <p class="leaps-nogate">No email required &middot; No sign-up</p>
+    </div>
+  </div>
+</section>
+
+<section class="leaps-preview-section">
+  <div class="container">
+    <div class="leaps-preview-frame">
+      <a href="../img/index-drawdown-leaps-reference-guide.png" aria-label="View the reference guide preview at full size">
+        <img src="../img/index-drawdown-leaps-reference-guide.png"
+             alt="Index Drawdowns &amp; LEAPS one-page reference guide: historical SPY, QQQ, IWM and DIA outcomes after 5%, 10%, 15% and 20% drawdowns, modelled LEAPS tail risk, and a checklist for buying LEAPS in a crash."
+             width="2060" height="1592" loading="lazy" decoding="async" />
+      </a>
+    </div>
+
+    <div class="leaps-below">
+      <a class="leaps-direct" href="../downloads/index-drawdown-leaps-reference-guide.pdf">
+        Direct download: index-drawdown-leaps-reference-guide.pdf (PDF)
+      </a>
+      <p class="leaps-meta"><strong>Data through August 27, 2026</strong></p>
+    </div>
+
+    <p class="leaps-disclaimer">
+      Educational content only — not financial advice. ETF results are observed history; LEAPS results are model estimates, not historical option fills. Median is not average, and a historical frequency is not a guaranteed probability.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="../pii-emblem-3d.png" alt="PII" class="footer-emblem" />
+        <span class="footer-brand">PRACTICAL <span>INCOME</span> INVESTING</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../strategies.html">Strategies</a></li>
+        <li><a href="../journal.html">Free Journal</a></li>
+        <li><a href="../index.html#market-compass">Market Compass</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2026 Practical Income Investing. All rights reserved.</p>
+    <p class="footer-disc">Options trading involves significant risk and is not appropriate for all investors. Past performance is not indicative of future results. This content is for educational purposes only and does not constitute financial advice.</p>
+  </div>
+</footer>
+
+</body>
+</html>
