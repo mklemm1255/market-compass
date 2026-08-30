@@ -28,6 +28,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Check the parsers
+        run: python scripts/test_update_youtube.py
+
       - name: Refresh the featured videos
         run: python scripts/update_youtube.py
 
