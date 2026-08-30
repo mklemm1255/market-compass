@@ -12,6 +12,7 @@ so the cases that matter most are the ones where it must do nothing at all.
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import sys
 import tempfile
@@ -29,6 +30,84 @@ def check(name: str, cond: bool, detail: str = "") -> None:
     print(f"{'PASS' if cond else 'FAIL'}  {name}{'  ' + detail if detail else ''}")
     if not cond:
         fails.append(name)
+
+
+# --- Data API --------------------------------------------------------------
+
+check("duration: minutes and seconds", u.duration_seconds("PT12M34S") == 754)
+check("duration: seconds only (a Short)", u.duration_seconds("PT58S") == 58)
+check("duration: hours", u.duration_seconds("PT1H2M3S") == 3723)
+check("duration: exact minutes", u.duration_seconds("PT3M") == 180)
+check("duration: garbage is zero, not an exception", u.duration_seconds("banana") == 0)
+check("duration: empty is zero", u.duration_seconds("") == 0)
+
+_api_calls: list[tuple] = []
+
+
+def fake_api(responses):
+    """Stand in for api_get, recording what was asked for."""
+    def call(endpoint, key, **params):
+        _api_calls.append((endpoint, key, params))
+        return responses[endpoint]
+    return call
+
+
+def upload(vid, title):
+    return {"snippet": {"title": title, "resourceId": {"videoId": vid}}}
+
+
+REAL = ["aaaaaaaaaaa", "bbbbbbbbbbb", "ccccccccccc"]
+SHORTS = ["ddddddddddd", "eeeeeeeeeee"]
+RESPONSES = {
+    "channels": {"items": [{"contentDetails": {"relatedPlaylists": {"uploads": "UUv2cwLeljAJ0fC9vOwdwmQQ"}}}]},
+    "playlistItems": {"items": [
+        upload(SHORTS[0], "A Short"),
+        upload(REAL[0], "Real video one &amp; only"),
+        upload(SHORTS[1], "Another Short"),
+        upload("fffffffffff", "Deleted video"),
+        upload("", "No id at all"),
+        upload(REAL[1], "Real video two"),
+        upload(REAL[2], "Real video three"),
+    ]},
+    "videos": {"items": (
+        [{"id": v, "contentDetails": {"duration": "PT11M4S"}} for v in REAL]
+        + [{"id": v, "contentDetails": {"duration": "PT47S"}} for v in SHORTS]
+        + [{"id": "fffffffffff", "contentDetails": {"duration": "PT9M"}}]
+    )},
+}
+
+_real_api_get = u.api_get
+os.environ["YOUTUBE_API_KEY"] = "test-key"
+u.api_get = fake_api(RESPONSES)
+got = u.videos_from_data_api(3)
+check("Data API returns n long-form videos", [v["id"] for v in got] == REAL, str([v["id"] for v in got]))
+check("Shorts are filtered out by duration", not any(v["id"] in SHORTS for v in got))
+check("a deleted upload is skipped", all(v["id"] != "fffffffffff" for v in got))
+check("an upload with no id is skipped", all(v["id"] for v in got))
+check("titles are HTML-unescaped from the API", got[0]["title"] == "Real video one & only", got[0]["title"])
+check("the uploads playlist is resolved from the handle",
+      any(c[0] == "channels" and c[2].get("forHandle") == "@practicalincomeinvesting" for c in _api_calls))
+check("the key is passed but never part of the logged params",
+      all("key" not in c[2] for c in _api_calls))
+
+# If durations can't be read, keep everything rather than returning nothing.
+u.api_get = fake_api({**RESPONSES, "videos": {"items": []}})
+got = u.videos_from_data_api(3)
+check("an unreadable duration lookup does not empty the result", len(got) == 3, str(len(got)))
+
+# If the handle lookup fails, fall back to the verified channel's playlist.
+def failing_channels(endpoint, key, **params):
+    if endpoint == "channels":
+        raise OSError("handle lookup down")
+    return RESPONSES[endpoint]
+
+u.api_get = failing_channels
+check("a failed handle lookup falls back and still works",
+      [v["id"] for v in u.videos_from_data_api(3)] == REAL)
+
+u.api_get = _real_api_get
+os.environ.pop("YOUTUBE_API_KEY", None)
+check("no key configured means no Data API call, and no crash", u.videos_from_data_api(3) == [])
 
 
 # --- channel-page scrape ---------------------------------------------------
@@ -207,15 +286,24 @@ with tempfile.TemporaryDirectory() as tmp:
           u.main() == 0 and copy.read_text(encoding="utf-8") == after)
 
     u.collect = lambda n: [{"id": "H8CdiQIhQ9U", "title": "Only one"}]
-    check("too few videos exits 1", u.main() == 1)
+    os.environ["YOUTUBE_API_KEY"] = "test-key"
+    check("too few videos exits 1 when a key was available", u.main() == 1)
     check("too few videos changes nothing", copy.read_text(encoding="utf-8") == after)
+
+    # Without a key there is nothing CI could have done, so warn rather than
+    # paint the schedule red every morning — but still change nothing.
+    os.environ.pop("YOUTUBE_API_KEY", None)
+    check("too few videos exits 0 when no key is configured", u.main() == 0)
+    check("the no-key path still changes nothing", copy.read_text(encoding="utf-8") == after)
 
     def boom(n):
         raise RuntimeError("network on fire")
 
     u.collect = boom
+    os.environ["YOUTUBE_API_KEY"] = "test-key"
     check("an exception exits 1", u.main() == 1)
     check("an exception changes nothing", copy.read_text(encoding="utf-8") == after)
+    os.environ.pop("YOUTUBE_API_KEY", None)
 
 print()
 print(f"{len(fails)} failure(s)" + (": " + ", ".join(fails) if fails else ""))

@@ -5,17 +5,30 @@ Pulls the channel's most recent long-form uploads and rewrites the markup
 between the YT:START and YT:END markers in docs/index.html. No API key and
 no secrets: everything comes from public pages.
 
-Two independent sources are tried, in order:
+Four sources are tried, in order. Only the first works from CI, and the
+reason is worth recording, because it is not obvious and it cost four runs
+to establish:
 
-  1. The channel's /videos tab. Long-form only (Shorts live on their own
-     tab), newest first, which is exactly what the homepage wants.
-  2. The channel's public RSS feed, reached via the UC... id scraped off
-     the channel page. Stable and well-formed, but it mixes Shorts in
-     with regular uploads.
+  1. The YouTube Data API v3, keyed by the YOUTUBE_API_KEY secret. Reads
+     the uploads playlist and drops Shorts by duration.
+  2. The channel's /videos tab, scraped from its ytInitialData blob.
+  3. The InnerTube browse endpoint the site itself calls.
+  4. The channel's public RSS feed.
+
+Sources 2 through 4 all fail from a GitHub Actions runner, and not by
+erroring — each returns HTTP 200 with the video data simply absent. The
+channel page comes back as ~795 KB of genuine, correctly-titled markup
+containing zero video ids and a captcha reference; InnerTube answers with
+an empty result; the RSS feed returns a valid document that names the
+right channel and lists no entries. YouTube withholds video data from
+datacenter IP ranges. No amount of parsing fixes that, which is why the
+API key is not optional in CI. The scrapers are kept because they work
+fine when this is run from a normal connection.
 
 Exit codes:
-    0  index.html now matches the channel (whether or not anything changed)
-    1  something went wrong; index.html was left untouched
+    0  index.html now matches the channel (whether or not anything changed),
+       or no API key is configured and there is nothing to be done about it
+    1  a source was available but the refresh failed; index.html untouched
 
 Safe by design: unless a source returns the full complement of videos, the
 file is not modified. A stale homepage is a far better failure mode than a
@@ -28,9 +41,11 @@ from __future__ import annotations
 
 import html
 import json
+import os
 import re
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -54,6 +69,22 @@ INNERTUBE_CLIENT = {
 }
 # base64 of the protobuf selecting the channel's Videos tab.
 VIDEOS_TAB_PARAMS = "EgZ2aWRlb3PyBgQKAjoA"
+
+# YouTube Data API v3. The only source that works from a datacenter IP —
+# see the module docstring. Key comes from the YOUTUBE_API_KEY secret.
+API_ROOT = "https://www.googleapis.com/youtube/v3/"
+API_KEY_ENV = "YOUTUBE_API_KEY"
+# Confirmed against the channel's own feed, which reports this id as
+# belonging to 'Practical Income Investing'. Used if the handle lookup
+# fails; the API is asked for it first regardless.
+KNOWN_CHANNEL_ID = "UCv2cwLeljAJ0fC9vOwdwmQQ"
+# Uploads to consider before filtering Shorts out, so a run of Shorts
+# cannot starve the three slots.
+API_SCAN = 25
+# Anything at or under this is a Short, and a vertical thumbnail looks
+# wrong in the homepage's 100x60 tile.
+SHORT_MAX_SECONDS = 180
+ISO_DURATION = re.compile(r"P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?")
 INDEX = Path(__file__).resolve().parent.parent / "docs" / "index.html"
 
 START = "<!-- YT:START"
@@ -133,7 +164,100 @@ def local_name(tag: str) -> str:
     return tag.rsplit("}", 1)[-1]
 
 
-# --- source 1: the /videos tab -------------------------------------------
+# --- source 1: the YouTube Data API ---------------------------------------
+
+
+def api_get(endpoint: str, key: str, **params) -> dict:
+    """GET a Data API endpoint. The key is never written to the log."""
+    query = urllib.parse.urlencode({**params, "key": key})
+    url = API_ROOT + endpoint + "?" + query
+    req = urllib.request.Request(url, headers={"Accept": "application/json"})
+    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+        raw = r.read().decode("utf-8", errors="replace")
+    redacted = API_ROOT + endpoint + "?" + urllib.parse.urlencode(params)
+    log(f"  GET {redacted} -> HTTP {r.status}, {len(raw):,} bytes")
+    return json.loads(raw)
+
+
+def duration_seconds(value: str) -> int:
+    m = ISO_DURATION.fullmatch(value or "")
+    if not m:
+        return 0
+    days, hours, minutes, seconds = (int(x or 0) for x in m.groups())
+    return ((days * 24 + hours) * 60 + minutes) * 60 + seconds
+
+
+def uploads_playlist_id(key: str) -> str:
+    """The channel's uploads playlist, which holds every upload in order."""
+    try:
+        data = api_get("channels", key, part="contentDetails", forHandle="@" + HANDLE)
+        items = data.get("items") or []
+        if items:
+            uploads = items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
+            log(f"  uploads playlist: {uploads}")
+            return uploads
+        log("  handle lookup returned no channel")
+    except (urllib.error.URLError, ValueError, KeyError, OSError) as exc:
+        log(f"  handle lookup failed ({exc})")
+    fallback = "UU" + KNOWN_CHANNEL_ID[2:]
+    log(f"  falling back to the known uploads playlist: {fallback}")
+    return fallback
+
+
+def videos_from_data_api(n: int) -> list[dict]:
+    key = os.environ.get(API_KEY_ENV, "").strip()
+    if not key:
+        log(f"  no {API_KEY_ENV} configured — skipping the Data API")
+        return []
+
+    playlist = uploads_playlist_id(key)
+    try:
+        listing = api_get(
+            "playlistItems", key,
+            part="snippet", playlistId=playlist, maxResults=str(API_SCAN),
+        )
+    except (urllib.error.URLError, ValueError, OSError) as exc:
+        log(f"  playlistItems failed ({exc})")
+        return []
+
+    candidates: list[dict] = []
+    for item in listing.get("items") or []:
+        snippet = item.get("snippet") or {}
+        vid = (snippet.get("resourceId") or {}).get("videoId", "")
+        title = html.unescape((snippet.get("title") or "").strip())
+        # A deleted or private upload keeps its slot but loses its title.
+        if VIDEO_ID.fullmatch(vid) and title and title.lower() not in ("deleted video", "private video"):
+            candidates.append({"id": vid, "title": title})
+    log(f"  {len(candidates)} uploads returned")
+    if not candidates:
+        return []
+
+    # One extra call tells us which of those are Shorts.
+    long_form = candidates
+    try:
+        details = api_get(
+            "videos", key,
+            part="contentDetails", id=",".join(c["id"] for c in candidates),
+        )
+        lengths = {
+            item["id"]: duration_seconds((item.get("contentDetails") or {}).get("duration", ""))
+            for item in details.get("items") or []
+        }
+        filtered = [c for c in candidates if lengths.get(c["id"], 0) > SHORT_MAX_SECONDS]
+        log(f"  {len(candidates) - len(filtered)} of those are Shorts")
+        # Only trust the filter if it left us enough to work with; a bad
+        # duration read should not be able to empty the list.
+        if len(filtered) >= n:
+            long_form = filtered
+        else:
+            log("  too few long-form videos after filtering — keeping Shorts in")
+    except (urllib.error.URLError, ValueError, OSError) as exc:
+        log(f"  duration lookup failed, Shorts not filtered ({exc})")
+
+    return long_form[:n]
+
+
+# --- source 2: the /videos tab -------------------------------------------
 
 
 def initial_data(page: str) -> dict | list | None:
@@ -272,7 +396,7 @@ def diagnose_page(page: str) -> None:
         log(f"  ytInitialData top-level keys: {', '.join(sorted(data)[:12])}")
 
 
-# --- source 2: the InnerTube browse endpoint ------------------------------
+# --- source 3: the InnerTube browse endpoint ------------------------------
 
 
 def videos_from_innertube(channel_id: str, n: int) -> list[dict]:
@@ -292,7 +416,7 @@ def videos_from_innertube(channel_id: str, n: int) -> list[dict]:
     return out[:n]
 
 
-# --- source 3: the RSS feed ----------------------------------------------
+# --- source 4: the RSS feed ----------------------------------------------
 
 
 def channel_id_candidates(page: str) -> list[str]:
@@ -405,7 +529,13 @@ def render(videos: list[dict]) -> str:
 
 def collect(n: int) -> list[dict]:
     """Try each source in turn; the first to deliver n videos wins."""
-    log(f"source 1: channel page {VIDEOS_URL}")
+    log("source 1: YouTube Data API")
+    videos = videos_from_data_api(n)
+    if len(videos) >= n:
+        log("using source 1 (Data API)")
+        return videos
+
+    log(f"source 2: channel page {VIDEOS_URL}")
     try:
         page = fetch(VIDEOS_URL)
     except (urllib.error.URLError, OSError) as exc:
@@ -416,27 +546,24 @@ def collect(n: int) -> list[dict]:
         videos = videos_from_channel_page(page, n)
         log(f"  scraped {len(videos)} videos from the page")
         if len(videos) >= n:
-            log("using source 1 (channel page)")
+            log("using source 2 (channel page)")
             return videos
         diagnose_page(page)
 
-    candidates = channel_id_candidates(page) if page else []
-    if not candidates:
-        log("no UC... channel id available; the remaining sources need one")
-        return []
+    candidates = channel_id_candidates(page) if page else [KNOWN_CHANNEL_ID]
     log(f"channel id candidates: {', '.join(candidates)}")
 
-    log("source 2: InnerTube browse")
+    log("source 3: InnerTube browse")
     for cid in candidates:
         videos = videos_from_innertube(cid, n)
         if len(videos) >= n:
-            log(f"using source 2 (InnerTube, {cid})")
+            log(f"using source 3 (InnerTube, {cid})")
             return videos
 
-    log("source 3: RSS feed")
+    log("source 4: RSS feed")
     videos = videos_from_feed(candidates, n)
     if len(videos) >= n:
-        log("using source 3 (RSS feed)")
+        log("using source 4 (RSS feed)")
         return videos
 
     return []
@@ -468,6 +595,15 @@ def main() -> int:
         return 1
 
     if len(videos) < VIDEO_COUNT:
+        if not os.environ.get(API_KEY_ENV, "").strip():
+            # Not a fault worth a red X every morning: the one source that
+            # works from CI has not been given a key yet.
+            print(
+                f"::warning::Homepage videos not refreshed — no {API_KEY_ENV} secret is set, "
+                "and YouTube serves no video data to GitHub's IP ranges. "
+                "docs/index.html left unchanged."
+            )
+            return 0
         print(
             f"error: every source came up short — got {len(videos)} videos, "
             f"expected {VIDEO_COUNT}; index.html left unchanged",
