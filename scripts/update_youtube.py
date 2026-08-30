@@ -43,6 +43,17 @@ FEED_URL = "https://www.youtube.com/feeds/videos.xml?channel_id={cid}"
 # different key, and it sometimes answers when the channel_id form returns
 # an empty document.
 UPLOADS_FEED_URL = "https://www.youtube.com/feeds/videos.xml?playlist_id={pid}"
+# The endpoint youtube.com itself calls to fill the videos grid. It answers
+# with the same renderer objects the page embeds, so the same walk reads it.
+INNERTUBE_URL = "https://www.youtube.com/youtubei/v1/browse?prettyPrint=false"
+INNERTUBE_CLIENT = {
+    "clientName": "WEB",
+    "clientVersion": "2.20240710.01.00",
+    "hl": "en",
+    "gl": "US",
+}
+# base64 of the protobuf selecting the channel's Videos tab.
+VIDEOS_TAB_PARAMS = "EgZ2aWRlb3PyBgQKAjoA"
 INDEX = Path(__file__).resolve().parent.parent / "docs" / "index.html"
 
 START = "<!-- YT:START"
@@ -102,6 +113,19 @@ def fetch(url: str) -> str:
         body = r.read().decode("utf-8", errors="replace")
     log(f"  fetched {url} -> HTTP {r.status}, {len(body):,} bytes")
     return body
+
+
+def post_json(url: str, payload: dict) -> dict:
+    body = json.dumps(payload).encode("utf-8")
+    headers = dict(HEADERS)
+    headers["Content-Type"] = "application/json"
+    headers["X-YouTube-Client-Name"] = "1"
+    headers["X-YouTube-Client-Version"] = INNERTUBE_CLIENT["clientVersion"]
+    req = urllib.request.Request(url, data=body, headers=headers, method="POST")
+    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+        raw = r.read().decode("utf-8", errors="replace")
+    log(f"  posted {url} -> HTTP {r.status}, {len(raw):,} bytes")
+    return json.loads(raw)
 
 
 def local_name(tag: str) -> str:
@@ -211,7 +235,64 @@ def videos_from_channel_page(page: str, n: int) -> list[dict]:
     return out[:n]
 
 
-# --- source 2: the RSS feed ----------------------------------------------
+def diagnose_page(page: str) -> None:
+    """Explain an empty scrape, so the next fix does not need a guess.
+
+    The interesting question is always the same: did YouTube send a page
+    with videos on it that we failed to read, or a page with no videos on
+    it at all (a consent wall, a bot check, a JS-only shell)?
+    """
+    title = re.search(r"<title>(.*?)</title>", page, re.DOTALL)
+    log(f"  page title: {title.group(1).strip()[:120] if title else '(none)'}")
+
+    markers = [m for m in INITIAL_DATA_MARKERS if m in page]
+    log(f"  data blob markers present: {markers or 'none'}")
+
+    counts = {
+        key: page.count(f'"{key}"')
+        for key in ("videoId", "contentId", "lockupViewModel", "videoRenderer",
+                    "gridVideoRenderer", "richItemRenderer", "reelItemRenderer")
+    }
+    log("  renderer keys: " + ", ".join(f"{k}={v}" for k, v in counts.items()))
+
+    raw_ids: list[str] = []
+    for key in ID_KEYS:
+        for cid in re.findall(rf'"{key}":"([A-Za-z0-9_-]{{11}})"', page):
+            if cid not in raw_ids:
+                raw_ids.append(cid)
+    log(f"  raw ids in the html: {len(raw_ids)}{' -> ' + ', '.join(raw_ids[:5]) if raw_ids else ''}")
+
+    for needle in ("consent.youtube.com", "Sign in to confirm", "not a bot",
+                   "captcha", "unusual traffic", "Before you continue"):
+        if needle.lower() in page.lower():
+            log(f"  interstitial signal: {needle!r} appears on the page")
+
+    data = initial_data(page)
+    if isinstance(data, dict):
+        log(f"  ytInitialData top-level keys: {', '.join(sorted(data)[:12])}")
+
+
+# --- source 2: the InnerTube browse endpoint ------------------------------
+
+
+def videos_from_innertube(channel_id: str, n: int) -> list[dict]:
+    payload = {
+        "context": {"client": dict(INNERTUBE_CLIENT)},
+        "browseId": channel_id,
+        "params": VIDEOS_TAB_PARAMS,
+    }
+    try:
+        data = post_json(INNERTUBE_URL, payload)
+    except (urllib.error.URLError, ValueError, OSError) as exc:
+        log(f"  innertube unusable ({exc})")
+        return []
+    out: list[dict] = []
+    walk_for_videos(data, out, set())
+    log(f"  innertube returned {len(out)} videos")
+    return out[:n]
+
+
+# --- source 3: the RSS feed ----------------------------------------------
 
 
 def channel_id_candidates(page: str) -> list[str]:
@@ -280,12 +361,7 @@ def try_feed(url: str, n: int) -> list[dict]:
     return videos
 
 
-def videos_from_feed(page: str, n: int) -> list[dict]:
-    candidates = channel_id_candidates(page)
-    if not candidates:
-        log("  no UC... channel id found on the channel page")
-        return []
-    log(f"  channel id candidates: {', '.join(candidates)}")
+def videos_from_feed(candidates: list[str], n: int) -> list[dict]:
     for cid in candidates:
         for url in (FEED_URL.format(cid=cid), UPLOADS_FEED_URL.format(pid="UU" + cid[2:])):
             videos = try_feed(url, n)
@@ -329,7 +405,7 @@ def render(videos: list[dict]) -> str:
 
 def collect(n: int) -> list[dict]:
     """Try each source in turn; the first to deliver n videos wins."""
-    log(f"source 1: {VIDEOS_URL}")
+    log(f"source 1: channel page {VIDEOS_URL}")
     try:
         page = fetch(VIDEOS_URL)
     except (urllib.error.URLError, OSError) as exc:
@@ -340,14 +416,28 @@ def collect(n: int) -> list[dict]:
         videos = videos_from_channel_page(page, n)
         log(f"  scraped {len(videos)} videos from the page")
         if len(videos) >= n:
-            log("using source 1 (channel /videos tab, long-form only)")
+            log("using source 1 (channel page)")
+            return videos
+        diagnose_page(page)
+
+    candidates = channel_id_candidates(page) if page else []
+    if not candidates:
+        log("no UC... channel id available; the remaining sources need one")
+        return []
+    log(f"channel id candidates: {', '.join(candidates)}")
+
+    log("source 2: InnerTube browse")
+    for cid in candidates:
+        videos = videos_from_innertube(cid, n)
+        if len(videos) >= n:
+            log(f"using source 2 (InnerTube, {cid})")
             return videos
 
-        log("source 2: RSS feed")
-        videos = videos_from_feed(page, n)
-        if len(videos) >= n:
-            log("using source 2 (RSS feed)")
-            return videos
+    log("source 3: RSS feed")
+    videos = videos_from_feed(candidates, n)
+    if len(videos) >= n:
+        log("using source 3 (RSS feed)")
+        return videos
 
     return []
 
