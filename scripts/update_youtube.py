@@ -39,6 +39,10 @@ HANDLE = "practicalincomeinvesting"
 CHANNEL_URL = f"https://www.youtube.com/@{HANDLE}"
 VIDEOS_URL = f"{CHANNEL_URL}/videos"
 FEED_URL = "https://www.youtube.com/feeds/videos.xml?channel_id={cid}"
+# The uploads playlist of channel UCxxx is always UUxxx. Same feed endpoint,
+# different key, and it sometimes answers when the channel_id form returns
+# an empty document.
+UPLOADS_FEED_URL = "https://www.youtube.com/feeds/videos.xml?playlist_id={pid}"
 INDEX = Path(__file__).resolve().parent.parent / "docs" / "index.html"
 
 START = "<!-- YT:START"
@@ -59,15 +63,26 @@ HEADERS = {
 
 VIDEO_ID = re.compile(r"[A-Za-z0-9_-]{11}")
 
-# "videoId":"XXXXXXXXXXX" ... "title":{"runs":[{"text":"..."}]}
-# The window is generous because the renderer inserts thumbnail and
-# accessibility blobs between the two, but bounded so a title can never be
-# stolen from the following video.
-SCRAPE = re.compile(
-    r'"videoId":"(?P<id>[A-Za-z0-9_-]{11})".{0,800}?'
-    r'"title":\{"runs":\[\{"text":"(?P<title>(?:[^"\\]|\\.)*)"\}\]',
-    re.DOTALL,
+# Where the page keeps its data blob. raw_decode finds the end of the object
+# for us, so no brace counting and no guessing at the trailing punctuation.
+INITIAL_DATA_MARKERS = (
+    "var ytInitialData = ",
+    'window["ytInitialData"] = ',
+    "ytInitialData = ",
 )
+
+# Keys that hold an eleven-character video id. YouTube has been migrating
+# grid tiles from videoRenderer ("videoId") to lockupViewModel
+# ("contentId"); both shapes turn up depending on the rollout.
+ID_KEYS = ("videoId", "contentId")
+
+# Subtrees that carry titles belonging to something other than the video —
+# the channel, a playlist the video sits in, an overflow menu item.
+TITLE_SKIP_KEYS = frozenset({
+    "thumbnail", "thumbnails", "thumbnailOverlays", "menu", "badges",
+    "owner", "ownerText", "avatar", "channelThumbnail",
+    "shortBylineText", "longBylineText", "navigationEndpoint",
+})
 
 CHANNEL_ID_PATTERNS = (
     r'"channelId"\s*:\s*"(UC[\w-]{22})"',
@@ -97,25 +112,103 @@ def local_name(tag: str) -> str:
 # --- source 1: the /videos tab -------------------------------------------
 
 
-def videos_from_channel_page(page: str, n: int) -> list[dict]:
-    """Pull ids and titles straight out of the ytInitialData blob."""
-    out: list[dict] = []
-    seen: set[str] = set()
-    for m in SCRAPE.finditer(page):
-        vid = m.group("id")
-        if vid in seen:
+def initial_data(page: str) -> dict | list | None:
+    """Pull the ytInitialData object out of the page and parse it."""
+    decoder = json.JSONDecoder()
+    for marker in INITIAL_DATA_MARKERS:
+        i = page.find(marker)
+        if i == -1:
             continue
         try:
-            title = json.loads(f'"{m.group("title")}"').strip()
-        except json.JSONDecodeError:
+            obj, _ = decoder.raw_decode(page, i + len(marker))
+        except ValueError:
             continue
-        if not title:
-            continue
-        seen.add(vid)
-        out.append({"id": vid, "title": title})
-        if len(out) == n:
+        return obj
+    return None
+
+
+def title_text(value) -> str:
+    """Read a title out of whichever shape YouTube wrapped it in."""
+    if isinstance(value, str):
+        return value.strip()
+    if isinstance(value, dict):
+        for key in ("content", "simpleText"):
+            if isinstance(value.get(key), str):
+                return value[key].strip()
+        runs = value.get("runs")
+        if isinstance(runs, list):
+            return "".join(
+                r["text"] for r in runs if isinstance(r, dict) and isinstance(r.get("text"), str)
+            ).strip()
+    return ""
+
+
+def find_title(node, depth: int = 0) -> str:
+    """Nearest title inside a tile. Depth-limited so it stays local to the tile."""
+    if depth > 6:
+        return ""
+    if isinstance(node, dict):
+        for key in ("title", "headline"):
+            found = title_text(node.get(key))
+            if found:
+                return found
+        for key, value in node.items():
+            if key in TITLE_SKIP_KEYS:
+                continue
+            found = find_title(value, depth + 1)
+            if found:
+                return found
+    elif isinstance(node, list):
+        for value in node:
+            found = find_title(value, depth + 1)
+            if found:
+                return found
+    return ""
+
+
+def walk_for_videos(node, out: list[dict], seen: set[str]) -> None:
+    """Collect id/title pairs in document order, outermost tile first.
+
+    Structural rather than regex-based: the exact renderer YouTube uses for
+    a grid tile changes without notice, but a tile has always been an
+    object carrying a video id with the title somewhere beneath it.
+    """
+    if isinstance(node, list):
+        for value in node:
+            walk_for_videos(value, out, seen)
+        return
+    if not isinstance(node, dict):
+        return
+
+    vid = ""
+    for key in ID_KEYS:
+        value = node.get(key)
+        if isinstance(value, str) and VIDEO_ID.fullmatch(value):
+            vid = value
             break
-    return out
+
+    if vid:
+        title = find_title(node)
+        if title:
+            if vid not in seen:
+                seen.add(vid)
+                out.append({"id": vid, "title": title})
+            # Don't descend: ids below this point belong to the tile's
+            # overflow menu and playlist endpoints, not to sibling videos.
+            return
+
+    for value in node.values():
+        walk_for_videos(value, out, seen)
+
+
+def videos_from_channel_page(page: str, n: int) -> list[dict]:
+    data = initial_data(page)
+    if data is None:
+        log("  no ytInitialData object on the page")
+        return []
+    out: list[dict] = []
+    walk_for_videos(data, out, set())
+    return out[:n]
 
 
 # --- source 2: the RSS feed ----------------------------------------------
@@ -134,6 +227,14 @@ def channel_id_candidates(page: str) -> list[str]:
             if cid not in found:
                 found.append(cid)
     return found[:5]
+
+
+def feed_owner(root) -> str:
+    """The channel name the feed claims, for telling a wrong id from a starved one."""
+    for child in root:
+        if local_name(child.tag) == "title" and child.text:
+            return child.text.strip()
+    return "?"
 
 
 def parse_feed(xml_text: str, n: int) -> list[dict]:
@@ -167,6 +268,18 @@ def parse_feed(xml_text: str, n: int) -> list[dict]:
     return out
 
 
+def try_feed(url: str, n: int) -> list[dict]:
+    try:
+        xml_text = fetch(url)
+        root = ET.fromstring(xml_text)
+    except (urllib.error.URLError, ET.ParseError, OSError) as exc:
+        log(f"  feed unusable ({exc})")
+        return []
+    videos = parse_feed(xml_text, n)
+    log(f"  feed belongs to {feed_owner(root)!r}, {len(videos)} usable entries")
+    return videos
+
+
 def videos_from_feed(page: str, n: int) -> list[dict]:
     candidates = channel_id_candidates(page)
     if not candidates:
@@ -174,14 +287,10 @@ def videos_from_feed(page: str, n: int) -> list[dict]:
         return []
     log(f"  channel id candidates: {', '.join(candidates)}")
     for cid in candidates:
-        try:
-            videos = parse_feed(fetch(FEED_URL.format(cid=cid)), n)
-        except (urllib.error.URLError, ET.ParseError, OSError) as exc:
-            log(f"  {cid}: feed unusable ({exc})")
-            continue
-        log(f"  {cid}: {len(videos)} usable entries")
-        if len(videos) >= n:
-            return videos
+        for url in (FEED_URL.format(cid=cid), UPLOADS_FEED_URL.format(pid="UU" + cid[2:])):
+            videos = try_feed(url, n)
+            if len(videos) >= n:
+                return videos
     return []
 
 

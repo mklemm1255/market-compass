@@ -11,6 +11,7 @@ so the cases that matter most are the ones where it must do nothing at all.
 
 from __future__ import annotations
 
+import json
 import shutil
 import sys
 import tempfile
@@ -31,26 +32,95 @@ def check(name: str, cond: bool, detail: str = "") -> None:
 
 
 # --- channel-page scrape ---------------------------------------------------
+#
+# Two tile shapes, because YouTube is mid-migration from videoRenderer to
+# lockupViewModel and the /videos grid serves either one. The blob below is
+# trimmed but structurally faithful to both.
 
-PAGE = (
-    'junk{"videoId":"aaaaaaaaaaa","thumbnail":{"thumbnails":[{"url":"x"}]},'
-    '"title":{"runs":[{"text":"First \\u2014 a \\"quoted\\" title"}],'
-    '"accessibility":{}},"publishedTimeText":{}}'
-    '{"videoId":"bbbbbbbbbbb","thumbnail":{},"title":{"runs":[{"text":"Second video"}]}}'
-    '{"videoId":"aaaaaaaaaaa","title":{"runs":[{"text":"First again (dupe)"}]}}'
-    '{"videoId":"ccccccccccc","title":{"runs":[{"text":"Third video"}]}}'
-    '{"videoId":"ddddddddddd","title":{"runs":[{"text":"Fourth video"}]}}'
-)
+LOCKUP = {
+    "lockupViewModel": {
+        "contentId": "aaaaaaaaaaa",
+        "contentType": "LOCKUP_CONTENT_TYPE_VIDEO",
+        "contentImage": {"thumbnailViewModel": {"image": {"sources": [{"url": "x"}]}}},
+        "metadata": {
+            "lockupMetadataViewModel": {
+                "title": {"content": 'Lockup — a "quoted" title'},
+                "metadata": {"contentMetadataViewModel": {"metadataRows": []}},
+            }
+        },
+    }
+}
+
+RENDERER = {
+    "richItemRenderer": {
+        "content": {
+            "videoRenderer": {
+                "videoId": "bbbbbbbbbbb",
+                "thumbnail": {"thumbnails": [{"url": "x"}]},
+                "title": {
+                    "runs": [{"text": "Renderer title"}],
+                    "accessibility": {"accessibilityData": {"label": "Renderer title, 5 minutes"}},
+                },
+                "ownerText": {"runs": [{"text": "Practical Income Investing"}]},
+                "menu": {
+                    "menuRenderer": {
+                        "items": [{
+                            "menuServiceItemRenderer": {
+                                "text": {"runs": [{"text": "Add to queue"}]},
+                                "serviceEndpoint": {
+                                    "addToPlaylistServiceEndpoint": {"videoId": "zzzzzzzzzzz"}
+                                },
+                            }
+                        }]
+                    }
+                },
+            }
+        }
+    }
+}
+
+
+def lockup(vid, title):
+    return {"lockupViewModel": {"contentId": vid,
+                                "metadata": {"lockupMetadataViewModel": {"title": {"content": title}}}}}
+
+
+DATA = {
+    "header": {"pageHeaderRenderer": {
+        "pageTitle": "Practical Income Investing",
+        "channelId": "UCv2cwLeljAJ0fC9vOwdwmQQ",
+    }},
+    "contents": [
+        LOCKUP,
+        RENDERER,
+        lockup("aaaaaaaaaaa", "Lockup again (dupe)"),
+        {"richItemRenderer": {"content": {"videoRenderer": {"videoId": "ccccccccccc"}}}},
+        lockup("ddddddddddd", "Fourth video"),
+        lockup("eeeeeeeeeee", "Fifth video"),
+    ],
+}
+PAGE = "<script>var ytInitialData = " + json.dumps(DATA) + ";</script><div>trailing markup</div>"
+
 got = u.videos_from_channel_page(PAGE, 3)
+ids = [v["id"] for v in got]
 check("scrape returns exactly n", len(got) == 3, str(len(got)))
-check("scrape order preserved",
-      [v["id"] for v in got] == ["aaaaaaaaaaa", "bbbbbbbbbbb", "ccccccccccc"])
-check("scrape unescapes JSON", got[0]["title"] == 'First — a "quoted" title', repr(got[0]["title"]))
+check("both tile shapes parsed, in order, deduped",
+      ids == ["aaaaaaaaaaa", "bbbbbbbbbbb", "ddddddddddd"], str(ids))
+check("lockupViewModel title read from title.content",
+      got[0]["title"] == 'Lockup — a "quoted" title', repr(got[0]["title"]))
+check("videoRenderer title read from title.runs", got[1]["title"] == "Renderer title")
+check("an overflow-menu videoId is not mistaken for a video", "zzzzzzzzzzz" not in ids)
+check("a tile with no title is skipped rather than mistitled", "ccccccccccc" not in ids)
+check("the channel's own name is not used as a video title",
+      all(v["title"] != "Practical Income Investing" for v in got))
+check("a 24-char channel id is never taken for a video id",
+      all(v["id"] != "UCv2cwLeljAJ0fC9vOwdwmQQ" for v in got))
 
-ORPHAN = ('{"videoId":"eeeeeeeeeee"}' + "x" * 2000
-          + '{"videoId":"fffffffffff","title":{"runs":[{"text":"Real"}]}}')
-check("a title-less id does not steal the next video's title",
-      [v["id"] for v in u.videos_from_channel_page(ORPHAN, 3)] == ["fffffffffff"])
+check("window[] assignment is also recognised",
+      len(u.videos_from_channel_page('window["ytInitialData"] = ' + json.dumps(DATA) + ";", 3)) == 3)
+check("a page with no data blob yields nothing", u.videos_from_channel_page("<html>nope</html>", 3) == [])
+check("a page with a corrupt data blob yields nothing",
+      u.videos_from_channel_page("var ytInitialData = {not json;", 3) == [])
 
 # --- channel id candidates -------------------------------------------------
 
