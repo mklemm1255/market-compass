@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Build Your AI Investing Assistant: Free Starter Prompt &amp; Verification Checklist — Practical Income Investing</title>
+  <meta name="description" content="Free 15-page starter kit: a guided setup interview, a reusable investing profile, a company and trade-plan prompt, a human verification checklist, and an organization system for ChatGPT, Claude, or any capable AI assistant. No email required." />
+  <link rel="canonical" href="https://practicalincomeinvesting.com/ai-starter-kit/" />
+
+  <!-- Open Graph / social -->
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Practical Income Investing" />
+  <meta property="og:url" content="https://practicalincomeinvesting.com/ai-starter-kit/" />
+  <meta property="og:title" content="Build Your AI Investing Assistant" />
+  <meta property="og:description" content="Not a prompt that tells you what to buy — a framework for teaching an AI assistant how you invest, and for checking its work before you risk real money. Free 15-page PDF." />
+  <meta property="og:image" content="https://practicalincomeinvesting.com/img/ai-investing-assistant-starter-kit-og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="635" />
+  <meta property="og:image:alt" content="Build Your AI Investing Assistant — Free Starter Prompt &amp; Verification Checklist" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Build Your AI Investing Assistant" />
+  <meta name="twitter:description" content="Not a prompt that tells you what to buy — a framework for teaching an AI assistant how you invest, and for checking its work before you risk real money. Free 15-page PDF." />
+  <meta name="twitter:image" content="https://practicalincomeinvesting.com/img/ai-investing-assistant-starter-kit-og.png" />
+
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .kit-hero {
+      padding: 140px 0 56px;
+      background: var(--dark);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    .kit-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 55% at 78% 28%, rgba(109,192,64,0.08) 0%, transparent 65%),
+        radial-gradient(ellipse 44% 52% at 18% 78%, rgba(212,175,55,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .kit-hero-inner { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+    .kit-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 20px;
+    }
+    .kit-eyebrow::before { content: ''; width: 28px; height: 2px; background: var(--gold); border-radius: 2px; }
+    .kit-hero h1 { margin-bottom: 14px; line-height: 1.12; }
+    .kit-hero h1 em { font-style: normal; color: var(--green); }
+    .kit-subtitle {
+      font-size: 1.15rem; color: var(--gold);
+      letter-spacing: 0.01em; margin-bottom: 26px; font-weight: 600;
+    }
+    .kit-intro {
+      font-size: 1.02rem; color: rgba(255,255,255,0.66);
+      line-height: 1.75; margin: 0 auto 30px; max-width: 660px;
+    }
+    .kit-notbuy {
+      max-width: 660px; margin: 0 auto 34px;
+      background: rgba(109,192,64,0.06);
+      border: 1px solid rgba(109,192,64,0.22);
+      border-left: 3px solid var(--green);
+      border-radius: 10px; padding: 20px 24px;
+      font-size: 0.92rem; line-height: 1.7; color: rgba(255,255,255,0.72);
+      text-align: left;
+    }
+    .kit-notbuy strong { color: var(--green); font-weight: 700; }
+    .kit-cta {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      background: var(--green); color: #0B1408;
+      font-size: 1rem; font-weight: 800; letter-spacing: 0.01em;
+      padding: 17px 40px; border-radius: 8px; text-decoration: none;
+      box-shadow: var(--glow-green); transition: background .18s ease, transform .18s ease;
+    }
+    .kit-cta:hover, .kit-cta:focus-visible { background: var(--green-bright); transform: translateY(-2px); }
+    .kit-cta:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .kit-cta svg { width: 18px; height: 18px; flex: none; }
+    .kit-nogate {
+      margin-top: 16px; font-size: 0.78rem; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--gray);
+    }
+
+    /* ── What's inside ── */
+    .kit-inside { background: var(--dark-card); padding: 84px 0; }
+    .kit-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 20px; margin-top: 48px;
+    }
+    .kit-item {
+      background: var(--dark); border: 1px solid var(--dark-border);
+      border-radius: 14px; padding: 28px;
+      border-left: 3px solid var(--green);
+    }
+    .kit-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(109,192,64,0.12); border: 1px solid rgba(109,192,64,0.35);
+      color: var(--green); font-weight: 900; font-size: 0.85rem;
+      margin-bottom: 14px;
+    }
+    .kit-item h3 { font-size: 0.97rem; margin-bottom: 8px; color: var(--white); }
+    .kit-item p { font-size: 0.84rem; color: rgba(255,255,255,0.52); line-height: 1.7; margin: 0; }
+
+    .kit-chain {
+      margin-top: 52px; padding: 26px 28px;
+      background: var(--dark); border: 1px solid var(--dark-border);
+      border-radius: 12px; text-align: center;
+    }
+    .kit-chain-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--gray); margin-bottom: 14px;
+    }
+    .kit-chain-flow {
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.75); line-height: 2;
+    }
+    .kit-chain-flow span { color: var(--green); }
+    .kit-chain-note {
+      margin: 16px auto 0; max-width: 660px;
+      font-size: 0.82rem; color: rgba(255,255,255,0.4); line-height: 1.75;
+    }
+
+    /* ── Preview ── */
+    .kit-preview-section { padding: 72px 0; background: var(--dark); }
+    .kit-preview-frame {
+      max-width: 620px; margin: 44px auto 0;
+      background: var(--dark-card); border: 1px solid var(--dark-border);
+      border-radius: 12px; padding: 14px; box-shadow: var(--shadow-lg);
+    }
+    .kit-preview-frame a { display: block; border-radius: 6px; }
+    .kit-preview-frame a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .kit-preview-frame img {
+      display: block; width: 100%; height: auto; border-radius: 6px;
+      /* The cover is dark on a dark card, so give it an edge to sit against. */
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .kit-below {
+      max-width: 880px; margin: 26px auto 0;
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 14px;
+    }
+    .kit-direct {
+      color: var(--green); font-size: 0.92rem; font-weight: 600;
+      text-decoration: none; border-bottom: 1px solid rgba(109,192,64,0.4);
+      padding-bottom: 2px;
+    }
+    .kit-direct:hover, .kit-direct:focus-visible { color: var(--green-bright); border-bottom-color: var(--green-bright); }
+    .kit-meta { font-size: 0.82rem; color: var(--gray); margin: 0; }
+    .kit-meta strong { color: rgba(255,255,255,0.72); font-weight: 600; }
+
+    .kit-privacy {
+      max-width: 880px; margin: 40px auto 0;
+      background: rgba(212,175,55,0.05);
+      border: 1px solid rgba(212,175,55,0.22);
+      border-left: 3px solid var(--gold);
+      border-radius: 10px; padding: 22px 26px;
+      font-size: 0.86rem; color: rgba(255,255,255,0.6); line-height: 1.75;
+    }
+    .kit-privacy strong { color: var(--gold); font-weight: 700; }
+
+    .kit-disclaimer {
+      max-width: 880px; margin: 34px auto 0;
+      border-top: 1px solid var(--dark-border); padding-top: 20px;
+      font-size: 0.8rem; color: var(--gray); line-height: 1.7;
+    }
+
+    @media (max-width: 960px) {
+      .kit-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 860px) {
+      .kit-hero { padding: 112px 0 40px; }
+      .kit-subtitle { font-size: 1rem; }
+      .kit-intro { font-size: 0.95rem; }
+      .kit-cta { width: 100%; padding: 16px 24px; }
+      .kit-below { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 620px) {
+      .kit-grid { grid-template-columns: 1fr; }
+      .kit-preview-frame { padding: 8px; border-radius: 9px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <img src="../pii-emblem-3d.png" alt="PII" class="nav-emblem" />
+      <span class="nav-logo-text">PRACTICAL <span class="green">INCOME</span> INVESTING</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../about.html">About</a></li>
+      <li><a href="../strategies.html">Strategies</a></li>
+      <li><a href="../journal.html">Trading Journal</a></li>
+      <li><a href="../indicators.html">Indicators</a></li>
+      <li><a href="../blog.html">Resources</a></li>
+      <li><a href="../free-resources.html">Free Resources</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="kit-hero">
+  <div class="container">
+    <div class="kit-hero-inner">
+      <span class="kit-eyebrow">Free Starter Kit</span>
+      <h1>Build Your AI <em>Investing Assistant</em></h1>
+      <p class="kit-subtitle">Free Starter Prompt &amp; Verification Checklist</p>
+      <p class="kit-intro">A guided setup interview, a reusable investing profile, a research prompt, a verification checklist, and an organization system for ChatGPT, Claude, or another capable AI assistant.</p>
+
+      <div class="kit-notbuy">
+        <strong>This is not a prompt that tells you what to buy.</strong> It is a framework for teaching an AI assistant how <em>you</em> invest — and for checking its work before you risk real money.
+      </div>
+
+      <a class="kit-cta" href="../downloads/build-your-ai-investing-assistant-starter-kit.pdf" download="build-your-ai-investing-assistant-starter-kit.pdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Download the Free PDF
+      </a>
+      <p class="kit-nogate">No email required &middot; No sign-up</p>
+    </div>
+  </div>
+</section>
+
+<section class="kit-inside">
+  <div class="container">
+    <div class="section-header" style="max-width:720px;margin:0 auto;">
+      <span class="section-label">What's Inside</span>
+      <h2>Six Parts, <span class="green">One Workflow</span></h2>
+      <p class="hero-sub" style="margin-top:12px;">You are not training a new AI model. You are giving an existing assistant a clear, reusable description of your goals, strategies, risk limits, decision rules, and verification standards.</p>
+    </div>
+
+    <div class="kit-grid">
+      <div class="kit-item">
+        <div class="kit-num">1</div>
+        <h3>Guided setup interview</h3>
+        <p>The AI asks one question at a time and learns how you actually invest — goals, style, approved and prohibited strategies, sizing, entries, exits, and event rules.</p>
+      </div>
+      <div class="kit-item">
+        <div class="kit-num">2</div>
+        <h3>Portable investing profile</h3>
+        <p>The AI writes a saved profile you can correct, update, and move between platforms when memory resets or you switch tools.</p>
+      </div>
+      <div class="kit-item">
+        <div class="kit-num">3</div>
+        <h3>Company &amp; trade-plan prompt</h3>
+        <p>A reusable request for research, strategy comparison, management rules, and a defined invalidation point — with grades for company, valuation, and today's setup kept separate.</p>
+      </div>
+      <div class="kit-item">
+        <div class="kit-num">4</div>
+        <h3>Human verification checklist</h3>
+        <p>A required audit of facts, dates, filings, charts, option chains, events, and personal risk before a single dollar moves.</p>
+      </div>
+      <div class="kit-item">
+        <div class="kit-num">5</div>
+        <h3>Organization system</h3>
+        <p>A simple structure that keeps research, trade plans, journals, and system builds from turning into a pile of forgotten conversations.</p>
+      </div>
+      <div class="kit-item">
+        <div class="kit-num">6</div>
+        <h3>Final human authority</h3>
+        <p>The AI can organize and challenge. You verify and decide. A valid result may be a trade, a conditional plan, waiting, or no trade at all.</p>
+      </div>
+    </div>
+
+    <div class="kit-chain">
+      <p class="kit-chain-label">AI proposes. You decide.</p>
+      <p class="kit-chain-flow">
+        AI IDEA <span>→</span> CURRENT SOURCES <span>→</span> CHART <span>→</span> ACTUAL TRADE <span>→</span> PERSONAL RISK <span>→</span> HUMAN DECISION
+      </p>
+      <p class="kit-chain-note">A prompt is not a truth serum. Telling an AI not to guess does not make mistakes impossible. Your protection comes from checking sources, dates, numbers, charts, live trade data, and personal risk.</p>
+    </div>
+  </div>
+</section>
+
+<section class="kit-preview-section">
+  <div class="container">
+    <div class="section-header" style="max-width:720px;margin:0 auto;">
+      <span class="section-label">The Download</span>
+      <h2>15 Pages, <span class="gold">Copy and Paste Ready</span></h2>
+    </div>
+
+    <div class="kit-preview-frame">
+      <a href="../img/ai-investing-assistant-starter-kit-cover.png" aria-label="View the starter kit cover at full size">
+        <img src="../img/ai-investing-assistant-starter-kit-cover.png"
+             alt="Build Your AI Investing Assistant — Free Starter Prompt and Verification Checklist, a 15-page guide from Practical Income Investing."
+             width="1224" height="1584" loading="lazy" decoding="async" />
+      </a>
+    </div>
+
+    <div class="kit-below">
+      <a class="kit-direct" href="../downloads/build-your-ai-investing-assistant-starter-kit.pdf">
+        Direct download: build-your-ai-investing-assistant-starter-kit.pdf
+      </a>
+      <p class="kit-meta"><strong>15 pages &middot; PDF &middot; No email required</strong></p>
+    </div>
+
+    <div class="kit-privacy">
+      <strong>One thing before you start.</strong> Do not paste account numbers, login credentials, API keys, addresses, full account balances, buying power, or private customer information into any AI assistant. Percentages, portfolio ranges, and one-contract educational examples are usually enough.
+    </div>
+
+    <p class="kit-disclaimer">
+      Educational content only. Nothing in this guide is financial, investment, tax, or legal advice. It does not provide trade recommendations — it helps you organize research and build a process that reflects your own goals, experience, strategies, and risk limits. Investing and options involve risk, including the possible loss of principal. AI tools can be wrong, outdated, or overconfident. Verify all information independently and consult qualified professionals when appropriate.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="../pii-emblem-3d.png" alt="PII" class="footer-emblem" />
+        <span class="footer-brand">PRACTICAL <span>INCOME</span> INVESTING</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../strategies.html">Strategies</a></li>
+        <li><a href="../free-resources.html">Free Resources</a></li>
+        <li><a href="../index.html#market-compass">Market Compass</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2026 Practical Income Investing. All rights reserved.</p>
+    <p class="footer-disc">Options trading involves significant risk and is not appropriate for all investors. Past performance is not indicative of future results. This content is for educational purposes only and does not constitute financial advice.</p>
+  </div>
+</footer>
+
+</body>
+</html>
