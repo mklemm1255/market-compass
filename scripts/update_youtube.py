@@ -50,7 +50,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-HANDLE = "practicalincomeinvesting"
+HANDLE = "PracticalIncomeInvestingYT"
 CHANNEL_URL = f"https://www.youtube.com/@{HANDLE}"
 VIDEOS_URL = f"{CHANNEL_URL}/videos"
 FEED_URL = "https://www.youtube.com/feeds/videos.xml?channel_id={cid}"
@@ -74,10 +74,12 @@ VIDEOS_TAB_PARAMS = "EgZ2aWRlb3PyBgQKAjoA"
 # see the module docstring. Key comes from the YOUTUBE_API_KEY secret.
 API_ROOT = "https://www.googleapis.com/youtube/v3/"
 API_KEY_ENV = "YOUTUBE_API_KEY"
-# Confirmed against the channel's own feed, which reports this id as
-# belonging to 'Practical Income Investing'. Used if the handle lookup
-# fails; the API is asked for it first regardless.
-KNOWN_CHANNEL_ID = "UCv2cwLeljAJ0fC9vOwdwmQQ"
+# Deliberately NO hardcoded channel-id fallback. A near-identical
+# impostor channel exists under the handle this script used to point at,
+# so guessing an id is not a harmless convenience — it would quietly
+# publish someone else's videos on the homepage under Mike's name. The
+# handle is the single source of truth; if it cannot be resolved, the
+# run fails and the page is left alone.
 # Uploads to consider before filtering Shorts out, so a run of Shorts
 # cannot starve the three slots.
 API_SCAN = 25
@@ -188,7 +190,11 @@ def duration_seconds(value: str) -> int:
 
 
 def uploads_playlist_id(key: str) -> str:
-    """The channel's uploads playlist, which holds every upload in order."""
+    """The channel's uploads playlist, which holds every upload in order.
+
+    Returns "" rather than guessing. The caller treats that as a failed
+    run — see the note on the missing channel-id fallback above.
+    """
     try:
         data = api_get("channels", key, part="contentDetails", forHandle="@" + HANDLE)
         items = data.get("items") or []
@@ -196,12 +202,10 @@ def uploads_playlist_id(key: str) -> str:
             uploads = items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
             log(f"  uploads playlist: {uploads}")
             return uploads
-        log("  handle lookup returned no channel")
+        log(f"  no channel found for handle @{HANDLE}")
     except (urllib.error.URLError, ValueError, KeyError, OSError) as exc:
         log(f"  handle lookup failed ({exc})")
-    fallback = "UU" + KNOWN_CHANNEL_ID[2:]
-    log(f"  falling back to the known uploads playlist: {fallback}")
-    return fallback
+    return ""
 
 
 def videos_from_data_api(n: int) -> list[dict]:
@@ -211,6 +215,9 @@ def videos_from_data_api(n: int) -> list[dict]:
         return []
 
     playlist = uploads_playlist_id(key)
+    if not playlist:
+        log("  cannot identify the channel — refusing to guess")
+        return []
     try:
         listing = api_get(
             "playlistItems", key,
@@ -550,7 +557,13 @@ def collect(n: int) -> list[dict]:
             return videos
         diagnose_page(page)
 
-    candidates = channel_id_candidates(page) if page else [KNOWN_CHANNEL_ID]
+    # Ids are only ever read off the real channel page. With no page there
+    # is nothing trustworthy to try, and guessing is how you end up
+    # featuring an impostor's uploads.
+    candidates = channel_id_candidates(page) if page else []
+    if not candidates:
+        log("no channel id could be read from the channel page")
+        return []
     log(f"channel id candidates: {', '.join(candidates)}")
 
     log("source 3: InnerTube browse")

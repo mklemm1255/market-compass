@@ -86,7 +86,7 @@ check("a deleted upload is skipped", all(v["id"] != "fffffffffff" for v in got))
 check("an upload with no id is skipped", all(v["id"] for v in got))
 check("titles are HTML-unescaped from the API", got[0]["title"] == "Real video one & only", got[0]["title"])
 check("the uploads playlist is resolved from the handle",
-      any(c[0] == "channels" and c[2].get("forHandle") == "@practicalincomeinvesting" for c in _api_calls))
+      any(c[0] == "channels" and c[2].get("forHandle") == "@PracticalIncomeInvestingYT" for c in _api_calls))
 check("the key is passed but never part of the logged params",
       all("key" not in c[2] for c in _api_calls))
 
@@ -95,15 +95,29 @@ u.api_get = fake_api({**RESPONSES, "videos": {"items": []}})
 got = u.videos_from_data_api(3)
 check("an unreadable duration lookup does not empty the result", len(got) == 3, str(len(got)))
 
-# If the handle lookup fails, fall back to the verified channel's playlist.
+# A failed handle lookup must publish NOTHING. An impostor channel exists
+# under a near-identical handle, so a convenient guess here would put a
+# stranger's uploads on the homepage. These two are the important ones.
 def failing_channels(endpoint, key, **params):
     if endpoint == "channels":
         raise OSError("handle lookup down")
     return RESPONSES[endpoint]
 
 u.api_get = failing_channels
-check("a failed handle lookup falls back and still works",
-      [v["id"] for v in u.videos_from_data_api(3)] == REAL)
+check("a failed handle lookup returns nothing rather than guessing a channel",
+      u.videos_from_data_api(3) == [])
+
+def empty_channels(endpoint, key, **params):
+    if endpoint == "channels":
+        return {"items": []}
+    return RESPONSES[endpoint]
+
+u.api_get = empty_channels
+check("an unknown handle returns nothing rather than guessing a channel",
+      u.videos_from_data_api(3) == [])
+check("no hardcoded channel-id fallback has crept back in",
+      not hasattr(u, "KNOWN_CHANNEL_ID"))
+check("the handle points at the real channel", u.HANDLE == "PracticalIncomeInvestingYT", u.HANDLE)
 
 u.api_get = _real_api_get
 os.environ.pop("YOUTUBE_API_KEY", None)
